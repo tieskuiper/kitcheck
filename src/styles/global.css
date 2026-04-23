@@ -41,7 +41,15 @@
 }
 
 @utility btn-primary {
-  @apply flex items-center gap-2 py-2.5 px-4 bg-coral text-white border-0 rounded-lg font-head text-sm font-semibold cursor-pointer transition-opacity hover:opacity-85;
+  @apply flex items-center gap-2 w-fit py-2.5 px-4 bg-coral text-white border-0 rounded-lg font-head text-sm font-semibold cursor-pointer transition-opacity hover:opacity-85;
+
+  svg {
+    @apply size-4.5;
+  }
+}
+
+@utility btn-secondary {
+  @apply flex items-center gap-2 w-fit py-2.5 px-4 bg-text text-white border-0 rounded-lg font-head text-sm font-semibold cursor-pointer transition-opacity hover:opacity-85;
 
   svg {
     @apply size-4.5;
@@ -122,7 +130,10 @@ input[type="range"]::-moz-range-thumb {
 
 /* ── Prevent iOS auto-zoom on input focus ───────────────────────────────── */
 @media screen and (max-width: 767px) {
-  input, select, textarea {
+
+  input,
+  select,
+  textarea {
     font-size: 16px;
   }
 }
