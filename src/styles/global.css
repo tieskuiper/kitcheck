@@ -137,4 +137,5 @@ body {
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
   text-wrap: pretty;
+  overflow-x: clip;
 }
