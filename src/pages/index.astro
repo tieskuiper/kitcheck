@@ -3,11 +3,9 @@ import Base from "../layouts/Base.astro";
 import Calculator from "../components/Calculator";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
-
 ---
 
 <Base>
-
   <!-- HEADER -->
   <SiteHeader>
     <button id="header-geolocate" class="btn-primary">
@@ -26,7 +24,8 @@ import SiteFooter from "../components/SiteFooter.astro";
           Know exactly <span class="text-coral">what to wear</span> before you ride.
         </h1>
         <p class="text-text-mid leading-[1.75] max-w-sm mx-auto font-light">
-          Search your city, set your effort level and get a full kit list in seconds.
+          Search your city, set your effort level and get a full kit list in
+          seconds.
         </p>
       </div>
     </div>
@@ -38,17 +37,33 @@ import SiteFooter from "../components/SiteFooter.astro";
   <!-- GUIDE TEASER -->
   <section class="border-t border-border bg-bg-card">
     <div class="container py-10">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div
+        class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+      >
         <div>
-          <p class="font-head font-semibold text-text mb-1">Not sure where to start?</p>
-          <p class="text-sm text-text-mid">The guide covers what to wear at every temperature, from a winter freeze to a hot summer day, with notes on rain, wind and how hard you're riding.</p>
+          <p class="font-head font-semibold text-text mb-1">
+            Not sure where to start?
+          </p>
+          <p class="text-sm text-text-mid">
+            The guide covers what to wear at every temperature, from a winter
+            freeze to a hot summer day, with notes on rain, wind and how hard
+            you're riding.
+          </p>
         </div>
-        <a
-          href="/guide"
-          class="shrink-0 inline-flex items-center gap-2 py-2.5 px-4 bg-text text-bg rounded-lg font-head text-sm font-semibold hover:opacity-85 transition-opacity"
-        >
+        <a href="/guide" class="btn-secondary">
           Read the guide
-          <svg xmlns="http://www.w3.org/2000/svg" class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="size-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+            ><path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 5l7 7-7 7"></path></svg
+          >
         </a>
       </div>
     </div>
