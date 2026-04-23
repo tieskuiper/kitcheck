@@ -360,7 +360,7 @@ export default function Calculator() {
   return (
     <section id="calculator" className="bg-bg">
       <div className="container">
-        <div className="pt-12 pb-16 md:pb 18 lg:pb-20">
+        <div className="pt-12 pb-16 md:pb-18 lg:pb-20">
           <div className="grid md:grid-cols-2 gap-7 items-start">
 
             {/* Left: inputs */}
