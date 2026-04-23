@@ -1,0 +1,55 @@
+---
+---
+
+<div
+  id="cookie-banner"
+  class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-border shadow-[0_-4px_24px_rgba(0,0,0,0.06)] px-4 py-4 hidden"
+>
+  <div class="container">
+    <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
+      <p class="text-text-mid text-sm leading-relaxed flex-1">
+        We use analytics cookies to understand how people use kitcheck.cc. No personal data is sold or shared.
+      </p>
+      <div class="flex gap-2 shrink-0 justify-end">
+        <button
+          id="cookie-decline"
+          class="px-4 py-2 rounded-lg border border-border text-text-mid text-sm font-head font-semibold hover:border-text-mid hover:text-text transition-colors cursor-pointer bg-transparent"
+        >
+          Decline
+        </button>
+        <button
+          id="cookie-accept"
+          class="px-4 py-2 rounded-lg bg-coral text-white text-sm font-head font-semibold hover:opacity-85 transition-opacity cursor-pointer border-0"
+        >
+          Accept
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    var banner = document.getElementById('cookie-banner');
+    var consent = localStorage.getItem('kitcheck-consent');
+
+    if (consent === 'accepted') {
+      gtag('consent', 'update', { analytics_storage: 'granted' });
+    }
+
+    if (consent === null) {
+      banner.style.display = 'block';
+    }
+
+    document.getElementById('cookie-accept').addEventListener('click', function () {
+      localStorage.setItem('kitcheck-consent', 'accepted');
+      gtag('consent', 'update', { analytics_storage: 'granted' });
+      banner.style.display = 'none';
+    });
+
+    document.getElementById('cookie-decline').addEventListener('click', function () {
+      localStorage.setItem('kitcheck-consent', 'declined');
+      banner.style.display = 'none';
+    });
+  })();
+</script>
