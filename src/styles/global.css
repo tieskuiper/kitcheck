@@ -120,6 +120,13 @@ input[type="range"]::-moz-range-thumb {
   animation: spin 0.8s linear infinite;
 }
 
+/* ── Prevent iOS auto-zoom on input focus ───────────────────────────────── */
+@media screen and (max-width: 767px) {
+  input, select, textarea {
+    font-size: 16px;
+  }
+}
+
 /* ── Base ───────────────────────────────────────────────────────────────── */
 *,
 *::before,

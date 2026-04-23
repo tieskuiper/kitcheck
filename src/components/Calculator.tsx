@@ -41,7 +41,7 @@ function Label({ text }: { text: string }) {
 
 function Card({ children }: { children: ReactNode }) {
   return (
-    <div className="bg-white rounded-2xl border border-border p-[22px]">
+    <div className="bg-white rounded-2xl border border-border p-4 sm:p-[22px]">
       {children}
     </div>
   )
@@ -62,40 +62,39 @@ function LocationSearch({
     <div>
       <div className="flex gap-2 relative">
         {/* Input */}
-        <div className="flex-1 flex items-center bg-bg-card border-[1.5px] border-border rounded-[10px] px-3 gap-2">
+        <div className="flex-1 min-w-0 flex items-center bg-bg-card border-[1.5px] border-border rounded-[10px] px-3 gap-2">
           <span className="opacity-40 text-[15px]">🔍</span>
           <input
             value={query}
             onChange={e => setQuery(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter') onSearch() }}
             placeholder="City or location…"
-            className="flex-1 border-none bg-transparent font-body text-[14px] text-text outline-none py-[11px]"
+            className="flex-1 min-w-0 border-none bg-transparent font-body text-[14px] text-text outline-none py-[11px]"
             autoComplete="off"
             data-1p-ignore
             data-lpignore="true"
             data-form-type="other"
           />
+          <button onClick={onAutoDetect} disabled={locating} title="Use my location"
+            className="shrink-0 bg-transparent border-none cursor-pointer text-[16px] opacity-60 hover:opacity-100 disabled:opacity-30 transition-opacity">
+            📍
+          </button>
           {query && (
             <button onClick={() => setQuery('')}
-              className="bg-transparent border-none cursor-pointer text-text-light text-[16px] hover:opacity-75">
+              className="shrink-0 bg-transparent border-none cursor-pointer text-text-light text-[16px] hover:opacity-75">
               ×
             </button>
           )}
         </div>
         {/* Search */}
         <button onClick={onSearch} disabled={loading || !query.trim()}
-          className="px-4 bg-coral text-white border-none rounded-[10px] font-head text-[14px] font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:opacity-90">
+          className="shrink-0 px-4 bg-coral text-white border-none rounded-[10px] font-head text-[14px] font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:opacity-90">
           {loading ? '↻' : '→'}
-        </button>
-        {/* Auto-detect */}
-        <button onClick={onAutoDetect} disabled={locating} title="Use my location"
-          className="px-[14px] bg-bg-card text-text-mid border-[1.5px] border-border rounded-[10px] font-body text-[14px] cursor-pointer disabled:opacity-50 transition-all hover:opacity-90">
-          📍
         </button>
 
         {/* Dropdown */}
         {suggestions.length > 0 && (
-          <div className="absolute top-full mt-[6px] left-0 w-[calc(100%-90px)] bg-white border border-border rounded-xl overflow-hidden z-20 shadow-[0_8px_32px_rgba(0,0,0,0.1)]">
+          <div className="absolute top-full mt-[6px] left-0 right-0 bg-white border border-border rounded-xl overflow-hidden z-20 shadow-[0_8px_32px_rgba(0,0,0,0.1)]">
             {suggestions.map((s, i) => (
               <button key={i} onClick={() => onSelectCity(s)}
                 className={`w-full text-left px-[14px] py-[11px] bg-transparent border-none cursor-pointer font-body text-[13px] text-text-mid flex items-center gap-2 hover:opacity-75 ${i < suggestions.length - 1 ? 'border-b border-border' : ''
@@ -114,7 +113,7 @@ function LocationSearch({
       )}
 
       {weatherLoaded && locationName && (
-        <div className="mt-2.5 flex items-center gap-[6px]">
+        <div className="mt-2.5 flex flex-wrap items-center gap-[6px]">
           <span className="w-[6px] h-[6px] rounded-full bg-coral inline-block shrink-0" />
           <span className="font-head text-[12px] font-semibold text-text">{locationName}</span>
           <span className="text-[11px] text-text-light">— live conditions loaded</span>
@@ -167,11 +166,11 @@ function KitCard({ kitResult, score }: { kitResult: KitResult; score: ReturnType
   return (
     <div className="animate-fade-up">
       {/* Header — background is dynamic (tier colour) */}
-      <div style={{ background: accent }} className="rounded-2xl py-5 px-[22px] mb-[14px] text-white">
+      <div style={{ background: accent }} className="rounded-2xl py-4 px-4 sm:py-5 sm:px-[22px] mb-[14px] text-white">
         <div className="text-[11px] font-head font-semibold tracking-[0.08em] uppercase opacity-80 mb-1">
           Kit recommendation
         </div>
-        <div className="font-head text-[22px] font-bold tracking-[-0.02em] mb-[6px]">
+        <div className="font-head text-[18px] sm:text-[22px] font-bold tracking-[-0.02em] mb-[6px]">
           {score.label} conditions
         </div>
         <div className="text-[12px] opacity-80">
@@ -184,7 +183,7 @@ function KitCard({ kitResult, score }: { kitResult: KitResult; score: ReturnType
         {zones.map(z => {
           const a = LEVEL_ACCENT[z.level as Level]
           return (
-            <div key={z.key} style={{ background: bg }} className="rounded-xl py-3 px-[14px] border border-black/5">
+            <div key={z.key} style={{ background: bg }} className="rounded-xl py-2.5 px-3 sm:py-3 sm:px-[14px] border border-black/5">
               <div className="flex items-center gap-[6px] mb-[6px]">
                 <span className="text-[14px]">{CAT_ICONS[z.key]}</span>
                 <span style={{ color: a }} className="font-head text-[10px] font-bold tracking-[0.07em] uppercase">
@@ -360,11 +359,11 @@ export default function Calculator() {
   return (
     <section id="calculator" className="bg-bg">
       <div className="container">
-        <div className="pt-12 pb-16 md:pb-18 lg:pb-20">
-          <div className="grid md:grid-cols-2 gap-7 items-start">
+        <div className="pt-6 md:pt-10 pb-10 md:pb-16 lg:pb-20">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-7 items-start">
 
             {/* Left: inputs */}
-            <div className="flex flex-col gap-3.5">
+            <div className="flex flex-col gap-3.5 min-w-0">
 
               <Card>
                 <div className="font-head text-[14px] font-bold mb-4">Where are you riding?</div>
@@ -435,11 +434,11 @@ export default function Calculator() {
             </div>
 
             {/* Right: output */}
-            <div className="md:sticky md:top-6">
+            <div className="md:sticky md:top-6 min-w-0">
               {kitResult && sl && weatherLoaded ? (
                 <KitCard kitResult={kitResult} score={sl} />
               ) : (
-                <div className="bg-white rounded-2xl p-12 border-[1.5px] border-dashed border-border text-center text-text-light">
+                <div className="hidden md:block bg-white rounded-2xl p-12 border-[1.5px] border-dashed border-border text-center text-text-light">
                   <div className="text-[44px] mb-3">📍</div>
                   <div className="font-head text-[15px] font-semibold text-text-mid mb-[6px]">
                     Enter your ride location
