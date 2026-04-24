@@ -50,35 +50,31 @@ function Card({ children }: { children: ReactNode }) {
 // ── Location search ───────────────────────────────────────────────────────────
 function LocationSearch({
   query, setQuery, suggestions, onSearch, onAutoDetect, onSelectCity,
-  loading, locating, locationName, locationError, weatherLoaded, compact,
+  loading, locating, locationName, locationError, weatherLoaded, isLive, compact,
 }: {
   query: string; setQuery: (v: string) => void
   suggestions: CityResult[]; onSearch: () => void
   onAutoDetect: () => void; onSelectCity: (c: CityResult) => void
   loading: boolean; locating: boolean; locationName: string
-  locationError: string; weatherLoaded: boolean; compact?: boolean
+  locationError: string; weatherLoaded: boolean; isLive: boolean; compact?: boolean
 }) {
   return (
     <div>
       <div className="flex gap-2 relative">
         {/* Input */}
         <div className="flex-1 min-w-0 flex items-center bg-bg-card border-[1.5px] border-border rounded-[10px] px-3 gap-2">
-          <span className="opacity-40 text-[15px]">🔍</span>
+          <span className="opacity-40 text-sm sm:text-[15px]">🔍</span>
           <input
             value={query}
             onChange={e => setQuery(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter') onSearch() }}
             placeholder="City or location…"
-            className="flex-1 min-w-0 border-none bg-transparent font-body text-[14px] text-text outline-none py-[11px]"
+            className="flex-1 min-w-0 border-none bg-transparent font-body text-[14px]! text-text outline-none py-[8px] sm:py-[11px]"
             autoComplete="off"
             data-1p-ignore
             data-lpignore="true"
             data-form-type="other"
           />
-          <button onClick={onAutoDetect} disabled={locating} title="Use my location"
-            className="shrink-0 bg-transparent border-none cursor-pointer text-[16px] opacity-60 hover:opacity-100 disabled:opacity-30 transition-opacity">
-            📍
-          </button>
           {query && (
             <button onClick={() => setQuery('')}
               className="shrink-0 bg-transparent border-none cursor-pointer text-text-light text-[16px] hover:opacity-75">
@@ -88,8 +84,12 @@ function LocationSearch({
         </div>
         {/* Search */}
         <button onClick={onSearch} disabled={loading || !query.trim()}
-          className="shrink-0 px-4 bg-coral text-white border-none rounded-[10px] font-head text-[14px] font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:opacity-90">
-          {loading ? '↻' : '→'}
+          className="shrink-0 px-3 sm:px-4 bg-coral text-white border-none rounded-[10px] font-head text-[14px] font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:opacity-90">
+          {loading ? (
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" className="size-4 animate-spin-slow"><path d="M12 4V2M12 22v-2M4 12H2M22 12h-2M6.34 6.34 4.93 4.93M19.07 19.07l-1.41-1.41M17.66 6.34l1.41-1.41M4.93 19.07l1.41-1.41" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
+          ) : (
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" className="size-4"><path d="M14 6L20 12L14 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /><path d="M19 12H4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          )}
         </button>
 
         {/* Dropdown */}
@@ -106,6 +106,18 @@ function LocationSearch({
         )}
       </div>
 
+      {/* Or divider + location button */}
+      <div className="flex items-center gap-3 my-3">
+        <div className="flex-1 h-px bg-border" />
+        <span className="font-head text-[11px] text-text-light uppercase tracking-[0.08em]">or</span>
+        <div className="flex-1 h-px bg-border" />
+      </div>
+      <button onClick={onAutoDetect} disabled={locating}
+        className="w-full flex items-center justify-center gap-[6px] py-[8px] px-4 rounded-[10px] border border-border bg-transparent font-head text-[13px] font-semibold text-text-mid hover:border-text-mid hover:text-text transition-all disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed">
+        <span className="text-[13px]">📍</span>
+        {locating ? 'Detecting…' : 'Use current location'}
+      </button>
+
       {locationError && (
         <div className="mt-2 text-[12px] text-[#e53] py-[7px] px-[11px] bg-[#fff5f5] rounded-lg border border-[#fdd]">
           {locationError}
@@ -116,23 +128,26 @@ function LocationSearch({
         <div className="mt-2.5 flex flex-wrap items-center gap-[6px]">
           <span className="w-[6px] h-[6px] rounded-full bg-coral inline-block shrink-0" />
           <span className="font-head text-[12px] font-semibold text-text">{locationName}</span>
-          <span className="text-[11px] text-text-light">— live conditions loaded</span>
+          <span className="text-[11px] text-text-light">— {isLive ? 'live conditions' : 'forecast'} loaded</span>
         </div>
       )}
 
       {!weatherLoaded && !loading && !locationError && (
         <div className={`text-center text-text-mid text-[13px] ${compact ? 'pt-[10px] pb-[2px]' : 'pt-4 pb-[6px]'}`}>
-          Enter a city or tap 📍 to load today's weather
+          Search a city or use current location to load today's weather
         </div>
       )}
     </div>
   )
 }
 
+function toF(c: number) { return Math.round(c * 9 / 5 + 32) }
+
 // ── Weather chips ─────────────────────────────────────────────────────────────
-function WeatherChips({ weather }: { weather: HourlySlice }) {
+function WeatherChips({ weather, unit }: { weather: HourlySlice; unit: 'C' | 'F' }) {
+  const temp = unit === 'F' ? `${toF(weather.temperature)}°F` : `${weather.temperature}°C`
   const chips = [
-    { icon: '🌡️', label: 'Temperature', value: `${weather.temperature}°C` },
+    { icon: '🌡️', label: 'Temperature', value: temp },
     { icon: '🌬️', label: 'Wind', value: `${weather.windspeed} km/h` },
     { icon: '🌧️', label: 'Rain', value: `${weather.precipProb}%` },
     { icon: '☁️', label: 'Cloud', value: `${weather.cloudcover}%` },
@@ -263,6 +278,7 @@ export default function Calculator() {
   const [intensity, setIntensity] = useState<Intensity>('moderate')
   const [warmthBias, setWarmthBias] = useState(0)
   const [kitResult, setKitResult] = useState<KitResult | null>(null)
+  const [unit, setUnit] = useState<'C' | 'F'>('C')
 
   const searchTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const hourLabel = `${String(selectedHour).padStart(2, '0')}:00`
@@ -295,6 +311,7 @@ export default function Calculator() {
 
   async function handleSearch() {
     if (!cityQuery.trim()) return
+    if (weatherLoaded && cityQuery === locationName) return
     setSuggestions([])
     const results = await searchCity(cityQuery)
     if (results[0]) { await selectCity(results[0]) }
@@ -356,6 +373,12 @@ export default function Calculator() {
     return () => window.removeEventListener('kitcheck:geolocate', handler)
   }, [])
 
+  useEffect(() => {
+    const handler = (e: Event) => setUnit((e as CustomEvent<{ unit: 'C' | 'F' }>).detail.unit)
+    window.addEventListener('kitcheck:unit', handler)
+    return () => window.removeEventListener('kitcheck:unit', handler)
+  }, [])
+
   return (
     <section id="calculator" className="bg-bg">
       <div className="container">
@@ -373,8 +396,8 @@ export default function Calculator() {
                   onAutoDetect={geolocate} onSelectCity={selectCity}
                   loading={loading} locating={locating}
                   locationName={locationName} locationError={locationError}
-                  weatherLoaded={weatherLoaded} />
-                {weather && weatherLoaded && <WeatherChips weather={weather} />}
+                  weatherLoaded={weatherLoaded} isLive={selectedDay === 0 && selectedHour === new Date().getHours()} />
+                {weather && weatherLoaded && <WeatherChips weather={weather} unit={unit} />}
               </Card>
 
               {forecast && (
