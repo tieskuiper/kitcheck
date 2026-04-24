@@ -1,0 +1,181 @@
+---
+import Base from "../layouts/Base.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+---
+
+<Base
+  title="Cookie Policy | kitcheck.cc"
+  description="Cookie policy for kitcheck.cc. What cookies and storage we use, and why."
+  canonical="https://kitcheck.cc/cookies"
+>
+  <SiteHeader>
+    <a href="/" class="btn-primary">Use the calculator</a>
+  </SiteHeader>
+
+  <section class="bg-bg">
+    <div class="container">
+      <div class="max-w-2xl pt-16 md:pt-18 lg:pt-20 pb-12 md:pb-14">
+        <nav class="flex items-center gap-2 text-xs text-text-light mb-5">
+          <a href="/" class="hover:text-text-mid transition-colors">kitcheck.cc</a>
+          <span>›</span>
+          <span class="text-text-mid">Cookie policy</span>
+        </nav>
+        <h1 class="font-head text-3xl md:text-4xl font-bold tracking-tight leading-[1.1] text-text mb-4">
+          Cookie policy
+        </h1>
+        <p class="text-text-mid leading-relaxed">
+          Last updated: April 2026
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-bg border-t border-border">
+    <div class="container py-14 md:py-18">
+      <div class="max-w-2xl prose-custom">
+
+        <h2>What this page covers</h2>
+        <p>
+          This page explains what cookies and browser storage kitcheck.cc sets, what they
+          are used for, and how you can control them.
+        </p>
+
+        <h2>Your consent preference</h2>
+        <p>
+          When you first visit kitcheck.cc, a banner asks whether you are happy for us to
+          use analytics cookies. Analytics are off by default and only turned on if you
+          click Accept.
+        </p>
+        <p>
+          Your choice is saved in browser local storage under the key
+          <code>kitcheck-consent</code>. It has no expiry date but is cleared if you
+          clear your browser data for this site.
+        </p>
+        <p>
+          To change your choice, clear the <code>kitcheck-consent</code> entry from your
+          browser's local storage and reload the page — the banner will reappear.
+        </p>
+
+        <h2>Analytics cookies (optional)</h2>
+        <p>
+          These cookies are only set after you accept. They are provided by Google
+          Analytics 4 (GA4) to help us understand how people use the calculator.
+        </p>
+
+        <div class="cookie-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Cookie</th>
+                <th>Purpose</th>
+                <th>Expires</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>_ga</code></td>
+                <td>Distinguishes unique visitors</td>
+                <td>2 years</td>
+              </tr>
+              <tr>
+                <td><code>_ga_FSYJ9GNCNP</code></td>
+                <td>Maintains session state for this GA4 property</td>
+                <td>2 years</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          Google Analytics uses anonymised IP addresses. The data collected includes pages
+          visited, approximate location (city level), device type, and referral source.
+          No personally identifiable information is stored.
+        </p>
+
+        <h2>No other cookies</h2>
+        <p>
+          kitcheck.cc does not set any other cookies. There are no advertising,
+          social-media, or tracking pixels on the site.
+        </p>
+
+        <h2>Third-party resources</h2>
+        <p>
+          The site loads fonts from Google Fonts. Google may set its own cookies or
+          collect data under its own privacy policy when serving these fonts.
+        </p>
+
+        <h2>More information</h2>
+        <p>
+          See our <a href="/privacy">Privacy policy</a> for full details on how we handle
+          data. If you have questions, contact us at
+          <a href="mailto:privacy@kitcheck.cc">privacy@kitcheck.cc</a>.
+        </p>
+
+      </div>
+    </div>
+  </section>
+
+  <SiteFooter />
+</Base>
+
+<style>
+  .prose-custom h2 {
+    font-family: var(--font-head, inherit);
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--color-text);
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+  }
+  .prose-custom p,
+  .prose-custom ul {
+    font-size: 0.9375rem;
+    line-height: 1.75;
+    color: var(--color-text-mid);
+    margin-bottom: 1rem;
+  }
+  .prose-custom a {
+    color: var(--color-coral);
+    text-decoration: none;
+  }
+  .prose-custom a:hover {
+    opacity: 0.75;
+  }
+  .prose-custom code {
+    font-size: 0.8125rem;
+    background: #f3f4f6;
+    border-radius: 4px;
+    padding: 1px 5px;
+    color: var(--color-text);
+  }
+  .cookie-table-wrap {
+    overflow-x: auto;
+    margin-bottom: 1rem;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+  th {
+    text-align: left;
+    font-family: var(--font-head, inherit);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-mid);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--color-border);
+  }
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-mid);
+    vertical-align: top;
+  }
+  tr:last-child td {
+    border-bottom: none;
+  }
+</style>

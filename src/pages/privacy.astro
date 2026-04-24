@@ -1,0 +1,166 @@
+---
+import Base from "../layouts/Base.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+---
+
+<Base
+  title="Privacy Policy | kitcheck.cc"
+  description="Privacy policy for kitcheck.cc. Learn what data we collect, why, and how it is used."
+  canonical="https://kitcheck.cc/privacy"
+>
+  <SiteHeader>
+    <a href="/" class="btn-primary">Use the calculator</a>
+  </SiteHeader>
+
+  <section class="bg-bg">
+    <div class="container">
+      <div class="max-w-2xl pt-16 md:pt-18 lg:pt-20 pb-12 md:pb-14">
+        <nav class="flex items-center gap-2 text-xs text-text-light mb-5">
+          <a href="/" class="hover:text-text-mid transition-colors">kitcheck.cc</a>
+          <span>›</span>
+          <span class="text-text-mid">Privacy policy</span>
+        </nav>
+        <h1 class="font-head text-3xl md:text-4xl font-bold tracking-tight leading-[1.1] text-text mb-4">
+          Privacy policy
+        </h1>
+        <p class="text-text-mid leading-relaxed">
+          Last updated: April 2026
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-bg border-t border-border">
+    <div class="container py-14 md:py-18">
+      <div class="max-w-2xl prose-custom">
+
+        <h2>Who we are</h2>
+        <p>
+          kitcheck.cc is a free cycling kit calculator, operated by Ties Kuiper. Questions
+          about this policy can be sent to
+          <a href="mailto:privacy@kitcheck.cc">privacy@kitcheck.cc</a>.
+        </p>
+
+        <h2>What data we collect</h2>
+        <p>
+          We do not ask you to create an account, fill in a form, or provide any personal
+          information directly. The only data collected is anonymous analytics data, and
+          only if you give your consent.
+        </p>
+        <p>
+          If you accept analytics cookies, Google Analytics 4 (GA4) records:
+        </p>
+        <ul>
+          <li>Pages you visit and how long you spend on them</li>
+          <li>The city or region you are in (derived from your IP address; the full IP address is not stored)</li>
+          <li>The device type, browser, and operating system you use</li>
+          <li>How you arrived at the site (e.g. a search engine or direct link)</li>
+        </ul>
+        <p>
+          None of this is linked to your name, email address, or any other identifier.
+          If you decline analytics cookies, nothing is collected.
+        </p>
+
+        <h2>Why we collect it</h2>
+        <p>
+          Analytics help us understand how the calculator is used so we can improve it.
+          For example, knowing which locations are searched most often helps us prioritise
+          weather data accuracy.
+        </p>
+
+        <h2>Legal basis</h2>
+        <p>
+          We process analytics data on the basis of your consent (GDPR Article 6(1)(a)).
+          Analytics are disabled by default and only activated after you click Accept in
+          the cookie banner. You can withdraw consent at any time by clearing your browser
+          storage for kitcheck.cc.
+        </p>
+
+        <h2>Who we share data with</h2>
+        <p>
+          Analytics data is processed by Google LLC under the Google Analytics service.
+          Google may store data on servers outside the EEA; this transfer is covered by
+          Google's standard contractual clauses.
+        </p>
+        <p>
+          We do not sell data, share it with advertisers, or use it for any purpose other
+          than understanding site usage.
+        </p>
+
+        <h2>Weather data</h2>
+        <p>
+          When you search for a location, the location name and coordinates are sent to
+          <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>
+          to fetch a weather forecast. Open-Meteo is a free, open-source weather API.
+          We do not store the locations you search for.
+        </p>
+
+        <h2>How long data is kept</h2>
+        <p>
+          Google Analytics retains aggregated data for 14 months by default. Your consent
+          preference is stored in your browser's local storage until you clear it.
+        </p>
+
+        <h2>Your rights</h2>
+        <p>
+          Under GDPR you have the right to access, correct, or erase personal data we hold
+          about you, and the right to object to or restrict processing. Because we do not
+          collect identifiable personal data, most of these rights are not practically
+          applicable, but you are welcome to contact us if you have questions.
+        </p>
+        <p>
+          You also have the right to lodge a complaint with your national data protection
+          authority.
+        </p>
+
+        <h2>Cookies</h2>
+        <p>
+          For a full list of cookies set by this site, see our
+          <a href="/cookies">Cookie policy</a>.
+        </p>
+
+        <h2>Changes to this policy</h2>
+        <p>
+          If we make material changes to how we handle data, we will update this page and
+          revise the date at the top.
+        </p>
+
+      </div>
+    </div>
+  </section>
+
+  <SiteFooter />
+</Base>
+
+<style>
+  .prose-custom h2 {
+    font-family: var(--font-head, inherit);
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--color-text);
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+  }
+  .prose-custom p,
+  .prose-custom ul {
+    font-size: 0.9375rem;
+    line-height: 1.75;
+    color: var(--color-text-mid);
+    margin-bottom: 1rem;
+  }
+  .prose-custom ul {
+    padding-left: 1.25rem;
+    list-style: disc;
+  }
+  .prose-custom li {
+    margin-bottom: 0.25rem;
+  }
+  .prose-custom a {
+    color: var(--color-coral);
+    text-decoration: none;
+  }
+  .prose-custom a:hover {
+    opacity: 0.75;
+  }
+</style>
