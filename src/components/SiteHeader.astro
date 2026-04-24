@@ -4,22 +4,23 @@ const { pathname } = Astro.url;
 
 <header class="bg-bg border-b border-border">
   <div class="container">
-    <div class="flex items-center justify-between py-3">
-
-      <a href="/" class="font-head font-bold text-xl text-text tracking-tight hover:opacity-80 transition-opacity">
+    <div class="flex items-center justify-between h-16">
+      <a
+        href="/"
+        class="font-head font-bold text-xl text-text tracking-tight hover:opacity-80 transition-opacity"
+      >
         kitcheck<span class="text-coral">.cc</span>
       </a>
 
       <nav class="flex items-center gap-5">
         <a
           href="/guide"
-          class={`font-head text-sm font-semibold transition-colors ${pathname === '/guide' ? 'text-text' : 'text-text-mid hover:text-text'}`}
+          class={`font-head text-sm font-semibold transition-colors ${pathname === "/guide" ? "text-text" : "text-text-mid hover:text-text"}`}
         >
-          Guide
+          Kit guide
         </a>
         <slot />
       </nav>
-
     </div>
   </div>
 </header>

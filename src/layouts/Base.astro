@@ -46,28 +46,29 @@ const jsonLd = {
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      rel="preload"
-      as="style"
+      rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap"
-      onload="this.onload=null;this.rel='stylesheet'"
     />
-    <noscript>
-      <link
-        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap"
-        rel="stylesheet"
-      />
-    </noscript>
-    <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify(jsonLd)}
+    />
     <slot name="head" />
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('consent', 'default', { analytics_storage: 'denied' });
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("consent", "default", { analytics_storage: "denied" });
     </script>
-    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-FSYJ9GNCNP"></script>
+    <script
+      is:inline
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-FSYJ9GNCNP"></script>
     <script is:inline>
-      gtag('js', new Date());
-      gtag('config', 'G-FSYJ9GNCNP');
+      gtag("js", new Date());
+      gtag("config", "G-FSYJ9GNCNP");
     </script>
   </head>
   <body class="bg-bg text-text min-h-screen flex flex-col">
