@@ -6,7 +6,7 @@ import {
 } from '../lib/openmeteo'
 import {
   getKitRecommendation, scoreLabel,
-  type KitResult, type Intensity, type Level,
+  type KitResult, type Intensity, type Level, type ZoneItem,
 } from '../lib/kitLogic'
 
 // ── Tier / level accent colours (dynamic, must stay inline) ──────────────────
@@ -50,13 +50,13 @@ function Card({ children }: { children: ReactNode }) {
 // ── Location search ───────────────────────────────────────────────────────────
 function LocationSearch({
   query, setQuery, suggestions, onSearch, onAutoDetect, onSelectCity,
-  loading, locating, locationName, locationError, weatherLoaded, isLive, compact,
+  loading, locating, locationError, locationName, weatherLoaded, isLive,
 }: {
   query: string; setQuery: (v: string) => void
   suggestions: CityResult[]; onSearch: () => void
   onAutoDetect: () => void; onSelectCity: (c: CityResult) => void
-  loading: boolean; locating: boolean; locationName: string
-  locationError: string; weatherLoaded: boolean; isLive: boolean; compact?: boolean
+  loading: boolean; locating: boolean
+  locationError: string; locationName: string; weatherLoaded: boolean; isLive: boolean
 }) {
   return (
     <div>
@@ -131,12 +131,6 @@ function LocationSearch({
           <span className="text-[11px] text-text-light">— {isLive ? 'live conditions' : 'forecast'} loaded</span>
         </div>
       )}
-
-      {!weatherLoaded && !loading && !locationError && (
-        <div className={`text-center text-text-mid text-[13px] ${compact ? 'pt-[10px] pb-[2px]' : 'pt-4 pb-[6px]'}`}>
-          Search a city or use current location to load today's weather
-        </div>
-      )}
     </div>
   )
 }
@@ -188,8 +182,27 @@ function KitCard({ kitResult, score }: { kitResult: KitResult; score: ReturnType
         <div className="font-head text-[18px] sm:text-[22px] font-bold tracking-[-0.02em] mb-[6px]">
           {score.label} conditions
         </div>
-        <div className="text-[12px] opacity-80">
-          Score: <strong>{kitResult.score}</strong> / 110
+        <div className="flex items-center gap-2">
+          <div className="text-[12px] opacity-80">
+            Score: <strong>{kitResult.score}</strong> / 110
+          </div>
+          <div className="relative group">
+            <button
+              className="w-[18px] h-[18px] rounded-full border border-white/40 bg-white/15 flex items-center justify-center cursor-pointer hover:bg-white/25 transition-colors shrink-0"
+              aria-label="How the score is calculated"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" fill="none" className="w-[10px] h-[10px]">
+                <path d="M7 6.5v4M7 4.5v.5" stroke="white" strokeWidth="1.4" strokeLinecap="round" />
+              </svg>
+            </button>
+            <div className="absolute top-full left-0 mt-2 w-[260px] bg-white text-text rounded-xl p-3 shadow-[0_8px_32px_rgba(0,0,0,0.15)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50 pointer-events-none">
+              <div className="font-head font-semibold mb-[6px] text-[11px] uppercase tracking-[0.06em] text-coral">How the score works</div>
+              <p className="text-[11px] leading-[1.6] m-0">
+                A comfort score based on how the conditions actually feel on the bike factoring in temperature, wind, your ride intensity, and how warm you naturally run.
+              </p>
+              <div className="mt-[6px] text-[10px] text-text-light">Lower = more kit needed · Higher = less kit needed</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -205,19 +218,17 @@ function KitCard({ kitResult, score }: { kitResult: KitResult; score: ReturnType
                   {CAT_LABELS[z.key]}
                 </span>
               </div>
-              <div className={`text-[12px] font-head font-semibold text-text leading-[1.4] ${z.key === 'torso' && z.layers && z.layers.length > 1 ? 'mb-[6px]' : ''
-                }`}>
-                {z.item}
-              </div>
-              {z.key === 'torso' && z.layers && z.layers.length > 1 && (
-                <ul className="p-0 m-0 list-none">
-                  {(z.layers as string[]).slice(1).map((layer, i) => (
-                    <li key={i} className="flex gap-[5px] items-start text-[11px] text-text-mid mb-[2px]">
-                      <span style={{ color: a }} className="text-[8px] mt-[3px]">●</span>{layer}
-                    </li>
-                  ))}
-                </ul>
-              )}
+              <ul className="p-0 m-0 list-none">
+                {(z.items as ZoneItem[]).map((zitem, i) => (
+                  <li key={i} className="flex gap-[6px] items-baseline text-[12px] font-head font-semibold text-text mb-[3px] last:mb-0">
+                    <span style={{ color: a }} className="text-[7px] shrink-0 relative top-[-1px]">●</span>
+                    <span>{zitem.name}</span>
+                    {zitem.optional && (
+                      <span className="font-normal text-[10px] text-text-light">Optional</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
             </div>
           )
         })}
@@ -282,6 +293,7 @@ export default function Calculator() {
 
   const searchTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const hourLabel = `${String(selectedHour).padStart(2, '0')}:00`
+  const isLive = selectedDay === 0 && selectedHour === new Date().getHours()
   const sl = useMemo(() => kitResult ? scoreLabel(kitResult.score) : null, [kitResult])
 
   function calculate(w: HourlySlice, wb: number, int: Intensity) {
@@ -395,27 +407,9 @@ export default function Calculator() {
                   suggestions={suggestions} onSearch={handleSearch}
                   onAutoDetect={geolocate} onSelectCity={selectCity}
                   loading={loading} locating={locating}
-                  locationName={locationName} locationError={locationError}
-                  weatherLoaded={weatherLoaded} isLive={selectedDay === 0 && selectedHour === new Date().getHours()} />
-                {weather && weatherLoaded && <WeatherChips weather={weather} unit={unit} />}
+                  locationError={locationError}
+                  locationName={locationName} weatherLoaded={weatherLoaded} isLive={isLive} />
               </Card>
-
-              {forecast && (
-                <Card>
-                  <div className="font-head text-[14px] font-bold mb-4">Day & departure time</div>
-                  <DayTabs days={DAY_LABELS} selected={selectedDay} onChange={handleDayChange} />
-                  <div className="mb-1 flex justify-between items-baseline">
-                    <Label text="Departure" />
-                    <span className="font-head text-[22px] font-bold text-coral">{hourLabel}</span>
-                  </div>
-                  <input type="range" min={0} max={23} value={selectedHour}
-                    aria-label="Departure time"
-                    onChange={e => handleHourChange(Number(e.target.value))} />
-                  <div className="flex justify-between mt-1 font-head text-[11px] text-text-light">
-                    {['00:00', '06:00', '12:00', '18:00', '23:00'].map(t => <span key={t}>{t}</span>)}
-                  </div>
-                </Card>
-              )}
 
               <Card>
                 <div className="font-head text-[14px] font-bold mb-4">Rider profile</div>
@@ -454,10 +448,28 @@ export default function Calculator() {
                   </div>
                 </div>
               </Card>
+
+              {forecast && (
+                <Card>
+                  <div className="font-head text-[14px] font-bold mb-4">Day & departure time</div>
+                  <DayTabs days={DAY_LABELS} selected={selectedDay} onChange={handleDayChange} />
+                  <div className="mb-1 flex justify-between items-baseline">
+                    <Label text="Departure" />
+                    <span className="font-head text-[22px] font-bold text-coral">{hourLabel}</span>
+                  </div>
+                  <input type="range" min={0} max={23} value={selectedHour}
+                    aria-label="Departure time"
+                    onChange={e => handleHourChange(Number(e.target.value))} />
+                  <div className="flex justify-between mt-1 font-head text-[11px] text-text-light">
+                    {['00:00', '06:00', '12:00', '18:00', '23:00'].map(t => <span key={t}>{t}</span>)}
+                  </div>
+                  {weather && <WeatherChips weather={weather} unit={unit} />}
+                </Card>
+              )}
             </div>
 
             {/* Right: output */}
-            <div className="md:sticky md:top-6 min-w-0">
+            <div className="md:sticky md:top-[88px] min-w-0">
               {kitResult && sl && weatherLoaded ? (
                 <KitCard kitResult={kitResult} score={sl} />
               ) : (
