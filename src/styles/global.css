@@ -41,7 +41,15 @@
 }
 
 @utility btn-primary {
-  @apply flex items-center gap-2 w-fit py-2.5 px-4 bg-coral text-white border-0 rounded-lg font-head text-sm font-semibold cursor-pointer transition-opacity hover:opacity-85;
+  @apply flex items-center justify-center gap-2 w-fit py-2 px-3 bg-coral text-white border-0 rounded-lg font-head text-[13px] font-semibold cursor-pointer transition-opacity hover:opacity-85;
+
+  svg {
+    @apply size-4.5;
+  }
+}
+
+@utility btn-primary-outline {
+  @apply flex items-center justify-center gap-2 w-fit py-2 px-3 bg-transparent text-coral ring-inset ring ring-coral rounded-lg font-head text-[13px] font-semibold cursor-pointer transition-all hover:bg-coral/[8%] hover:ring-coral/70;
 
   svg {
     @apply size-4.5;
@@ -49,10 +57,18 @@
 }
 
 @utility btn-secondary {
-  @apply flex items-center gap-2 w-fit py-2.5 px-4 bg-text text-white border-0 rounded-lg font-head text-sm font-semibold cursor-pointer transition-opacity hover:opacity-85;
+  @apply flex items-center justify-center gap-2 w-fit py-2 px-3 bg-text text-white border-0 rounded-lg font-head text-[13px] font-semibold cursor-pointer transition-opacity hover:opacity-85;
 
   svg {
     @apply size-4.5;
+  }
+}
+
+@utility btn-secondary-outline {
+  @apply flex items-center justify-center gap-2 w-fit py-2 px-3 bg-transparent text-text/90 ring-inset ring ring-text/60 rounded-lg font-head text-[13px] font-semibold cursor-pointer transition-all hover:bg-text/[7%] hover:ring-text/70;
+
+  svg {
+    @apply size-4;
   }
 }
 

@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-04-29
+
+### Added
+- GPX route upload — automatically detects start location, fetches weather, and estimates ride duration from distance and elevation gain
+- Interactive route map with CartoDB Voyager tiles, coral route polyline, start/end dot markers, wind direction badge (top-right) and custom zoom controls (top-left)
+- Start time slider with 30-minute precision; end time calculated and displayed as a range (e.g. 08:00 → 11:30)
+- Ride duration estimated automatically from GPX route at the selected intensity; manual duration slider hidden when a GPX is loaded
+- Phase notes in recommendations suggest kit adjustments for changing conditions across the ride window
+- Icon-based body zone labels throughout recommendations, replacing emoji (Central Icons: helmet, jersey, gloves, bibs, shoes)
+- "My location" and "Upload GPX" option tiles with confirmed green state once selected
+- Auto-detected location shows confirmed "Location set / Auto-detected" tile state
+
+### Changed
+- Recommendations now evaluate weather across the full ride window using hourly forecast slices, rather than a single point-in-time snapshot
+- Changing ride intensity with a GPX loaded re-estimates duration and recalculates recommendations automatically
+- Kit recommendation card redesigned: unified zone list with dividers, score progress bar in header, item chips (solid for required, dashed for optional)
+- All zone icons and labels use the tier accent colour consistently
+- Location input card redesigned with clearer visual hierarchy and option tiles
+- Map tile switched from OpenStreetMap to CartoDB Voyager for a cleaner, brand-aligned style
+
+### Fixed
+- Leaflet CSS now bundled from the npm package — CDN dependency (unpkg.com) fully removed
+- Security headers added via `public/_headers`: `Content-Security-Policy`, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`
+- GPX upload rejects files over 10 MB and validates coordinate bounds before parsing
+- Score info tooltip constrained to viewport width on small screens
+- Route name truncation now responsive (`max-w` adapts to breakpoint)
+- Time slider tick labels scale down on narrow screens to prevent overlap
+
 ## [1.1.0] - 2026-04-24
 
 ### Added
@@ -45,6 +73,7 @@ Initial public launch.
 - Responsive header buttons and calculator padding
 - Mobile layout improvements across calculator
 
-[Unreleased]: https://github.com/tieskuiper/kitcheck/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/tieskuiper/kitcheck/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/tieskuiper/kitcheck/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/tieskuiper/kitcheck/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/tieskuiper/kitcheck/releases/tag/v1.0.0

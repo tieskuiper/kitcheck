@@ -9,6 +9,9 @@ export default defineConfig({
   site: 'https://kitcheck.cc',
   integrations: [react(), sitemap()],
   vite: {
-    plugins: [tailwindcss()]
+    plugins: [tailwindcss()],
+    optimizeDeps: {
+      include: ['leaflet'],
+    },
   }
 })

@@ -12,13 +12,20 @@ export interface ZoneItem {
   optional?: boolean
 }
 
+export interface PhaseNote {
+  hour:   number
+  note:   string    // may contain {T} as a placeholder for the apparent temperature
+  tempC?: number    // raw °C value substituted for {T} — UI converts based on unit
+}
+
 export interface ZoneRecommendation {
-  item:    string
-  detail:  string | null
-  level:   Level
-  icon:    string
-  items:   ZoneItem[]
-  layers?: string[]
+  item:        string
+  detail:      string | null
+  level:       Level
+  icon:        string
+  items:       ZoneItem[]
+  layers?:     string[]
+  phaseNotes?: PhaseNote[]
 }
 
 export interface KitResult {
@@ -36,6 +43,12 @@ export interface RiderInput {
   precipProb:   number
   warmthBias:   number   // -2 (cold runner) → +2 (warm runner)
   intensity:    Intensity
+}
+
+export interface HourWeather {
+  apparentTemp: number
+  windspeed:    number
+  precipProb:   number
 }
 
 function tempToScore(temp: number): number {
@@ -137,10 +150,137 @@ function getFeet(score: number, isRainy: boolean): ZoneRecommendation {
 }
 
 export function scoreLabel(score: number): { label: string; color: string } {
-  if (score < 20) return { label: 'Extreme cold', color: '#60a5fa' }
-  if (score < 40) return { label: 'Cold',         color: '#93c5fd' }
-  if (score < 60) return { label: 'Cool',         color: '#86efac' }
-  if (score < 75) return { label: 'Comfortable',  color: '#d4f000' }
-  if (score < 90) return { label: 'Warm',         color: '#fbbf24' }
-  return              { label: 'Hot',          color: '#f87171' }
+  if (score < 20) return { label: 'Extreme cold', color: '#0D47A1' }
+  if (score < 40) return { label: 'Cold',         color: '#1565C0' }
+  if (score < 60) return { label: 'Cool',         color: '#4A90D9' }
+  if (score < 75) return { label: 'Comfortable',  color: '#2E9E5A' }
+  if (score < 90) return { label: 'Warm',         color: '#F5A623' }
+  return              { label: 'Hot',          color: '#D93025' }
+}
+
+// ── Multi-hour ride recommendations ──────────────────────────────────────────
+
+function levelNum(level: Level): number {
+  return { none: 0, light: 1, medium: 2, heavy: 3 }[level]
+}
+
+function getTorsoNotes(results: KitResult[], hours: HourWeather[]): PhaseNote[] {
+  const notes: PhaseNote[] = []
+  const startScore = results[0].score
+
+  // Rain onset: no rain at start but arrives during ride
+  if (hours[0].precipProb < 60) {
+    const rainHour = hours.findIndex((h, i) => i > 0 && h.precipProb >= 60)
+    if (rainHour > 0) {
+      notes.push({ hour: rainHour, note: `Rain expected from hour ${rainHour} — pack a rain jacket` })
+      return notes
+    }
+  }
+
+  // Warming: arm warmers required at start → optional or gone as it heats up
+  // Guard with score > startScore so a colder switch to long-sleeve jersey doesn't trigger this
+  const startHasArmWarmers = results[0].torso.items.some(
+    i => i.name.toLowerCase().includes('arm warmer') && !i.optional
+  )
+  if (startHasArmWarmers) {
+    for (let h = 1; h < results.length; h++) {
+      if (results[h].score <= startScore) continue           // getting colder — skip
+      const awItem = results[h].torso.items.find(i => i.name.toLowerCase().includes('arm warmer'))
+      if (!awItem || awItem.optional) {
+        const temp = hours[h].apparentTemp
+        const verb = awItem ? 'Consider removing' : 'Remove'
+        notes.push({ hour: h, note: `${verb} arm warmers after hour ${h} — warms to {T}°`, tempC: temp })
+        break
+      }
+    }
+  }
+
+  // Cooling: starts comfortable (no arm warmers needed) → cools into arm-warmer territory
+  if (!notes.length && !startHasArmWarmers && startScore >= 62) {
+    for (let h = 1; h < results.length; h++) {
+      const awRequired = results[h].torso.items.some(
+        i => i.name.toLowerCase().includes('arm warmer') && !i.optional
+      )
+      if (awRequired && results[h].score < startScore) {
+        notes.push({ hour: h, note: `Arm warmers needed from hour ${h} as it cools (feels like {T}°)`, tempC: hours[h].apparentTemp })
+        break
+      }
+    }
+  }
+
+  // Cooling: significant score drop (≥20 pts) that needs heavier kit — use score not level
+  // (level is too coarse: jersey+arm warmers and long-sleeve jersey both map to 'medium')
+  if (!notes.length) {
+    let coldestScore = startScore
+    let coldestHour  = 0
+    for (let h = 1; h < results.length; h++) {
+      if (results[h].score < coldestScore) { coldestScore = results[h].score; coldestHour = h }
+    }
+    if (startScore - coldestScore >= 20 && coldestHour > 0) {
+      const temp       = hours[coldestHour].apparentTemp
+      const startNames = new Set(results[0].torso.items.map(i => i.name))
+      // Find a genuinely new required item at the coldest point
+      const newItem    = results[coldestHour].torso.items.find(
+        i => !i.optional && !startNames.has(i.name) && !i.name.toLowerCase().includes('arm warmer')
+      )
+      const suffix = newItem
+        ? `pack a ${newItem.name.toLowerCase()} for the return`
+        : 'pack an extra layer for the return'
+      notes.push({ hour: coldestHour, note: `Gets colder from hour ${coldestHour} (feels like {T}°) — ${suffix}`, tempC: temp })
+    }
+  }
+
+  return notes
+}
+
+function getHandsNotes(results: KitResult[]): PhaseNote[] {
+  const startLvl = levelNum(results[0].hands.level)
+  for (let h = 1; h < results.length; h++) {
+    const lvl = levelNum(results[h].hands.level)
+    if (lvl < startLvl) return [{ hour: h, note: `Gloves can come off after hour ${h} as it warms up` }]
+    if (lvl > startLvl) return [{ hour: h, note: `Hands will chill from hour ${h} — bring gloves` }]
+  }
+  return []
+}
+
+function getLegsNotes(results: KitResult[]): PhaseNote[] {
+  const warmerNames = ['knee warmer', 'leg warmer']
+  const startItems  = results[0].legs.items
+  const startScore  = results[0].score
+  const startHasRequired = startItems.some(
+    i => warmerNames.some(n => i.name.toLowerCase().includes(n)) && !i.optional
+  )
+  if (!startHasRequired) return []
+
+  // Only suggest removing warmers when score actually increases (getting warmer)
+  // If score drops, bib tights replace warmers — that's colder, not warmer
+  for (let h = 1; h < results.length; h++) {
+    if (results[h].score <= startScore) continue              // getting colder — skip
+    const items      = results[h].legs.items
+    const warmerItem = items.find(i => warmerNames.some(n => i.name.toLowerCase().includes(n)))
+    if (!warmerItem || warmerItem.optional) {
+      const name = startItems.find(i => warmerNames.some(n => i.name.toLowerCase().includes(n)))?.name ?? 'warmers'
+      const verb = warmerItem ? 'Consider removing' : 'Remove'
+      return [{ hour: h, note: `${verb} ${name.toLowerCase()} after hour ${h} as legs warm up` }]
+    }
+  }
+  return []
+}
+
+export function getRideKitRecommendation(
+  hours:      HourWeather[],
+  warmthBias: number,
+  intensity:  Intensity
+): KitResult {
+  if (!hours.length) throw new Error('No hours provided')
+  const inputs  = hours.map(h => ({ ...h, warmthBias, intensity }))
+  const results = inputs.map(getKitRecommendation)
+  const base    = results[0]
+  if (hours.length <= 1) return base
+  return {
+    ...base,
+    torso: { ...base.torso, phaseNotes: getTorsoNotes(results, hours) },
+    hands: { ...base.hands, phaseNotes: getHandsNotes(results) },
+    legs:  { ...base.legs,  phaseNotes: getLegsNotes(results) },
+  }
 }
