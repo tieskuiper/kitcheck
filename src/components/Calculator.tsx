@@ -141,21 +141,21 @@ function LocationSearch({
       <div className="grid grid-cols-2 gap-2">
         {/* Auto-detect tile */}
         {isGeolocated ? (
-          <div className="relative flex items-center gap-3 px-3 py-[10px] rounded-xl border border-green-700/40 bg-green-600/5">
+          <div className="relative flex items-center gap-2 sm:gap-3 px-1.5 sm:px-3 py-2 sm:py-2.5 rounded-xl border border-green-700/40 bg-green-600/5">
             <div className="w-8 h-8 shrink-0 rounded-lg bg-white border border-green-700/40 flex items-center justify-center">
               <IconPinLocation size={15} className="text-green-700" />
             </div>
-            <div className="min-w-0 pr-5">
+            <div className="min-w-0 pr-5 shrink-0">
               <div className="font-head text-[12px] font-bold text-green-700 leading-[1.2]">Location set</div>
               <div className="text-[11px] text-green-700/70 mt-[2px]">Auto-detected</div>
             </div>
-            <button onClick={onReset} className="absolute top-1/2 -translate-y-1/2 right-3 cursor-pointer text-text-light hover:text-text transition-colors flex items-center">
+            <button onClick={onReset} className="absolute top-1/2 -translate-y-1/2 right-2 sm:right-3 cursor-pointer text-text-light hover:text-text transition-colors flex items-center">
               <IconCrossLarge size={13} className="shrink-0" />
             </button>
           </div>
         ) : (
           <button onClick={onAutoDetect} disabled={locating}
-            className="flex items-center gap-3 px-3 py-[10px] rounded-xl border border-border bg-bg-card hover:border-dark/25 cursor-pointer transition-all text-left disabled:opacity-50">
+            className="flex items-center gap-2 sm:gap-3 px-1.5 sm:px-3 py-2 sm:py-2.5 rounded-xl border border-border bg-bg-card hover:border-dark/25 cursor-pointer transition-all text-left disabled:opacity-50">
             <div className="w-8 h-8 shrink-0 rounded-lg bg-white border border-border flex items-center justify-center">
               {locating
                 ? <IconLoadingCircle size={15} className="text-dark animate-spin-slow" />
@@ -170,21 +170,21 @@ function LocationSearch({
 
         {/* GPX tile */}
         {gpxRouteName ? (
-          <div className="relative flex items-center gap-3 px-3 py-[10px] rounded-xl border border-green-700/40 bg-green-600/5">
+          <div className="relative flex items-center gap-2 sm:gap-3 px-1.5 sm:px-3 py-2 sm:py-2.5 rounded-xl border border-green-700/40 bg-green-600/5">
             <div className="w-8 h-8 shrink-0 rounded-lg bg-white border border-green-700/40 flex items-center justify-center">
               <IconMap size={15} className="text-green-700" />
             </div>
-            <div className="min-w-0 pr-5">
+            <div className="min-w-0 pr-5 shrink-0">
               <div className="font-head text-[12px] font-bold text-green-700 leading-[1.2]">GPX loaded</div>
               <div className="text-[11px] text-green-700/70 mt-[2px]">Route uploaded</div>
             </div>
-            <button onClick={onReset} className="absolute top-1/2 -translate-y-1/2 right-3 cursor-pointer text-text-light hover:text-text transition-colors flex items-center">
+            <button onClick={onReset} className="absolute top-1/2 -translate-y-1/2 right-2 sm:right-3 cursor-pointer text-text-light hover:text-text transition-colors flex items-center">
               <IconCrossLarge size={13} className="shrink-0" />
             </button>
           </div>
         ) : (
           <button onClick={() => gpxInputRef.current?.click()} disabled={gpxLoading}
-            className="flex items-center gap-3 px-3 py-[10px] rounded-xl border border-border bg-bg-card hover:border-dark/25 cursor-pointer transition-all text-left disabled:opacity-50">
+            className="flex items-center gap-2 sm:gap-3 px-1.5 sm:px-3 py-2 sm:py-2.5 rounded-xl border border-border bg-bg-card hover:border-dark/25 cursor-pointer transition-all text-left disabled:opacity-50">
             <div className="w-8 h-8 shrink-0 rounded-lg bg-white border border-border flex items-center justify-center">
               {gpxLoading
                 ? <IconLoadingCircle size={15} className="text-dark animate-spin-slow" />
