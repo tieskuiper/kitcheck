@@ -1,7 +1,7 @@
 {
   "name": "kitcheck",
   "type": "module",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "engines": {
     "node": ">=22.12.0"
   },
@@ -14,10 +14,13 @@
   "dependencies": {
     "@astrojs/react": "^5.0.3",
     "@astrojs/sitemap": "^3.7.2",
+    "@central-icons-react/round-outlined-radius-3-stroke-2": "^1.1.215",
     "@tailwindcss/vite": "^4.1.10",
+    "@types/leaflet": "^1.9.21",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "astro": "^6.1.5",
+    "leaflet": "^1.9.4",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "tailwindcss": "^4.1.10"

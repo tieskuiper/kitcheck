@@ -4,14 +4,15 @@
  */
 
 export interface HourlySlice {
-  time:         string
-  temperature:  number
-  apparentTemp: number
-  windspeed:    number
-  precipProb:   number
-  weathercode:  number
-  cloudcover:   number
-  humidity:     number
+  time:          string
+  temperature:   number
+  apparentTemp:  number
+  windspeed:     number
+  windDirection: number
+  precipProb:    number
+  weathercode:   number
+  cloudcover:    number
+  humidity:      number
 }
 
 export interface CityResult {
@@ -28,6 +29,7 @@ export async function fetchForecast(lat: number, lon: number) {
       'temperature_2m',
       'apparent_temperature',
       'windspeed_10m',
+      'winddirection_10m',
       'precipitation_probability',
       'weathercode',
       'cloudcover',
@@ -79,12 +81,30 @@ export function getHourlySlice(
     time:         h.time[i],
     temperature:  Math.round(h.temperature_2m[i]),
     apparentTemp: Math.round(h.apparent_temperature[i]),
-    windspeed:    Math.round(h.windspeed_10m[i]),
+    windspeed:     Math.round(h.windspeed_10m[i]),
+    windDirection: Math.round(h.winddirection_10m[i]),
     precipProb:   h.precipitation_probability[i],
     weathercode:  h.weathercode[i],
     cloudcover:   h.cloudcover[i],
     humidity:     h.relativehumidity_2m[i],
   }
+}
+
+export function getHourlyRange(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  forecast: any,
+  dayIndex:      number,
+  startHour:     number,
+  durationHours: number
+): HourlySlice[] {
+  const slices: HourlySlice[] = []
+  for (let h = 0; h < Math.ceil(durationHours); h++) {
+    const absHour = startHour + h
+    const d  = dayIndex + Math.floor(absHour / 24)
+    const hr = absHour % 24
+    if (d < 7) slices.push(getHourlySlice(forecast, d, hr))
+  }
+  return slices
 }
 
 export function getDayLabels() {
