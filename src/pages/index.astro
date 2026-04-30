@@ -5,7 +5,11 @@ import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 ---
 
-<Base>
+<Base
+  title="Cycling Kit Calculator: What to Wear Cycling by Temperature | kitcheck.cc"
+  description="Free cycling kit calculator. Enter your location, pick your effort level, and get an instant recommendation for what to wear cycling based on real temperature, wind, rain and ride intensity."
+  canonical="https://kitcheck.cc/"
+>
   <!-- HEADER -->
   <SiteHeader>
     <div
@@ -30,7 +34,9 @@ import SiteFooter from "../components/SiteFooter.astro";
   <!-- INTRO -->
   <section class="bg-bg">
     <div class="container">
-      <div class="max-w-2xl mx-auto text-center pt-16 md:pt-18 lg:pt-20">
+      <div
+        class="max-w-2xl mx-auto text-center pt-16 md:pt-18 lg:pt-20 pb-10 md:pb-12"
+      >
         <h1
           class="font-head text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1] text-text mb-4"
         >
@@ -45,25 +51,77 @@ import SiteFooter from "../components/SiteFooter.astro";
   </section>
 
   <!-- CALCULATOR -->
-  <Calculator client:load />
+  <section class="bg-bg">
+    <Calculator client:load />
+  </section>
 
-  <!-- GUIDE TEASER -->
-  <section class="border-t border-border bg-bg-card">
-    <div class="container py-10">
-      <div
-        class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-      >
-        <div>
-          <p class="font-head font-semibold text-text mb-1">
-            Not sure where to start?
-          </p>
-          <p class="text-sm text-text-mid">
-            The guide covers what to wear at every temperature, from a winter
-            freeze to a hot summer day, with notes on rain, wind and how hard
-            you're riding.
+  <!-- HOW IT WORKS -->
+  <section class="border-t border-border bg-bg">
+    <div class="container py-14 md:py-16">
+      <div class="max-w-2xl mb-10">
+        <h2
+          class="font-head font-bold text-2xl md:text-3xl tracking-tight text-text mb-3"
+        >
+          How the cycling kit calculator works
+        </h2>
+        <p class="text-text-mid leading-relaxed">
+          Most cyclists either overdress or underdress. kitcheck.cc is a free
+          cycling clothing calculator that tells you exactly what to wear based
+          on the actual temperature, wind and rain forecast for your ride,
+          adjusted for how hard you plan to push.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div class="bg-white rounded-2xl border border-border p-[22px]">
+          <h3 class="font-head font-bold text-[14px] text-text mb-2">
+            Live weather data
+          </h3>
+          <p class="text-sm text-text-mid leading-relaxed">
+            Search any city worldwide and get today's real conditions:
+            temperature, wind speed and rain probability, pulled directly from
+            the forecast.
           </p>
         </div>
-        <a href="/guide" class="btn-secondary">Read the guide</a>
+        <div class="bg-white rounded-2xl border border-border p-[22px]">
+          <h3 class="font-head font-bold text-[14px] text-text mb-2">
+            Adjusts for ride intensity
+          </h3>
+          <p class="text-sm text-text-mid leading-relaxed">
+            Riding hard generates real warmth, roughly equivalent to a 5–8°C
+            shift. Set your effort level (easy through to race pace) and the
+            cycling kit recommendation shifts accordingly.
+          </p>
+        </div>
+        <div class="bg-white rounded-2xl border border-border p-[22px]">
+          <h3 class="font-head font-bold text-[14px] text-text mb-2">
+            Complete kit list
+          </h3>
+          <p class="text-sm text-text-mid leading-relaxed">
+            From base layers and thermal tights in cold weather to a
+            short-sleeve jersey and bib shorts in summer. Every layer covered,
+            including gloves and overshoes.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GUIDE TEASER -->
+  <section class="bg-bg-dark">
+    <div class="container py-12 md:py-14">
+      <div
+        class="flex flex-col sm:flex-row sm:items-center justify-between gap-6"
+      >
+        <div>
+          <p class="font-head font-bold text-xl text-white mb-1">
+            Not sure what kit you need?
+          </p>
+          <p class="text-sm text-white/60">
+            The guide covers every temperature from a winter freeze to a hot
+            summer day, with notes on rain, wind and ride intensity.
+          </p>
+        </div>
+        <a href="/guide/" class="btn-primary">Read the kit guide</a>
       </div>
     </div>
   </section>

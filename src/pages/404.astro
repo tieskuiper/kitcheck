@@ -1,0 +1,39 @@
+---
+import Base from "../layouts/Base.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+---
+
+<Base
+  title="Page Not Found | kitcheck.cc"
+  description="This page doesn't exist."
+>
+  <Fragment slot="head">
+    <meta name="robots" content="noindex" />
+  </Fragment>
+
+  <SiteHeader />
+
+  <section class="bg-bg min-h-dvh flex items-center">
+    <div class="container">
+      <div class="max-w-lg py-16">
+        <p class="font-head font-bold text-5xl text-coral mb-4">404</p>
+        <h1
+          class="font-head text-3xl md:text-4xl font-bold tracking-tight leading-[1.1] text-text mb-4"
+        >
+          Page not found
+        </h1>
+        <p class="text-text-mid leading-relaxed mb-8">
+          The page you're looking for doesn't exist or has been moved. Head back
+          to the calculator or browse the kit guide.
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <a href="/" class="btn-primary">Back to calculator</a>
+          <a href="/guide/" class="btn-secondary">Read the kit guide</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <SiteFooter />
+</Base>
