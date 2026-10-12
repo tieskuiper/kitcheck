@@ -82,8 +82,10 @@ function disableAnalytics() {
   window[`ga-disable-${GA_ID}`] = true
   window.gtag?.('consent', 'update', { analytics_storage: 'denied' })
 
-  const host = location.hostname
-  const domains = ['', host, `.${host}`, `.${host.split('.').slice(-2).join('.')}`]
+  // GA sets its cookies on the highest domain the browser allows (e.g. .kitcheck.cc, or
+  // .kitcheck.pages.dev on previews), so try every parent domain; invalid ones are ignored
+  const labels = location.hostname.split('.')
+  const domains = ['', ...labels.slice(0, -1).map((_, i) => `.${labels.slice(i).join('.')}`)]
   document.cookie.split(';').map(c => c.split('=')[0].trim())
     .filter(name => name === '_ga' || name.startsWith('_ga_'))
     .forEach(name => domains.forEach(d => {

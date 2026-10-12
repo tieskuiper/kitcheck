@@ -23,7 +23,7 @@ KitCheck is a free cycling kit calculator. Riders enter a location (or upload a 
 | Maps | Leaflet + MapLibre GL, tiles from [OpenFreeMap](https://openfreemap.org) |
 | Weather | [Open-Meteo](https://open-meteo.com) forecast + geocoding (no API key) |
 | Reverse geocoding | [Nominatim](https://nominatim.org) (OpenStreetMap) |
-| Hosting | Cloudflare Workers (static assets), deployed with Workers Builds |
+| Hosting | Cloudflare Pages |
 | Analytics | Google Analytics 4, only after consent |
 | Fonts | Self-hosted via Fontsource (no Google Fonts requests) |
 
@@ -57,7 +57,7 @@ pnpm dev                        # http://localhost:4321
 `@central-icons-react/...` is a paid icon package. Its install script fails unless `CENTRAL_LICENSE_KEY` is set, so **every `pnpm install` needs the key** — locally and on Cloudflare Pages.
 
 - **Locally:** `.env` (git-ignored, see `.env.example`), exported before installing.
-- **Cloudflare Workers Builds:** *Workers & Pages → kitcheck → Settings → **Build** → Variables and secrets* → add `CENTRAL_LICENSE_KEY` as a secret. It must be a **build** variable (used during `pnpm install`), not a runtime variable of the Worker.
+- **Cloudflare Pages:** *Workers & Pages → kitcheck → Settings → Variables and secrets* → add `CENTRAL_LICENSE_KEY` as a secret for Production **and** Preview (it's used during `pnpm install` in the build).
 - **Your shell:** easiest is a line `export CENTRAL_LICENSE_KEY=...` in `~/.zshrc`, so every `pnpm install` and `pnpm dev` just works. pnpm 11 re-checks dependencies before `pnpm dev` and installs when they're out of date — without the key, that install (and therefore `pnpm dev`) fails.
 
 If a deploy fails at the install step with `Central Icons license key is not set`, this variable is missing or expired.
@@ -91,7 +91,7 @@ src/
 ├── pages/                       # index, guide/ (hub + [slug] temperature pages), privacy, cookies, 404
 └── styles/global.css            # Tailwind theme tokens
 public/
-├── _headers                     # security headers incl. CSP (Cloudflare static assets)
+├── _headers                     # security headers incl. CSP (Cloudflare Pages)
 └── _redirects                   # trailing-slash redirects
 ```
 
@@ -148,21 +148,22 @@ When you add a tracker, cookie or third-party service, update `src/pages/privacy
 
 ## Deployment
 
-Cloudflare Workers Builds deploys from git:
+Cloudflare Pages builds from git:
 
 | Branch | Goes to |
 | :-- | :-- |
-| `develop` | Preview |
-| `main` | Production |
+| `develop` | Preview (`<hash>.kitcheck.pages.dev`, not indexed — Cloudflare adds `X-Robots-Tag: noindex`) |
+| `main` | Production (kitcheck.cc) |
 
-| Build setting | Value |
+| Pages setting | Value |
 | :-- | :-- |
 | Build command | `pnpm build` |
-| Deploy command | `npx wrangler deploy` (Cloudflare default; detects Astro and serves `dist/` as static assets) |
-| Build variable `CENTRAL_LICENSE_KEY` | secret |
-| Build variable `PNPM_VERSION` | `11.20.0` — keep in sync with `packageManager` |
+| Output directory | `dist` |
+| Variable `CENTRAL_LICENSE_KEY` | secret, Production + Preview |
+| Variable `PNPM_VERSION` | `11.20.0` — keep in sync with `packageManager` |
+| Metrics → Web Analytics | **off** (we don't use it; when on, Pages injects a beacon that the CSP blocks) |
 
-Node is taken from `.node-version`; pnpm is detected from `pnpm-lock.yaml`. `public/_headers` and `public/_redirects` are applied by Workers static assets, including long-term caching for `/_astro/*` and HSTS.
+Node is taken from `.node-version`; pnpm is detected from `pnpm-lock.yaml`. `public/_headers` sets the CSP, HSTS and long-term caching for `/_astro/*`; `public/_redirects` adds trailing slashes.
 
 ## Changelog
 
