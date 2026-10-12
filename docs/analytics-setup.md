@@ -13,8 +13,8 @@ One-time setup in Google Analytics 4 so the calculator events from the site show
 - [ ] **1. Generate test data** (after the deploy)
 - [ ] **2. Check the events arrive** (Realtime)
 - [ ] **3. Create 3 key events**
-- [ ] **4. Create 7 custom dimensions**
-- [ ] **5. Create 8 custom metrics**
+- [ ] **4. Create 8 custom dimensions**
+- [ ] **5. Create 9 custom metrics**
 - [ ] **6. Build 2 explorations** (optional, after a few days of data)
 
 ---
@@ -64,6 +64,7 @@ Text parameters you want to filter or break down by.
 | Unit | `unit` | `C`, `F` |
 | GPX error reason | `reason` | `too_large` (empty for other read errors) |
 | Speed source | `speed_source` | `estimate`, `recorded`, `saved` |
+| Rain | `rain` | `likely`, `showers`, `none` |
 
 ## 5. Create custom metrics
 
@@ -74,7 +75,8 @@ Numeric parameters you want to average or sum.
 
 | Metric name | Event parameter | Meaning |
 | :-- | :-- | :-- |
-| Comfort score | `score` | Score of the recommendation (0–110) |
+| Feels like on the bike (°C) | `feels_like_c` | What the kit is based on — the number riders see |
+| Comfort score | `score` | Internal 0–110 score (not shown to riders any more) |
 | Ride hours | `ride_hours` | Ride length in the recommendation |
 | Warmth bias | `warmth_bias` | -2 (always cold) to +2 (always warm) |
 | Route distance (km) | `distance_km` | Distance of an uploaded GPX route |
