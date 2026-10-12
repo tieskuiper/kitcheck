@@ -27,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Privacy policy and cookie policy rewritten to match exactly what the site does
 
 ### Added
-- Raas Racing Team banner below the calculator with a link to the team's Instagram (plain link, no embed or tracking by Instagram)
+- Raas Racing Team banner below the calculator in the team colours, with the team wordmark, signature and R·R·T emblem, and a link to the team's Instagram (plain link, no embed or tracking by Instagram)
 - GA4 events for calculator usage (location method, settings, recommendation shown), sent only with consent
 
 ### Fixed
