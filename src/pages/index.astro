@@ -4,12 +4,14 @@ import Calculator from "../components/calculator/Calculator";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import TeamBanner from "../components/TeamBanner.astro";
+import { TEMP_PAGES, toF, pathFor } from "../lib/guideData";
 ---
 
 <Base
-  title="Cycling Kit Calculator: What to Wear Cycling by Temperature | kitcheck.cc"
-  description="Free cycling kit calculator. Enter your location, pick your effort level, and get an instant recommendation for what to wear cycling based on real temperature, wind, rain and ride intensity."
+  title="Cycling Kit Calculator: What to Wear for Your Ride Today | kitcheck.cc"
+  description="Free cycling kit calculator. Get a kit list for your ride based on the real forecast (temperature, wind and rain) and how hard you're riding."
   canonical="https://kitcheck.cc/"
+  appSchema
 >
   <!-- HEADER -->
   <SiteHeader>
@@ -41,7 +43,7 @@ import TeamBanner from "../components/TeamBanner.astro";
         <h1
           class="font-head text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1] text-text mb-4"
         >
-          Know exactly <span class="text-coral">what to wear</span> before you ride.
+          <span class="text-coral">What to wear cycling</span>, sorted before you ride.
         </h1>
         <p class="text-text-mid leading-[1.75] max-w-sm mx-auto font-light">
           Search your city, set your effort level and get a full kit list in
@@ -124,6 +126,15 @@ import TeamBanner from "../components/TeamBanner.astro";
             The guide covers every temperature from a winter freeze to a hot
             summer day, with notes on rain, wind and ride intensity.
           </p>
+          <nav class="flex flex-wrap gap-x-4 gap-y-2 mt-4" aria-label="Kit by temperature">
+            {
+              TEMP_PAGES.map(({ tempC }) => (
+                <a href={pathFor(tempC)} class="font-head text-[13px] font-semibold text-white/80 hover:text-white underline underline-offset-4 decoration-white/30 transition-colors">
+                  {tempC}°C <span class="text-white/50">({toF(tempC)}°F)</span>
+                </a>
+              ))
+            }
+          </nav>
         </div>
         <a href="/guide/" class="btn-primary">Read the kit guide</a>
       </div>

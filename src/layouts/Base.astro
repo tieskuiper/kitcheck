@@ -13,11 +13,14 @@ interface Props {
   title?: string;
   description?: string;
   canonical?: string;
+  /** WebApplication structured data — only for the page that IS the tool (homepage) */
+  appSchema?: boolean;
 }
 const {
   title = "Cycling Kit Calculator: What to Wear Cycling by Temperature | kitcheck.cc",
   description = "Free cycling kit calculator. Search your city, set your ride intensity and get a full kit list in seconds.",
   canonical = "https://kitcheck.cc/",
+  appSchema = false,
 } = Astro.props;
 const jsonLd = {
   "@context": "https://schema.org",
@@ -56,11 +59,15 @@ const jsonLd = {
     <meta name="twitter:image" content="https://kitcheck.cc/og.png" />
     <meta name="robots" content="index, follow" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <script
-      is:inline
-      type="application/ld+json"
-      set:html={JSON.stringify(jsonLd)}
-    />
+    {
+      appSchema && (
+        <script
+          is:inline
+          type="application/ld+json"
+          set:html={JSON.stringify(jsonLd)}
+        />
+      )
+    }
     <slot name="head" />
     <!-- Google Analytics loads only after consent: see lib/consent.ts + CookieBanner -->
   </head>

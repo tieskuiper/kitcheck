@@ -11,7 +11,7 @@ KitCheck is a free cycling kit calculator. Riders enter a location (or upload a 
 - **Rider profile** — intensity (easy → race) and warmth tendency (always cold → always warm)
 - **Recommendation** — comfort score, kit per zone (head, upper body, hands, lower body, feet), required vs optional items, and notes when conditions change during the ride
 - **Route map** — GPX route with start/end markers and wind direction
-- **Guide** — `/guide/` explains the temperature thresholds behind the recommendations (keep it in sync with `kitLogic.ts`)
+- **Guide** — `/guide/` is the hub, with a page per temperature (`/guide/what-to-wear-cycling-10-degrees/` etc.). Kit lists and "what changes" are generated from `kitLogic.ts`, so the guide always matches the calculator
 
 ## Tech stack
 
@@ -82,12 +82,13 @@ src/
 ├── layouts/Base.astro           # <head>, SEO meta, GA consent
 ├── lib/
 │   ├── kitLogic.ts              # comfort score + kit rules (the core logic)
+│   ├── guideData.ts             # guide temperatures, intros and variations (derived from kitLogic)
 │   ├── openmeteo.ts             # forecast, geocoding, hourly slices
 │   ├── gpx.ts                   # GPX parsing (distance, elevation, start point)
 │   ├── rideDuration.ts          # duration estimate from route + intensity
 │   ├── consent.ts               # consent storage, GA4 loading, track() for events
 │   └── mapTiles.ts              # map tile providers (primary + fallback)
-├── pages/                       # index, guide, privacy, cookies, 404
+├── pages/                       # index, guide/ (hub + [slug] temperature pages), privacy, cookies, 404
 └── styles/global.css            # Tailwind theme tokens
 public/
 ├── _headers                     # security headers incl. CSP (Cloudflare static assets)
@@ -95,6 +96,13 @@ public/
 ```
 
 The page header (unit toggle, "use my location") lives outside the React island and talks to the calculator through window events: `kitcheck:unit` and `kitcheck:geolocate`.
+
+## SEO structure
+
+- **Homepage = the tool.** Targets tool searches ("cycling kit calculator"); only page with `WebApplication` structured data (`appSchema` prop on `Base.astro`).
+- **Guide = the answers.** `/guide/` targets "what to wear cycling by temperature"; each temperature page targets "what to wear cycling at X°C / X°F", with `BreadcrumbList` structured data.
+- **Adding a temperature:** add an entry with a hand-written intro to `TEMP_PAGES` in `src/lib/guideData.ts`. Only add temperatures where the advice actually differs — near-duplicate pages hurt more than they help.
+- **Changing `kitLogic.ts` thresholds:** the generated kit lists update automatically, but re-read the intros in `guideData.ts` and the general FAQ answers in `src/pages/guide/index.astro`.
 
 ## Raas Racing Team banner
 

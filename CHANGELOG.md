@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- Guide turned into a hub linking to the temperature pages; per-temperature FAQ entries moved to those pages
+- Homepage H1 and title focus on the tool ("What to wear cycling, sorted before you ride"); guide title targets "what to wear cycling by temperature"
+- `WebApplication` structured data only on the homepage instead of every page
 - Switched from npm to pnpm 11, with a 24-hour minimum release age and an explicit allowlist for install scripts
 - Upgraded MapLibre GL to v6 (worker bundled separately)
 - Type packages moved to `devDependencies`; Node pinned via `.node-version`
@@ -27,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Privacy policy and cookie policy rewritten to match exactly what the site does
 
 ### Added
+- Temperature guide pages for 0, 5, 10, 15, 20 and 25°C (with °F), generated from the calculator's own kit logic, each showing what changes with effort, wind, rain and warmth tendency
 - Raas Racing Team banner below the calculator in the team colours, with the team wordmark, signature and R·R·T emblem, and a link to the team's Instagram (plain link, no embed or tracking by Instagram)
 - GA4 events for calculator usage (location method, settings, recommendation shown), sent only with consent
 
