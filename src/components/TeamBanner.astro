@@ -8,29 +8,36 @@ const INSTAGRAM_URL = "https://www.instagram.com/raasracingteam/";
 
 <section class="bg-bg" aria-labelledby="team-cta-title">
   <div class="container pb-12 md:pb-16">
-    <div class="relative overflow-hidden rounded-2xl bg-linear-to-br from-team-night from-45% to-team-forest text-white md:grid md:grid-cols-[1fr_38%]">
-      <!-- Mobile: kit stripes as a top bar + faint emblem watermark -->
-      <div class="flex h-1.5 md:hidden" aria-hidden="true">
-        <div class="flex-1 bg-team-petrol"></div>
-        <div class="flex-1 bg-team-teal"></div>
-        <div class="flex-1 bg-team-lagoon"></div>
+    <div class="relative overflow-hidden rounded-2xl bg-team-night text-white">
+      <!-- Jersey print: blurred colour clouds + film grain (decorative) -->
+      <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+        <div class="blob blob-cream"></div>
+        <div class="blob blob-teal"></div>
+        <div class="blob blob-blue"></div>
+        <div class="blob blob-mint"></div>
+        <div class="blob blob-green"></div>
+        <div class="blob blob-cream2"></div>
+        <div class="blob blob-teal2"></div>
+        <div class="blob blob-dark"></div>
+        <!-- Keeps the copy side dark enough to read -->
+        <div class="scrim absolute inset-0"></div>
+        <div class="grain absolute inset-0"></div>
       </div>
-      <Emblem
-        aria-hidden="true"
-        class="md:hidden pointer-events-none absolute -right-12 bottom-6 w-72 h-auto text-white opacity-[0.07]"
-      />
 
-      <!-- Content -->
-      <div class="relative p-6 sm:p-8 md:p-10 lg:p-12">
+
+      <!-- Chest emblem, small as on the jersey -->
+      <Emblem aria-hidden="true" class="absolute top-6 right-6 md:top-8 md:right-8 w-14 md:w-16 h-auto text-white/85" />
+
+      <div class="relative p-6 sm:p-8 md:p-10 lg:p-12 md:pr-[38%]">
         <Wordmark role="img" aria-label="Raas Racing Team" class="h-12 md:h-14 w-auto text-white mb-6 md:mb-7" />
 
-        <p class="font-head text-[11px] font-semibold tracking-[0.12em] uppercase text-team-lagoon mb-2">
+        <p class="font-head text-[11px] font-semibold tracking-[0.12em] uppercase text-team-mint mb-2">
           Rider-tested, sort of
         </p>
         <h2 id="team-cta-title" class="font-head text-2xl md:text-[28px] font-bold tracking-tight leading-[1.15] mb-2">
           Slow, but never badly dressed
         </h2>
-        <p class="text-sm md:text-[15px] text-white/70 leading-relaxed max-w-lg">
+        <p class="text-sm md:text-[15px] text-white/75 leading-relaxed max-w-lg">
           A home-built bunch of amateurs, racing for fun and mostly against the wind.
           Results: debatable. Kit choices: spot on, because we check KitCheck before every ride.
         </p>
@@ -54,21 +61,11 @@ const INSTAGRAM_URL = "https://www.instagram.com/raasracingteam/";
 
           <!-- Team sign-off -->
           <div class="flex items-center gap-3">
-            <Signature aria-hidden="true" class="h-10 w-auto text-team-lagoon -rotate-6" />
-            <span class="font-head text-[10px] font-semibold tracking-[0.14em] uppercase text-white/50 leading-tight">
+            <Signature aria-hidden="true" class="h-10 w-auto text-white -rotate-6" />
+            <span class="font-head text-[10px] font-semibold tracking-[0.14em] uppercase text-white/55 leading-tight">
               Autograph value:<br />€0.00
             </span>
           </div>
-        </div>
-      </div>
-
-      <!-- Desktop: kit stripes with the R·R·T emblem as the team badge -->
-      <div class="relative hidden md:block" aria-hidden="true">
-        <div class="stripe left-[4%] bg-team-petrol"></div>
-        <div class="stripe left-[34%] bg-team-teal"></div>
-        <div class="stripe left-[64%] bg-team-lagoon"></div>
-        <div class="absolute inset-0 flex items-center justify-center">
-          <Emblem class="emblem w-[82%] max-w-80 h-auto text-white" />
         </div>
       </div>
     </div>
@@ -76,16 +73,46 @@ const INSTAGRAM_URL = "https://www.instagram.com/raasracingteam/";
 </section>
 
 <style>
-  .stripe {
+  /* Colour clouds from the jersey print. Big, soft and overlapping; placed mostly right
+     so the copy on the left stays on a dark base. */
+  .blob {
     position: absolute;
-    top: -20%;
-    bottom: -20%;
-    width: 22%;
-    transform: skewX(-18deg);
+    border-radius: 9999px;
+    filter: blur(26px);
+    opacity: 0.9;
   }
-  .emblem {
-    filter: drop-shadow(0 10px 28px rgba(1, 13, 20, 0.55));
+  .blob-cream  { width: 30%; height: 70%; right: 18%; top: -22%; background: #d8cba3; opacity: 0.8; transform: rotate(-20deg); }
+  .blob-cream2 { width: 12%; height: 30%; right: 4%; top: 6%; background: #e7dfc4; opacity: 0.55; }
+  .blob-teal   { width: 26%; height: 62%; right: -6%; top: 30%; background: var(--color-team-lagoon); }
+  .blob-teal2  { width: 14%; height: 34%; right: 40%; top: 10%; background: var(--color-team-teal); opacity: 0.8; }
+  .blob-blue   { width: 30%; height: 60%; right: 26%; bottom: -30%; background: #1f3f78; }
+  .blob-mint   { width: 11%; height: 26%; right: 22%; top: 42%; background: var(--color-team-mint); opacity: 0.85; }
+  .blob-green  { width: 22%; height: 50%; right: 50%; top: -20%; background: #2e6a4c; opacity: 0.55; }
+  /* dark gap between patches, as on the jersey */
+  .blob-dark   { width: 14%; height: 40%; right: 12%; top: 34%; background: var(--color-team-night); opacity: 0.8; }
+
+  .scrim {
+    background: linear-gradient(to right, var(--color-team-night) 0%, rgb(1 13 20 / 0.8) 45%, transparent 75%);
   }
+
+  @media (max-width: 767px) {
+    .blob-cream { width: 90%; height: 55%; right: -30%; top: auto; bottom: -12%; }
+    .blob-teal  { width: 75%; height: 45%; right: -35%; top: auto; bottom: 18%; }
+    .blob-blue  { width: 70%; height: 40%; right: 35%; bottom: -20%; }
+    .blob-mint  { width: 30%; height: 20%; right: 20%; top: auto; bottom: 22%; }
+    .blob-green, .blob-cream2, .blob-teal2, .blob-dark { display: none; }
+    .scrim {
+      background: linear-gradient(to bottom, var(--color-team-night) 0%, rgb(1 13 20 / 0.7) 55%, rgb(1 13 20 / 0.1) 100%);
+    }
+  }
+
+  /* Printed-fabric grain (inline SVG noise; data: URIs are allowed by the CSP) */
+  .grain {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
+    opacity: 0.5;
+  }
+
 </style>
 
 <script>
