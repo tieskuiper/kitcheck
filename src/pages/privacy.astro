@@ -25,7 +25,7 @@ import SiteFooter from "../components/SiteFooter.astro";
           Privacy policy
         </h1>
         <p class="text-text-mid leading-relaxed">
-          Last updated: April 2026
+          Last updated: October 2026
         </p>
       </div>
     </div>
@@ -35,95 +35,99 @@ import SiteFooter from "../components/SiteFooter.astro";
     <div class="container py-14 md:py-18">
       <div class="max-w-2xl prose-custom">
 
-        <h2>Who we are</h2>
+        <h2>Who is responsible</h2>
         <p>
-          kitcheck.cc is a free cycling kit calculator, operated by Ties Kuiper. Questions
-          about this policy can be sent to
-          <a href="mailto:privacy@kitcheck.cc">privacy@kitcheck.cc</a>.
+          kitcheck.cc is a free, personal project run by Ties Kuiper in the Netherlands.
+          He is the controller for the personal data described on this page. Questions or
+          requests can be sent to <a href="mailto:privacy@kitcheck.cc">privacy@kitcheck.cc</a>.
         </p>
 
-        <h2>What data we collect</h2>
+        <h2>In short</h2>
+        <ul>
+          <li>No account, no forms, no newsletter: we never ask who you are.</li>
+          <li>Google Analytics only runs if you click <em>Accept</em>, and you can change that any time.</li>
+          <li>Your exact location never leaves your browser; GPX files are never uploaded.</li>
+        </ul>
+
+        <h2>Hosting (Cloudflare)</h2>
         <p>
-          We do not ask you to create an account, fill in a form, or provide any personal
-          information directly. The only data collected is anonymous analytics data, and
-          only if you give your consent.
+          The site is hosted on Cloudflare. Like any web server, Cloudflare processes
+          your IP address and basic request data (page, browser, time) to deliver the site and
+          protect it against abuse. Cloudflare, Inc. acts as our processor and is certified under
+          the EU-US Data Privacy Framework.
+          <br />Legal basis: our legitimate interest in running a secure, working website
+          (GDPR Article 6(1)(f)).
         </p>
+
+
+        <h2>Google Analytics (only with your consent)</h2>
         <p>
-          If you accept analytics cookies, Google Analytics 4 (GA4) records:
+          If you click <em>Accept</em> in the cookie banner, we load Google Analytics 4 to
+          understand how the calculator is used. Before you accept, nothing is sent to Google.
+          Google Analytics then records:
         </p>
         <ul>
-          <li>Pages you visit and how long you spend on them</li>
-          <li>The city or region you are in (derived from your IP address; the full IP address is not stored)</li>
-          <li>The device type, browser, and operating system you use</li>
-          <li>How you arrived at the site (e.g. a search engine or direct link)</li>
+          <li>Pages you visit, how you arrived (e.g. a search engine) and how long you stay</li>
+          <li>Your approximate location (country and city, derived from your IP address; Google Analytics 4 does not store the IP address itself)</li>
+          <li>Device type, browser and operating system</li>
+          <li>
+            How you use the calculator: how you chose a location (search, suggestion,
+            auto-detect or GPX), the intensity, warmth, unit, day, start time and duration you
+            pick, and the conditions of the recommendation you get. We never send location
+            names, coordinates or route files.
+          </li>
         </ul>
         <p>
-          None of this is linked to your name, email address, or any other identifier.
-          If you decline analytics cookies, nothing is collected.
+          Google Analytics recognises a returning browser with a cookie (see the <a href="/cookies/">cookie policy</a>). Google signals and all advertising features are
+          switched off; the data is not used for ads. Google Ireland Ltd. processes the data on our
+          behalf; data may be transferred to Google LLC in the United States under the EU-US Data
+          Privacy Framework.
+          <br />Legal basis: your consent (GDPR Article 6(1)(a)). You can withdraw it at any time
+          via <em>Cookie settings</em> at the bottom of every page; we then stop Google Analytics
+          and delete its cookies. Withdrawing does not affect data collected before.
         </p>
 
-        <h2>Why we collect it</h2>
+        <h2>Weather and place names</h2>
         <p>
-          Analytics help us understand how the calculator is used so we can improve it.
-          For example, knowing which locations are searched most often helps us prioritise
-          weather data accuracy.
+          To show a forecast, your browser sends the place you search for, or rounded coordinates
+          (about 1&nbsp;km precise), to <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>.
+          When you use auto-detect or upload a GPX route, rounded coordinates are also sent to <a href="https://nominatim.org" target="_blank" rel="noopener">Nominatim</a> (OpenStreetMap)
+          to find the place name. Auto-detect only works after you allow it in your browser.
+          Your GPX file is read in your browser and never uploaded. We do not store any of this.
+          <br />Legal basis: our legitimate interest in providing the calculator you are using
+          (GDPR Article 6(1)(f)).
         </p>
 
-        <h2>Legal basis</h2>
+        <h2>Maps and fonts</h2>
         <p>
-          We process analytics data on the basis of your consent (GDPR Article 6(1)(a)).
-          Analytics are disabled by default and only activated after you click Accept in
-          the cookie banner. You can withdraw consent at any time by clearing your browser
-          storage for kitcheck.cc.
-        </p>
-
-        <h2>Who we share data with</h2>
-        <p>
-          Analytics data is processed by Google LLC under the Google Analytics service.
-          Google may store data on servers outside the EEA; this transfer is covered by
-          Google's standard contractual clauses.
-        </p>
-        <p>
-          We do not sell data, share it with advertisers, or use it for any purpose other
-          than understanding site usage.
-        </p>
-
-        <h2>Weather data</h2>
-        <p>
-          When you search for a location, the location name and coordinates are sent to
-          <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>
-          to fetch a weather forecast. Open-Meteo is a free, open-source weather API.
-          We do not store the locations you search for.
+          Route maps load map images from <a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a>, or from <a href="https://www.openstreetmap.org" target="_blank" rel="noopener">OpenStreetMap</a>
+          as a fallback. These services receive your IP address when your browser requests the
+          map, as with any website. Fonts are served from kitcheck.cc itself, not from Google.
         </p>
 
         <h2>How long data is kept</h2>
-        <p>
-          Google Analytics retains aggregated data for 14 months by default. Your consent
-          preference is stored in your browser's local storage until you clear it.
-        </p>
+        <ul>
+          <li>Google Analytics: 2 months for individual event data, then deleted automatically; only aggregated reports are kept longer</li>
+          <li>Your cookie choice: 12 months in your browser, after which we ask again</li>
+          <li>Weather and place name lookups: not stored by us</li>
+        </ul>
 
         <h2>Your rights</h2>
         <p>
-          Under GDPR you have the right to access, correct, or erase personal data we hold
-          about you, and the right to object to or restrict processing. Because we do not
-          collect identifiable personal data, most of these rights are not practically
-          applicable, but you are welcome to contact us if you have questions.
+          You have the right to access, correct or delete your personal data, to restrict or
+          object to processing, to data portability, and to withdraw consent at any time. Because
+          we cannot link analytics data to you, we may ask for details (such as your Google
+          Analytics cookie ID) to find it. Send requests to <a href="mailto:privacy@kitcheck.cc">privacy@kitcheck.cc</a>; we respond within one month.
         </p>
         <p>
-          You also have the right to lodge a complaint with your national data protection
-          authority.
-        </p>
-
-        <h2>Cookies</h2>
-        <p>
-          For a full list of cookies set by this site, see our
-          <a href="/cookies">Cookie policy</a>.
+          You can also file a complaint with the Dutch data protection authority, the <a href="https://autoriteitpersoonsgegevens.nl" target="_blank" rel="noopener">Autoriteit Persoonsgegevens</a>,
+          or the authority in your own EU country.
         </p>
 
         <h2>Changes to this policy</h2>
         <p>
-          If we make material changes to how we handle data, we will update this page and
-          revise the date at the top.
+          If we change how we handle data, we update this page and the date at the top. If the
+          change affects cookies, the banner asks for your consent again.
         </p>
 
       </div>

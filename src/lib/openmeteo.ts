@@ -21,10 +21,14 @@ export interface CityResult {
   lon:  number
 }
 
+// Round to 2 decimals (~1 km): plenty for a forecast or a place name, and the
+// exact position of the rider never leaves the browser (data minimisation)
+const coarse = (deg: number) => Math.round(deg * 100) / 100
+
 export async function fetchForecast(lat: number, lon: number) {
   const params = new URLSearchParams({
-    latitude:      String(lat),
-    longitude:     String(lon),
+    latitude:      String(coarse(lat)),
+    longitude:     String(coarse(lon)),
     hourly:        [
       'temperature_2m',
       'apparent_temperature',
@@ -47,7 +51,7 @@ export async function fetchForecast(lat: number, lon: number) {
 export async function reverseGeocode(lat: number, lon: number): Promise<string> {
   try {
     const res = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`,
+      `https://nominatim.openstreetmap.org/reverse?lat=${coarse(lat)}&lon=${coarse(lon)}&zoom=10&format=json`,
       { headers: { 'Accept-Language': 'en' } }
     )
     const data = await res.json()

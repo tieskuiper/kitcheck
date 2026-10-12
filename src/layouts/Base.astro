@@ -1,6 +1,14 @@
 ---
+import "@fontsource/space-grotesk/500.css";
+import "@fontsource/space-grotesk/600.css";
+import "@fontsource/space-grotesk/700.css";
+import "@fontsource/dm-sans/300.css";
+import "@fontsource/dm-sans/400.css";
+import "@fontsource/dm-sans/500.css";
+import "@fontsource/dm-sans/400-italic.css";
 import "../styles/global.css";
 import CookieBanner from "../components/CookieBanner.astro";
+
 interface Props {
   title?: string;
   description?: string;
@@ -48,33 +56,13 @@ const jsonLd = {
     <meta name="twitter:image" content="https://kitcheck.cc/og.png" />
     <meta name="robots" content="index, follow" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap"
-    />
     <script
       is:inline
       type="application/ld+json"
       set:html={JSON.stringify(jsonLd)}
     />
     <slot name="head" />
-    <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("consent", "default", { analytics_storage: "denied" });
-    </script>
-    <script
-      is:inline
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-FSYJ9GNCNP"></script>
-    <script is:inline>
-      gtag("js", new Date());
-      gtag("config", "G-FSYJ9GNCNP");
-    </script>
+    <!-- Google Analytics loads only after consent: see lib/consent.ts + CookieBanner -->
   </head>
   <body class="bg-bg text-text min-h-screen flex flex-col">
     <main>

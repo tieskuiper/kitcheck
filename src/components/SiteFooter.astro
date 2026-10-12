@@ -20,7 +20,13 @@
         <span class="text-white/20 text-xs hidden sm:inline">|</span>
         <a href="/privacy/" class="text-xs text-white/60 hover:text-white/80 transition-colors">Privacy</a>
         <a href="/cookies/" class="text-xs text-white/60 hover:text-white/80 transition-colors">Cookies</a>
+        <button type="button" data-consent-open class="text-xs text-white/60 hover:text-white/80 transition-colors cursor-pointer bg-transparent border-0 p-0">Cookie settings</button>
       </div>
     </div>
   </div>
 </footer>
+
+<script>
+  import { openConsentSettings } from '../lib/consent'
+  document.querySelectorAll('[data-consent-open]').forEach(el => el.addEventListener('click', openConsentSettings))
+</script>
