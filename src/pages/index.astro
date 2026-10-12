@@ -3,6 +3,7 @@ import Base from "../layouts/Base.astro";
 import Calculator from "../components/calculator/Calculator";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
+import TeamBanner from "../components/TeamBanner.astro";
 ---
 
 <Base
@@ -54,6 +55,9 @@ import SiteFooter from "../components/SiteFooter.astro";
   <section class="bg-bg">
     <Calculator client:load />
   </section>
+
+  <!-- TEAM -->
+  <TeamBanner />
 
   <!-- HOW IT WORKS -->
   <section class="border-t border-border bg-bg">
