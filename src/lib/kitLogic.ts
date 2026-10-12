@@ -224,8 +224,8 @@ function getTorsoNotes(results: KitResult[], hours: HourWeather[]): PhaseNote[] 
         i => !i.optional && !startNames.has(i.name) && !i.name.toLowerCase().includes('arm warmer')
       )
       const suffix = newItem
-        ? `pack a ${newItem.name.toLowerCase()} for the return`
-        : 'pack an extra layer for the return'
+        ? `take a ${newItem.name.toLowerCase()} with you`
+        : 'take an extra layer with you'
       notes.push({ hour: coldestHour, note: `Gets colder from hour ${coldestHour} (feels like {T}°) — ${suffix}`, tempC: temp })
     }
   }

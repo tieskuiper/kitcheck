@@ -6,7 +6,7 @@ KitCheck is a free cycling kit calculator. Riders enter a location (or upload a 
 
 ## What it does
 
-- **Location** — city search, browser geolocation or GPX upload. With a GPX, the forecast is taken at points along the route (every ~6 km, plus the highest point) for the time you'll pass them, using the route's altitude
+- **Location** — city search, browser geolocation or GPX upload. With a GPX, the forecast is taken at points along the route (every ~6 km, plus the highest point) for the time you'll pass them, using the route's altitude. Wind counts relative to your riding direction (headwind full, tailwind barely), long descents are detected, and the map colours the route by how it feels
 - **Ride window** — 7-day forecast, start time in 30-minute steps, duration set manually or estimated from the GPX route (distance + elevation at the chosen intensity)
 - **Rider profile** — intensity (easy → race) and warmth tendency (always cold → always warm)
 - **Recommendation** — comfort score, kit per zone (head, upper body, hands, lower body, feet), required vs optional items, and notes when conditions change during the ride
@@ -86,7 +86,7 @@ src/
 │   ├── openmeteo.ts             # forecast, geocoding, hourly slices
 │   ├── gpx.ts                   # GPX parsing (distance, elevation, start point)
 │   ├── rideDuration.ts          # GPX duration from average speed (estimate, recorded or your own)
-│   ├── routeForecast.ts         # GPX: forecast at points along the route, at the time you pass them
+│   ├── routeForecast.ts         # GPX: forecast along the route at the time you pass, headwind and descents
 │   ├── consent.ts               # consent storage, GA4 loading, track() for events
 │   └── mapTiles.ts              # map tile providers (primary + fallback)
 ├── pages/                       # index, guide/ (hub + [slug] temperature pages), privacy, cookies, 404

@@ -11,8 +11,8 @@ import {
 } from '../../lib/kitLogic'
 import { parseGpx, type GpxRoute } from '../../lib/gpx'
 import {
-  sampleRoute, routeWeather, hourlyFromRoute, routeHighlights,
-  type RoutePoint, type RouteHighlights,
+  sampleRoute, findDescents, routeWeather, hourlyFromRoute, routeHighlights,
+  type RouteModel, type RouteHighlights, type RouteSample,
 } from '../../lib/routeForecast'
 import {
   durationFor, estimatedAvgSpeed, initialSpeed, saveSpeed, type SpeedSource,
@@ -39,6 +39,7 @@ export function useKitCalculator() {
   // Weather per ride hour that the kit logic works on (start point, or along the GPX route)
   const [kitHours, setKitHours] = useState<HourWeather[]>([])
   const [highlights, setHighlights] = useState<RouteHighlights | null>(null)
+  const [routeSamples, setRouteSamples] = useState<RouteSample[]>([])
   const days = getDayLabels()
   const [selectedDay, setSelectedDay] = useState(0)
   // Stored as float with 0.5 precision (e.g. 8.5 = 08:30)
@@ -54,8 +55,7 @@ export function useKitCalculator() {
 
   const searchTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   // Forecasts along the loaded GPX route; a ref so handlers always see the current route
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const routeRef = useRef<{ points: RoutePoint[]; forecasts: any[]; distanceKm: number } | null>(null)
+  const routeRef = useRef<RouteModel | null>(null)
   const score = useMemo(() => kitResult ? scoreLabel(kitResult.score) : null, [kitResult])
 
   function recalculate(hours: HourWeather[], wb: number, int: Intensity) {
@@ -74,9 +74,11 @@ export function useKitCalculator() {
     if (route) {
       const samples = routeWeather(route.forecasts, route.points, route.distanceKm, day, hour, duration)
       if (samples.length) hours = hourlyFromRoute(samples, duration)
-      setHighlights(samples.length ? routeHighlights(samples) : null)
+      setHighlights(samples.length ? routeHighlights(samples, route.descents, route.distanceKm, duration) : null)
+      setRouteSamples(samples)
     } else {
       setHighlights(null)
+      setRouteSamples([])
     }
 
     setKitHours(hours)
@@ -91,7 +93,7 @@ export function useKitCalculator() {
         // One request for all route points; the first is the start
         const points = sampleRoute(route)
         const forecasts = await fetchForecasts(points)
-        routeRef.current = { points, forecasts, distanceKm: route.distanceKm }
+        routeRef.current = { points, forecasts, distanceKm: route.distanceKm, descents: findDescents(route) }
         fc = forecasts[0]
       } else {
         routeRef.current = null
@@ -197,6 +199,7 @@ export function useKitCalculator() {
     setWeather(null)
     setKitHours([])
     setHighlights(null)
+    setRouteSamples([])
     routeRef.current = null
     setWeatherLoaded(false)
     setKitResult(null)
@@ -297,6 +300,6 @@ export function useKitCalculator() {
     handleDayChange, handleHourChange, handleDurationChange, handleIntensityChange, handleWarmthChange,
     speedKmh, speedSource, handleSpeedChange, resetSpeed,
     // result
-    kitResult, score, highlights,
+    kitResult, score, highlights, routeSamples,
   }
 }

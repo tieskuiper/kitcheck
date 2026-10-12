@@ -68,7 +68,8 @@ export default function Calculator() {
 
           {/* Route map — full width below the grid */}
           {c.gpxRoute && c.weatherLoaded && (
-            <RouteMap route={c.gpxRoute} unit={c.unit} weather={c.weather} />
+            <RouteMap route={c.gpxRoute} unit={c.unit} weather={c.weather}
+              samples={c.routeSamples} highlights={c.highlights} startHour={c.selectedHour} />
           )}
 
         </div>

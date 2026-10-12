@@ -2,7 +2,7 @@ import { IconCircleInfo, IconRainy, IconClock, IconMap } from '@central-icons-re
 import type { KitResult, ZoneItem, PhaseNote, scoreLabel } from '../../lib/kitLogic'
 import { TIER_ACCENT, TIER_BG, CAT_ICONS, CAT_LABELS } from './constants'
 import type { RouteHighlights } from '../../lib/routeForecast'
-import { formatNote, fmtTime, toF, type Unit } from './format'
+import { formatNote, fmtTime, fmtWind, toF, type Unit } from './format'
 
 // ── Kit output card ───────────────────────────────────────────────────────────
 export default function KitCard({ kitResult, score, unit, highlights, startHour }: {
@@ -97,7 +97,7 @@ export default function KitCard({ kitResult, score, unit, highlights, startHour 
       </div>
 
       {/* ── Along the route (GPX) ── */}
-      {highlights && (highlights.coldest || highlights.rain) && startHour !== undefined && (
+      {highlights && Object.keys(highlights).length > 0 && startHour !== undefined && (
         <RouteNotes highlights={highlights} startHour={startHour} unit={unit} />
       )}
 
@@ -121,7 +121,10 @@ function RouteNotes({ highlights, startHour, unit }: { highlights: RouteHighligh
   }
   const dist = (km: number) => unit === 'F' ? `mile ${Math.round(km * 0.621371)}` : `km ${Math.round(km)}`
   const temp = (c: number) => unit === 'F' ? `${toF(c)}°F` : `${c}°C`
-  const { coldest, rain } = highlights
+  const { coldest, rain, headwind, descent } = highlights
+  const span = (a: number, b: number) => unit === 'F'
+    ? `miles ${Math.round(a * 0.621371)}–${Math.round(b * 0.621371)}`
+    : `km ${Math.round(a)}–${Math.round(b)}`
   return (
     <div className="mt-2 bg-white rounded-xl py-[11px] px-[14px] border border-black/[6%] flex gap-2 items-start">
       <IconMap size={16} className="text-text-mid shrink-0 mt-[2px]" />
@@ -136,6 +139,15 @@ function RouteNotes({ highlights, startHour, unit }: { highlights: RouteHighligh
         )}
         {rain && (
           <div>Rain likely from {dist(rain.km)}, around {clock(rain.offsetH)} ({rain.precipProb}%)</div>
+        )}
+        {headwind && (
+          <div>Headwind {span(headwind.fromKm, headwind.toKm)} from {clock(headwind.offsetH)}, about {fmtWind(headwind.kmh, unit)}</div>
+        )}
+        {descent && (
+          <div>
+            Long descent {span(descent.fromKm, descent.toKm)} (−{unit === 'F' ? `${Math.round(descent.dropM * 3.28084)} ft` : `${descent.dropM} m`})
+            {' '}at {clock(descent.offsetH)}: a gilet or jacket for it helps
+          </div>
         )}
       </div>
     </div>
