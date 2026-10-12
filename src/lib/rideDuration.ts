@@ -1,10 +1,11 @@
 import type { Intensity } from './kitLogic'
 import type { GpxRoute } from './gpx'
 
-// Typical flat-road speeds (km/h) per intensity — only the starting point when the
-// rider hasn't set their own speed and the GPX has no recorded time
+// Typical flat-road speeds (km/h) per intensity for amateur road cyclists — only the
+// starting point when the rider hasn't set their own speed and the GPX has no recorded
+// time. Tune against the speed_kmh values from the GA4 speed_adjusted event.
 const INTENSITY_FLAT_SPEED: Record<Intensity, number> = {
-  easy: 18, moderate: 23, hard: 28, race: 33,
+  easy: 22, moderate: 26, hard: 30, race: 35,
 }
 
 export const SPEED_MIN_KMH = 10

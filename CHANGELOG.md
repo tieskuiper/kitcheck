@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- Default GPX speeds raised to road-cycling values: easy 22, moderate 26, hard 30, race 35 km/h on the flat (was 18/23/28/33)
 - Kit notes say "take a … with you" instead of "pack a … for the return" (the cold part can be a summit, not only the way back)
 - Guide turned into a hub linking to the temperature pages; per-temperature FAQ entries moved to those pages
 - Homepage H1 and title focus on the tool ("What to wear cycling, sorted before you ride"); guide title targets "what to wear cycling by temperature"
