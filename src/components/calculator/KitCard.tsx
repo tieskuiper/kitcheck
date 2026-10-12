@@ -1,10 +1,15 @@
-import { IconCircleInfo, IconRainy, IconClock } from '@central-icons-react/round-outlined-radius-3-stroke-2'
+import { IconCircleInfo, IconRainy, IconClock, IconMap } from '@central-icons-react/round-outlined-radius-3-stroke-2'
 import type { KitResult, ZoneItem, PhaseNote, scoreLabel } from '../../lib/kitLogic'
 import { TIER_ACCENT, TIER_BG, CAT_ICONS, CAT_LABELS } from './constants'
-import { formatNote, type Unit } from './format'
+import type { RouteHighlights } from '../../lib/routeForecast'
+import { formatNote, fmtTime, toF, type Unit } from './format'
 
 // ── Kit output card ───────────────────────────────────────────────────────────
-export default function KitCard({ kitResult, score, unit }: { kitResult: KitResult; score: ReturnType<typeof scoreLabel>; unit: Unit }) {
+export default function KitCard({ kitResult, score, unit, highlights, startHour }: {
+  kitResult: KitResult; score: ReturnType<typeof scoreLabel>; unit: Unit
+  /** GPX only: what stands out along the route */
+  highlights?: RouteHighlights | null; startHour?: number
+}) {
   const accent = TIER_ACCENT[score.label] || '#FF5130'
   const bg = TIER_BG[score.label] || '#FFF3ED'
   const zones = [
@@ -91,6 +96,11 @@ export default function KitCard({ kitResult, score, unit }: { kitResult: KitResu
         })}
       </div>
 
+      {/* ── Along the route (GPX) ── */}
+      {highlights && (highlights.coldest || highlights.rain) && startHour !== undefined && (
+        <RouteNotes highlights={highlights} startHour={startHour} unit={unit} />
+      )}
+
       {/* ── Rain alert ── */}
       {kitResult.torso.detail?.includes('waterproof') && (
         <div className="bg-[#4A90D9]/[8%] rounded-xl py-[11px] px-[14px] border border-[#4A90D9]/20 flex gap-2 items-center">
@@ -100,6 +110,34 @@ export default function KitCard({ kitResult, score, unit }: { kitResult: KitResu
           </span>
         </div>
       )}
+    </div>
+  )
+}
+
+function RouteNotes({ highlights, startHour, unit }: { highlights: RouteHighlights; startHour: number; unit: Unit }) {
+  const clock = (offsetH: number) => {
+    const min = Math.round((startHour + offsetH) * 12) * 5
+    return fmtTime(Math.floor(min / 60) % 24, min % 60, unit)
+  }
+  const dist = (km: number) => unit === 'F' ? `mile ${Math.round(km * 0.621371)}` : `km ${Math.round(km)}`
+  const temp = (c: number) => unit === 'F' ? `${toF(c)}°F` : `${c}°C`
+  const { coldest, rain } = highlights
+  return (
+    <div className="mt-2 bg-white rounded-xl py-[11px] px-[14px] border border-black/[6%] flex gap-2 items-start">
+      <IconMap size={16} className="text-text-mid shrink-0 mt-[2px]" />
+      <div className="text-[12px] text-text-mid leading-[1.5]">
+        <strong className="text-text">Along your route</strong>
+        {coldest && (
+          <div>
+            Coldest around {dist(coldest.km)}
+            {coldest.ele !== undefined && ` (${unit === 'F' ? `${Math.round(coldest.ele * 3.28084)} ft` : `${Math.round(coldest.ele)} m`})`}
+            {' '}at {clock(coldest.offsetH)}: feels like {temp(coldest.apparentTemp)}
+          </div>
+        )}
+        {rain && (
+          <div>Rain likely from {dist(rain.km)}, around {clock(rain.offsetH)} ({rain.precipProb}%)</div>
+        )}
+      </div>
     </div>
   )
 }

@@ -16,7 +16,7 @@ export interface GpxRoute {
   recordedMovingHours?: number
 }
 
-function haversineKm(a: GpxPoint, b: GpxPoint): number {
+export function haversineKm(a: { lat: number; lon: number }, b: { lat: number; lon: number }): number {
   const R = 6371
   const dLat = ((b.lat - a.lat) * Math.PI) / 180
   const dLon = ((b.lon - a.lon) * Math.PI) / 180

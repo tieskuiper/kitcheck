@@ -93,7 +93,9 @@ import SiteFooter from "../components/SiteFooter.astro";
           (about 1&nbsp;km precise), to <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>.
           When you use auto-detect or upload a GPX route, rounded coordinates are also sent to <a href="https://nominatim.org" target="_blank" rel="noopener">Nominatim</a> (OpenStreetMap)
           to find the place name. Auto-detect only works after you allow it in your browser.
-          Your GPX file is read in your browser and never uploaded. We do not store any of this.
+          For a GPX route, a set of rounded points along the route (with their altitude) is sent
+          to Open-Meteo, so the forecast covers the whole ride rather than just the start.
+          Your GPX file itself is read in your browser and never uploaded. We do not store any of this.
           <br />Legal basis: our legitimate interest in providing the calculator you are using
           (GDPR Article 6(1)(f)).
         </p>

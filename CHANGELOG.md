@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Privacy policy and cookie policy rewritten to match exactly what the site does
 
 ### Added
+- GPX routes: forecast along the whole route instead of only at the start. Points every ~6 km plus the summit, each at the time you'll get there and at the route's own altitude (one request). The kit advice and its "changes during the ride" notes use this, and the kit card shows the coldest point and where rain starts
 - GPX routes: ride duration now comes from an average speed you can adjust ("Adjust" under the estimate). Recorded rides (Strava/Garmin GPX with timestamps) use their real moving time; a speed you set is remembered for your next route; "Use estimate" goes back to the intensity-based estimate
 - Temperature guide pages for 0, 5, 10, 15, 20 and 25°C (with °F), generated from the calculator's own kit logic, each showing what changes with effort, wind, rain and warmth tendency
 - Raas Racing Team banner below the calculator in the style of the team jersey (blurred colour print with grain), with the team wordmark and R·R·T emblem, a link to the team's Instagram and a sponsor link to Raas Bikes (plain links, no embeds or third-party tracking)

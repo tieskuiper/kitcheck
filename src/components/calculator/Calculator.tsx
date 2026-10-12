@@ -52,7 +52,7 @@ export default function Calculator() {
             {/* Right: output */}
             <div className="md:sticky md:top-[88px] min-w-0">
               {c.kitResult && c.score && c.weatherLoaded ? (
-                <KitCard kitResult={c.kitResult} score={c.score} unit={c.unit} />
+                <KitCard kitResult={c.kitResult} score={c.score} unit={c.unit} highlights={c.highlights} startHour={c.selectedHour} />
               ) : (
                 <div className="bg-white rounded-2xl p-12 border-[1.5px] border-dashed border-border text-center text-text-light">
                   <IconPinLocation size={26} className="mx-auto mb-3" />

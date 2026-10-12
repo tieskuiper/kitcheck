@@ -2,13 +2,18 @@ import { useState, useRef, useMemo, useEffect } from 'react'
 import {
   fetchForecast, reverseGeocode, searchCity,
   getHourlyRange, getDayLabels,
+  fetchForecasts,
   type HourlySlice, type CityResult,
 } from '../../lib/openmeteo'
 import {
   getRideKitRecommendation, scoreLabel,
-  type KitResult, type Intensity,
+  type KitResult, type Intensity, type HourWeather,
 } from '../../lib/kitLogic'
 import { parseGpx, type GpxRoute } from '../../lib/gpx'
+import {
+  sampleRoute, routeWeather, hourlyFromRoute, routeHighlights,
+  type RoutePoint, type RouteHighlights,
+} from '../../lib/routeForecast'
 import {
   durationFor, estimatedAvgSpeed, initialSpeed, saveSpeed, type SpeedSource,
 } from '../../lib/rideDuration'
@@ -31,7 +36,9 @@ export function useKitCalculator() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [forecast, setForecast] = useState<any>(null)
   const [weather, setWeather] = useState<HourlySlice | null>(null)
-  const [hourlySlices, setHourlySlices] = useState<HourlySlice[]>([])
+  // Weather per ride hour that the kit logic works on (start point, or along the GPX route)
+  const [kitHours, setKitHours] = useState<HourWeather[]>([])
+  const [highlights, setHighlights] = useState<RouteHighlights | null>(null)
   const days = getDayLabels()
   const [selectedDay, setSelectedDay] = useState(0)
   // Stored as float with 0.5 precision (e.g. 8.5 = 08:30)
@@ -46,27 +53,50 @@ export function useKitCalculator() {
   const [unit, setUnit] = useState<Unit>('C')
 
   const searchTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  // Forecasts along the loaded GPX route; a ref so handlers always see the current route
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const routeRef = useRef<{ points: RoutePoint[]; forecasts: any[]; distanceKm: number } | null>(null)
   const score = useMemo(() => kitResult ? scoreLabel(kitResult.score) : null, [kitResult])
 
-  function recalculate(slices: HourlySlice[], wb: number, int: Intensity) {
-    setKitResult(getRideKitRecommendation(
-      slices.map(s => ({ apparentTemp: s.apparentTemp, windspeed: s.windspeed, precipProb: s.precipProb })),
-      wb, int,
-    ))
+  function recalculate(hours: HourWeather[], wb: number, int: Intensity) {
+    setKitResult(getRideKitRecommendation(hours, wb, int))
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function updateWeather(fc: any, day: number, hour: number, duration: number, wb: number, int: Intensity) {
     // Floor hour so fractional start times (08:30) still use whole-hour forecast slices
     const slices = getHourlyRange(fc, day, Math.floor(hour), duration)
-    setHourlySlices(slices)
-    if (slices.length) { setWeather(slices[0]); recalculate(slices, wb, int) }
+    if (slices.length) setWeather(slices[0])
+    let hours: HourWeather[] = slices.map(s => ({ apparentTemp: s.apparentTemp, windspeed: s.windspeed, precipProb: s.precipProb }))
+
+    // GPX: weather at each point of the route for the moment the rider gets there
+    const route = routeRef.current
+    if (route) {
+      const samples = routeWeather(route.forecasts, route.points, route.distanceKm, day, hour, duration)
+      if (samples.length) hours = hourlyFromRoute(samples, duration)
+      setHighlights(samples.length ? routeHighlights(samples) : null)
+    } else {
+      setHighlights(null)
+    }
+
+    setKitHours(hours)
+    if (hours.length) recalculate(hours, wb, int)
   }
 
-  async function loadForecast(lat: number, lon: number, hour = selectedHour, duration = rideDuration) {
+  async function loadForecast(lat: number, lon: number, hour = selectedHour, duration = rideDuration, route?: GpxRoute) {
     setLoading(true); setForecast(null); setKitResult(null); setLocationError('')
     try {
-      const fc = await fetchForecast(lat, lon)
+      let fc
+      if (route) {
+        // One request for all route points; the first is the start
+        const points = sampleRoute(route)
+        const forecasts = await fetchForecasts(points)
+        routeRef.current = { points, forecasts, distanceKm: route.distanceKm }
+        fc = forecasts[0]
+      } else {
+        routeRef.current = null
+        fc = await fetchForecast(lat, lon)
+      }
       setForecast(fc)
       setWeatherLoaded(true)
       updateWeather(fc, selectedDay, hour, duration, warmthBias, intensity)
@@ -148,7 +178,7 @@ export function useKitCalculator() {
       setSelectedHour(currentHour)
       setLocationName(name); setCityQuery(name)
       track('location_selected', { method: 'gpx', distance_km: Math.round(route.distanceKm), speed_source: speed.source })
-      await loadForecast(route.startLat, route.startLon, currentHour, estDuration)
+      await loadForecast(route.startLat, route.startLon, currentHour, estDuration, route)
     } catch (err) {
       setLocationError(err instanceof Error ? err.message : 'Could not read GPX file.')
       track('gpx_error')
@@ -165,7 +195,9 @@ export function useKitCalculator() {
     setLocationError('')
     setForecast(null)
     setWeather(null)
-    setHourlySlices([])
+    setKitHours([])
+    setHighlights(null)
+    routeRef.current = null
     setWeatherLoaded(false)
     setKitResult(null)
     setGpxRoute(null)
@@ -219,15 +251,15 @@ export function useKitCalculator() {
     if (gpxRoute && speedSource === 'estimate') {
       // Only an estimated speed follows intensity; a recorded or own speed stays put
       applySpeed(estimatedAvgSpeed(gpxRoute, int), 'estimate', int)
-    } else if (hourlySlices.length) {
-      recalculate(hourlySlices, warmthBias, int)
+    } else if (kitHours.length) {
+      recalculate(kitHours, warmthBias, int)
     }
   }
 
   function handleWarmthChange(wb: number) {
     setWarmthBias(wb)
     track('warmth_change', { warmth_bias: wb }, 1000)
-    if (hourlySlices.length) recalculate(hourlySlices, wb, intensity)
+    if (kitHours.length) recalculate(kitHours, wb, intensity)
   }
 
   // Header buttons (outside the React island) talk to the calculator via window events
@@ -265,6 +297,6 @@ export function useKitCalculator() {
     handleDayChange, handleHourChange, handleDurationChange, handleIntensityChange, handleWarmthChange,
     speedKmh, speedSource, handleSpeedChange, resetSpeed,
     // result
-    kitResult, score,
+    kitResult, score, highlights,
   }
 }
