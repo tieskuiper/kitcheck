@@ -1,0 +1,9 @@
+# Supply-chain protection: don't install versions published less than a day ago
+minimumReleaseAge: 1440
+
+# Install scripts are blocked unless listed here (pnpm 11 default)
+allowBuilds:
+  # License check — needs CENTRAL_LICENSE_KEY in the environment (see README)
+  '@central-icons-react/round-outlined-radius-3-stroke-2': true
+  # Optional macOS file watcher, not needed
+  fsevents: false
