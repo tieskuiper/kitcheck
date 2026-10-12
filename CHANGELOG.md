@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Switched from npm to pnpm 11, with a 24-hour minimum release age and an explicit allowlist for install scripts
+- Upgraded MapLibre GL to v6 (worker bundled separately)
+- Type packages moved to `devDependencies`; Node pinned via `.node-version`
+- Hashed assets (`/_astro/*`) cached for a year; added HSTS and Cross-Origin-Opener-Policy headers; removed deprecated `X-XSS-Protection`
+- Upgraded to Astro 7, `@astrojs/react` 7, React 19.3 and Tailwind CSS 4.3
+- Route map now uses OpenFreeMap vector tiles (MapLibre GL) with automatic fallback to OpenStreetMap raster tiles
+- Calculator split into focused components under `src/components/calculator/`, with state in a `useKitCalculator` hook
+- README rewritten for KitCheck (setup, license key, structure, deployment)
+
+### Privacy
+- Google Analytics now loads only after explicit consent; before that no request is made to Google
+- Consent can be changed or withdrawn any time via "Cookie settings" in the footer; withdrawing deletes GA cookies
+- Consent expires after 12 months and is re-asked when the cookie policy changes
+- Cookie banner: equal Accept/Decline buttons, accessible dialog, clearer text
+- Fonts self-hosted instead of loaded from Google Fonts
+- Coordinates rounded to ~1 km before being sent to Open-Meteo and Nominatim
+- Privacy policy and cookie policy rewritten to match exactly what the site does
+
+### Added
+- Raas Racing Team banner below the calculator with a link to the team's Instagram (plain link, no embed or tracking by Instagram)
+- GA4 events for calculator usage (location method, settings, recommendation shown), sent only with consent
+
+### Fixed
+- Route map showed "API key required" watermarks after CARTO stopped serving keyless tiles
+- Google Analytics requests to regional endpoints (`region1.google-analytics.com`) were blocked by the CSP
+- City suggestion dropdown reopened after searching or selecting a city
+- `http-cache-semantics` vulnerability (via `npm audit fix`)
+
 ## [1.2.0] - 2026-04-29
 
 ### Added
