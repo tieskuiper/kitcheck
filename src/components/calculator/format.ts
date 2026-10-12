@@ -19,7 +19,14 @@ export function formatNote(pn: PhaseNote, unit: Unit): string {
 }
 
 export function fmtDuration(h: number): string {
-  return h % 1 === 0 ? `${h}h` : `${Math.floor(h)}h 30m`
+  const total = Math.round(h * 12) * 5   // minutes, to the nearest 5
+  const hh = Math.floor(total / 60), mm = total % 60
+  if (!hh) return `${mm}m`
+  return mm ? `${hh}h ${String(mm).padStart(2, '0')}m` : `${hh}h`
+}
+
+export function fmtSpeed(kmh: number, unit: Unit): string {
+  return unit === 'F' ? `${Math.round(kmh * 0.621371 * 2) / 2} mph` : `${kmh} km/h`
 }
 
 export function fmtDistance(km: number, unit: Unit): string {

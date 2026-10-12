@@ -43,7 +43,9 @@ export default function Calculator() {
                   selectedHour={c.selectedHour} onHourChange={c.handleHourChange}
                   rideDuration={c.rideDuration} onDurationChange={c.handleDurationChange}
                   gpxRoute={c.gpxRoute} intensity={c.intensity}
-                  weather={c.weather} unit={c.unit} />
+                  weather={c.weather} unit={c.unit}
+                  speedKmh={c.speedKmh} speedSource={c.speedSource}
+                  onSpeedChange={c.handleSpeedChange} onSpeedReset={c.resetSpeed} />
               )}
             </div>
 

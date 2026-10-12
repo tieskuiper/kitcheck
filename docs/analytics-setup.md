@@ -13,8 +13,8 @@ One-time setup in Google Analytics 4 so the calculator events from the site show
 - [ ] **1. Generate test data** (after the deploy)
 - [ ] **2. Check the events arrive** (Realtime)
 - [ ] **3. Create 3 key events**
-- [ ] **4. Create 6 custom dimensions**
-- [ ] **5. Create 7 custom metrics**
+- [ ] **4. Create 7 custom dimensions**
+- [ ] **5. Create 8 custom metrics**
 - [ ] **6. Build 2 explorations** (optional, after a few days of data)
 
 ---
@@ -63,6 +63,7 @@ Text parameters you want to filter or break down by.
 | Recommendation source | `source` | `location`, `gpx` |
 | Unit | `unit` | `C`, `F` |
 | GPX error reason | `reason` | `too_large` (empty for other read errors) |
+| Speed source | `speed_source` | `estimate`, `recorded`, `saved` |
 
 ## 5. Create custom metrics
 
@@ -80,6 +81,7 @@ Numeric parameters you want to average or sum.
 | Start hour | `start_hour` | Chosen start time (8.5 = 08:30) |
 | Duration (h) | `duration_h` | Duration set with the slider |
 | Day offset | `day_offset` | 0 = today, 1 = tomorrow, … |
+| Average speed (km/h) | `speed_kmh` | Speed a rider set themselves — compare with the estimates to tune the defaults |
 
 Custom dimensions and metrics only fill from the moment you create them — they don't apply to older data. So do steps 4 and 5 soon after the deploy.
 
@@ -108,14 +110,16 @@ All events the site sends (code: `src/components/calculator/useKitCalculator.ts`
 
 | Event | When | Parameters |
 | :-- | :-- | :-- |
-| `location_selected` | Location chosen | `method`; with GPX also `distance_km` |
+| `location_selected` | Location chosen | `method`; with GPX also `distance_km` and `speed_source` |
 | `recommendation_shown` | Kit advice shown (once per settled result) | `conditions`, `score`, `intensity`, `warmth_bias`, `ride_hours`, `source` |
 | `intensity_change` | Intensity picked | `intensity` |
 | `warmth_change` | Warmth slider settled | `warmth_bias` |
 | `unit_change` | °C/°F switched | `unit` |
 | `day_change` | Day tab picked | `day_offset` |
 | `start_time_change` | Start time slider settled | `start_hour` |
-| `duration_change` | Duration slider settled | `duration_h` |
+| `duration_change` | Duration slider settled (rides without a GPX) | `duration_h` |
+| `speed_adjusted` | Rider set their own average speed for a GPX route | `speed_kmh` |
+| `speed_reset` | Rider clicked *Use estimate* | — |
 | `location_reset` | Location cleared | — |
 | `search_no_result` | City search found nothing | — |
 | `geolocation_denied` | Browser location refused | — |

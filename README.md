@@ -85,7 +85,7 @@ src/
 │   ├── guideData.ts             # guide temperatures, intros and variations (derived from kitLogic)
 │   ├── openmeteo.ts             # forecast, geocoding, hourly slices
 │   ├── gpx.ts                   # GPX parsing (distance, elevation, start point)
-│   ├── rideDuration.ts          # duration estimate from route + intensity
+│   ├── rideDuration.ts          # GPX duration from average speed (estimate, recorded or your own)
 │   ├── consent.ts               # consent storage, GA4 loading, track() for events
 │   └── mapTiles.ts              # map tile providers (primary + fallback)
 ├── pages/                       # index, guide/ (hub + [slug] temperature pages), privacy, cookies, 404

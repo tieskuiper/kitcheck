@@ -46,9 +46,10 @@ import SiteFooter from "../components/SiteFooter.astro";
           <button type="button" data-consent-open class="btn-secondary">Change cookie settings</button>
         </div>
 
-        <h2>Strictly necessary storage</h2>
+        <h2>Storage that doesn't need consent</h2>
         <p>
-          This is needed to remember your choice, so it doesn't require consent.
+          These only remember choices you make yourself, stay in your browser and are never
+          sent to us or anyone else.
         </p>
         <div class="cookie-table-wrap">
           <table>
@@ -59,6 +60,12 @@ import SiteFooter from "../components/SiteFooter.astro";
                 <td>Local storage</td>
                 <td>Remembers whether you accepted or declined analytics, and when</td>
                 <td>12 months, then we ask again</td>
+              </tr>
+              <tr>
+                <td><code>kitcheck-speed</code></td>
+                <td>Local storage</td>
+                <td>Remembers the average speed you set for GPX routes, so your next route uses it too</td>
+                <td>Until you choose <em>Use estimate</em> or clear your browser data</td>
               </tr>
             </tbody>
           </table>

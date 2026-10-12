@@ -9,7 +9,9 @@ import {
   type KitResult, type Intensity,
 } from '../../lib/kitLogic'
 import { parseGpx, type GpxRoute } from '../../lib/gpx'
-import { estimateRideDuration } from '../../lib/rideDuration'
+import {
+  durationFor, estimatedAvgSpeed, initialSpeed, saveSpeed, type SpeedSource,
+} from '../../lib/rideDuration'
 import { track } from '../../lib/consent'
 import type { Unit } from './format'
 
@@ -35,6 +37,9 @@ export function useKitCalculator() {
   // Stored as float with 0.5 precision (e.g. 8.5 = 08:30)
   const [selectedHour, setSelectedHour] = useState<number>(8)
   const [rideDuration, setRideDuration] = useState(2)
+  // GPX only: average speed drives the duration (manual slider is for rides without a route)
+  const [speedKmh, setSpeedKmh] = useState(0)
+  const [speedSource, setSpeedSource] = useState<SpeedSource>('estimate')
   const [intensity, setIntensity] = useState<Intensity>('moderate')
   const [warmthBias, setWarmthBias] = useState(0)
   const [kitResult, setKitResult] = useState<KitResult | null>(null)
@@ -133,14 +138,16 @@ export function useKitCalculator() {
     try {
       const text = await file.text()
       const route = parseGpx(text)
-      const estDuration = estimateRideDuration(route, intensity)
+      const speed = initialSpeed(route, intensity)
+      const estDuration = durationFor(route, speed.kmh)
       setGpxRoute(route); setIsGeolocated(false)
+      setSpeedKmh(speed.kmh); setSpeedSource(speed.source)
       setRideDuration(estDuration)
       const name = await reverseGeocode(route.startLat, route.startLon)
       const currentHour = new Date().getHours()
       setSelectedHour(currentHour)
       setLocationName(name); setCityQuery(name)
-      track('location_selected', { method: 'gpx', distance_km: Math.round(route.distanceKm) })
+      track('location_selected', { method: 'gpx', distance_km: Math.round(route.distanceKm), speed_source: speed.source })
       await loadForecast(route.startLat, route.startLon, currentHour, estDuration)
     } catch (err) {
       setLocationError(err instanceof Error ? err.message : 'Could not read GPX file.')
@@ -184,14 +191,34 @@ export function useKitCalculator() {
     if (forecast) updateWeather(forecast, selectedDay, selectedHour, dur, warmthBias, intensity)
   }
 
+  function applySpeed(kmh: number, source: SpeedSource, int = intensity) {
+    if (!gpxRoute) return
+    const dur = durationFor(gpxRoute, kmh)
+    setSpeedKmh(kmh); setSpeedSource(source); setRideDuration(dur)
+    if (forecast) updateWeather(forecast, selectedDay, selectedHour, dur, warmthBias, int)
+  }
+
+  /** Rider sets their own average speed: used for this and future routes */
+  function handleSpeedChange(kmh: number) {
+    saveSpeed(kmh)
+    applySpeed(kmh, 'custom')
+    track('speed_adjusted', { speed_kmh: kmh }, 1000)
+  }
+
+  /** Back to the estimate from intensity + climbing, and forget the saved speed */
+  function resetSpeed() {
+    if (!gpxRoute) return
+    saveSpeed(undefined)
+    applySpeed(estimatedAvgSpeed(gpxRoute, intensity), 'estimate')
+    track('speed_reset')
+  }
+
   function handleIntensityChange(int: Intensity) {
     setIntensity(int)
     track('intensity_change', { intensity: int })
-    if (gpxRoute && forecast) {
-      // Re-estimate duration based on new intensity and reload weather slices
-      const estDuration = estimateRideDuration(gpxRoute, int)
-      setRideDuration(estDuration)
-      updateWeather(forecast, selectedDay, selectedHour, estDuration, warmthBias, int)
+    if (gpxRoute && speedSource === 'estimate') {
+      // Only an estimated speed follows intensity; a recorded or own speed stays put
+      applySpeed(estimatedAvgSpeed(gpxRoute, int), 'estimate', int)
     } else if (hourlySlices.length) {
       recalculate(hourlySlices, warmthBias, int)
     }
@@ -236,6 +263,7 @@ export function useKitCalculator() {
     // ride + rider
     forecast, weather, weatherLoaded, days, selectedDay, selectedHour, rideDuration, intensity, warmthBias, unit,
     handleDayChange, handleHourChange, handleDurationChange, handleIntensityChange, handleWarmthChange,
+    speedKmh, speedSource, handleSpeedChange, resetSpeed,
     // result
     kitResult, score,
   }
