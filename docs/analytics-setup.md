@@ -111,7 +111,7 @@ All events the site sends (code: `src/components/calculator/useKitCalculator.ts`
 | Event | When | Parameters |
 | :-- | :-- | :-- |
 | `location_selected` | Location chosen | `method`; with GPX also `distance_km` and `speed_source` |
-| `recommendation_shown` | Kit advice shown (once per settled result) | `conditions`, `score`, `intensity`, `warmth_bias`, `ride_hours`, `source` |
+| `recommendation_shown` | Kit advice shown (once per settled result) | `conditions`, `score`, `feels_like_c`, `rain`, `intensity`, `warmth_bias`, `ride_hours`, `source` |
 | `intensity_change` | Intensity picked | `intensity` |
 | `warmth_change` | Warmth slider settled | `warmth_bias` |
 | `unit_change` | °C/°F switched | `unit` |

@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- Kit card shows "Feels like X°C on the bike" instead of a 0–110 score; condition labels now use the same bands as the kit
+- Gloves and overshoes are chosen for the whole ride (nobody carries a second pair): the warmest pair needed, with a note if that's because of later cold or rain
 - Default GPX speeds raised to road-cycling values: easy 22, moderate 26, hard 30, race 35 km/h on the flat (was 18/23/28/33)
 - Kit notes say "take a … with you" instead of "pack a … for the return" (the cold part can be a summit, not only the way back)
 - Guide turned into a hub linking to the temperature pages; per-temperature FAQ entries moved to those pages
@@ -32,6 +34,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Privacy policy and cookie policy rewritten to match exactly what the site does
 
 ### Added
+- Chance of showers (40–59%): packable rain jacket and light rain overshoes as options, with a "chance of showers" note
+- Heat note from 27°C: extra bottle and sunscreen
+- Note when the rain stops during the ride: the rain jacket can go in your pocket
 - GPX routes: wind is judged against your riding direction (a headwind counts fully, a tailwind barely), and the longest headwind stretch and the biggest cool descent show up in "Along your route"
 - GPX route map: the line is coloured by feels-like temperature along the way, with a pin for the coldest point and where rain starts, and a legend under the map
 - GPX routes: forecast along the whole route instead of only at the start. Points every ~6 km plus the summit, each at the time you'll get there and at the route's own altitude (one request). The kit advice and its "changes during the ride" notes use this, and the kit card shows the coldest point and where rain starts
@@ -41,6 +46,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GA4 events for calculator usage (location method, settings, recommendation shown), sent only with consent
 
 ### Fixed
+- Rain kit now scales with temperature: waterproof jacket, gloves and winter overshoes in cold rain; packable jacket, optional light gloves and light rain overshoes in mild rain; jacket optional in warm rain (was winter gloves and thermal socks even at 25°C)
+- No more leg warmers under thermal bib tights
+- Effort and warmth tendency only partly lighten gloves, overshoes and head cover (racing at 0°C no longer suggests light gloves and toe covers)
+- Wind no longer counted twice: the forecast feels-like already includes wind chill, so the extra riding-into-the-wind adjustment is smaller
 - Route map showed "API key required" watermarks after CARTO stopped serving keyless tiles
 - Google Analytics requests to regional endpoints (`region1.google-analytics.com`) were blocked by the CSP
 - City suggestion dropdown reopened after searching or selecting a city

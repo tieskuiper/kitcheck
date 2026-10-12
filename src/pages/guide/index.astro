@@ -29,7 +29,7 @@ const faqSchema = {
           name: "What cycling kit do I need for riding in rain?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "For rain you need a waterproof cycling jacket (not just water-resistant), waterproof gloves, and overshoes to keep your feet dry. A cap with a peak under your helmet keeps rain off your face. kitcheck.cc detects high precipitation probability and adds a waterproof layer to the recommendation automatically.",
+            text: "It depends on the temperature. Below about 15°C you want a proper waterproof jacket, and below 10°C waterproof gloves and overshoes too, because cold and wet hands and feet go numb fast. In mild rain a packable jacket is enough, with thin rain overshoes if you want dry shoes. Above about 22°C many riders skip the jacket altogether. kitcheck.cc reads the rain chance from the forecast and scales the rain kit to the temperature.",
           },
         },
         {
@@ -37,7 +37,7 @@ const faqSchema = {
           name: "Does ride intensity affect what cycling kit I need?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Yes — intensity is one of the biggest variables. A hard race effort can generate as much warmth as a 5–8°C temperature increase compared to an easy ride. kitcheck.cc lets you select your effort level (easy, moderate, hard, race) and adjusts the kit recommendation accordingly, so you don't overheat or underdress.",
+            text: "Yes — a hard effort can feel 5–8°C warmer than an easy ride, so you need fewer layers on your body. Your hands and feet don't warm up nearly as much, though: even when racing in the cold you still want proper gloves and overshoes. kitcheck.cc adjusts the body layers fully for your effort level and the gloves and overshoes only partly.",
           },
         },
         {
@@ -184,10 +184,9 @@ const faqSchema = {
             Ride intensity
           </h3>
           <p class="text-sm text-text-mid leading-relaxed">
-            The harder you ride, the warmer you get. A race-pace effort can
-            easily mean one or two fewer layers than on a steady endurance spin.
-            Set your intensity in the calculator and it adjusts the
-            recommendation for you.
+            The harder you ride, the warmer your body gets. A race-pace effort can
+            easily mean one or two fewer layers than on a steady endurance spin,
+            but hands and feet barely benefit, so keep the gloves and overshoes.
           </p>
         </div>
 
@@ -203,9 +202,9 @@ const faqSchema = {
         <div class="bg-white rounded-2xl border border-border p-[22px]">
           <h3 class="font-head text-[14px] font-bold text-text mb-3">Rain</h3>
           <p class="text-sm text-text-mid leading-relaxed">
-            When there's a real chance of rain, you need a proper waterproof
-            jacket, not just something water-resistant. Wet kit stops working
-            fast, so waterproof gloves and overshoes are worth it too.
+            How much rain kit you need depends on the temperature. Cold rain
+            calls for a waterproof jacket, gloves and overshoes; in mild rain a
+            packable jacket and thin rain covers for your shoes are enough.
           </p>
         </div>
       </div>
@@ -272,11 +271,12 @@ const faqSchema = {
             >
           </summary>
           <p class="mt-3 text-sm text-text-mid leading-relaxed pr-8">
-            A proper waterproof jacket, not just something water-resistant. Your
-            hands and feet get cold fast when wet, so waterproof gloves and
-            overshoes are worth it. A peaked cap under your helmet keeps the
-            rain out of your eyes. kitcheck.cc picks this up from the forecast
-            and adds the right layers for you.
+            It depends on how cold it is. Below about 15°C, a proper waterproof
+            jacket; below 10°C, waterproof gloves and overshoes as well, because
+            cold, wet hands and feet go numb fast. In mild rain a packable jacket
+            is enough, with thin rain overshoes if you want dry shoes. Above about
+            22°C many riders skip the jacket. kitcheck.cc scales the rain kit to
+            the temperature for you.
           </p>
         </details>
 
@@ -299,11 +299,10 @@ const faqSchema = {
             >
           </summary>
           <p class="mt-3 text-sm text-text-mid leading-relaxed pr-8">
-            Yes, a lot. Going hard warms you up fast and you'll quickly overheat
-            in kit that felt fine at the start. Set your intensity in the
-            calculator (easy through to race pace) and it adjusts the
-            recommendation so you're not stopping to strip layers halfway
-            through.
+            Yes, a lot. Going hard warms your body up fast and you'll quickly
+            overheat in kit that felt fine at the start. Your hands and feet
+            don't warm up the same way, though, so the calculator lightens the
+            body layers for a hard effort but keeps the gloves and overshoes.
           </p>
         </details>
 

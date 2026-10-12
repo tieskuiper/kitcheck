@@ -286,7 +286,7 @@ export function useKitCalculator() {
   useEffect(() => {
     if (!kitResult || !score) return
     track('recommendation_shown', {
-      conditions: score.label, score: kitResult.score, intensity, warmth_bias: warmthBias,
+      conditions: score.label, score: kitResult.score, feels_like_c: kitResult.feelsLikeC, rain: kitResult.rain ?? 'none', intensity, warmth_bias: warmthBias,
       ride_hours: rideDuration, source: gpxRoute ? 'gpx' : 'location',
     }, 1500)
   }, [kitResult])

@@ -1,4 +1,4 @@
-import { IconCircleInfo, IconRainy, IconClock, IconMap } from '@central-icons-react/round-outlined-radius-3-stroke-2'
+import { IconCircleInfo, IconRainy, IconClock, IconMap, IconSun } from '@central-icons-react/round-outlined-radius-3-stroke-2'
 import type { KitResult, ZoneItem, PhaseNote, scoreLabel } from '../../lib/kitLogic'
 import { TIER_ACCENT, TIER_BG, CAT_ICONS, CAT_LABELS } from './constants'
 import type { RouteHighlights } from '../../lib/routeForecast'
@@ -27,27 +27,23 @@ export default function KitCard({ kitResult, score, unit, highlights, startHour 
         <div className="text-[11px] font-head font-semibold tracking-[0.08em] uppercase opacity-70 mb-1">
           Kit recommendation
         </div>
-        <div className="font-head text-[20px] sm:text-[24px] font-bold tracking-[-0.02em] mb-4">
+        <div className="font-head text-[20px] sm:text-[24px] font-bold tracking-[-0.02em] mb-1.5">
           {score.label} conditions
         </div>
-        {/* Score bar */}
-        <div className="flex items-center gap-3">
-          <div className="flex-1 h-1.5 bg-white/25 rounded-full overflow-hidden">
-            <div className="h-full bg-white/80 rounded-full" style={{ width: `${(kitResult.score / 110) * 100}%` }} />
-          </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <span className="text-[12px] opacity-75">Score <strong className="opacity-100">{kitResult.score}</strong>/110</span>
-            <div className="relative group">
-              <button aria-label="How the score is calculated" className="flex items-center">
-                <IconCircleInfo size={15} className="text-white/60 hover:text-white/90 transition-colors" />
-              </button>
-              <div className="absolute top-full right-0 mt-2 w-[260px] max-w-[calc(100vw-3rem)] bg-white text-text rounded-xl p-3 shadow-[0_8px_32px_rgba(0,0,0,0.15)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50 pointer-events-none">
-                <div className="font-head font-semibold mb-[6px] text-[11px] uppercase tracking-[0.06em] text-coral">How the score works</div>
-                <p className="text-[11px] leading-[1.6] m-0">
-                  A comfort score based on how the conditions actually feel on the bike — factoring in temperature, wind, your ride intensity, and how warm you naturally run.
-                </p>
-                <div className="mt-[6px] text-[10px] text-text-light">Lower = more kit needed · Higher = less kit needed</div>
-              </div>
+        {/* Feels like on the bike — what the whole kit list is based on */}
+        <div className="flex items-center gap-1.5">
+          <span className="text-[13px] opacity-85">
+            Feels like <strong className="opacity-100">{unit === 'F' ? `${toF(kitResult.feelsLikeC)}°F` : `${kitResult.feelsLikeC}°C`}</strong> on the bike
+          </span>
+          <div className="relative group">
+            <button aria-label="What 'feels like on the bike' means" className="flex items-center">
+              <IconCircleInfo size={15} className="text-white/60 hover:text-white/90 transition-colors" />
+            </button>
+            <div className="absolute top-full left-0 sm:left-auto sm:right-0 mt-2 w-[260px] max-w-[calc(100vw-3rem)] bg-white text-text rounded-xl p-3 shadow-[0_8px_32px_rgba(0,0,0,0.15)] opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-150 z-50 pointer-events-none">
+              <div className="font-head font-semibold mb-[6px] text-[11px] uppercase tracking-[0.06em] text-coral">Feels like on the bike</div>
+              <p className="text-[11px] leading-[1.6] m-0">
+                The forecast's feels-like temperature, adjusted for how hard you ride, how warm you naturally run and riding into the wind. Your hands and feet don't warm up as much from effort, so their kit is chosen a bit warmer.
+              </p>
             </div>
           </div>
         </div>
@@ -101,12 +97,22 @@ export default function KitCard({ kitResult, score, unit, highlights, startHour 
         <RouteNotes highlights={highlights} startHour={startHour} unit={unit} />
       )}
 
-      {/* ── Rain alert ── */}
-      {kitResult.torso.detail?.includes('waterproof') && (
-        <div className="bg-[#4A90D9]/[8%] rounded-xl py-[11px] px-[14px] border border-[#4A90D9]/20 flex gap-2 items-center">
+      {/* ── Rain / heat alerts ── */}
+      {kitResult.rain && (
+        <div className="mt-2 bg-[#4A90D9]/[8%] rounded-xl py-[11px] px-[14px] border border-[#4A90D9]/20 flex gap-2 items-center">
           <IconRainy size={16} className="text-[#4A90D9] shrink-0" />
           <span className="text-[12px] text-[#4A90D9] leading-[1.5]">
-            <strong>Rain is likely</strong> — waterproof layers included above.
+            {kitResult.rain === 'likely'
+              ? <><strong>Rain is likely</strong> — rain gear included above.</>
+              : <><strong>Chance of showers</strong> — a packable jacket is listed as optional.</>}
+          </span>
+        </div>
+      )}
+      {kitResult.heat && (
+        <div className="mt-2 bg-[#F5A623]/[10%] rounded-xl py-[11px] px-[14px] border border-[#F5A623]/30 flex gap-2 items-center">
+          <IconSun size={16} className="text-[#B7791F] shrink-0" />
+          <span className="text-[12px] text-[#8A5A12] leading-[1.5]">
+            <strong>Hot ride</strong> — take an extra bottle and put on sunscreen.
           </span>
         </div>
       )}
