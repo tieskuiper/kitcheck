@@ -24,7 +24,7 @@ One-time setup in Google Analytics 4 so the calculator events from the site show
 1. Open https://kitcheck.cc in a normal browser window (not private, ad blocker off for this site).
 2. Click **Accept** in the cookie banner. Already chose before? Use *Cookie settings* in the footer.
 3. Use the calculator: search a city, change intensity and warmth, switch °C/°F, pick another day and start time, upload a GPX file.
-4. Click **Follow @raasracingteam** in the team banner.
+4. Click **Follow @raasracingteam** and the **raasbikes.cc** sponsor link in the team banner.
 
 ## 2. Check the events arrive
 
@@ -122,6 +122,7 @@ All events the site sends (code: `src/components/calculator/useKitCalculator.ts`
 | `gpx_error` | GPX file rejected | `reason` (sometimes) |
 | `forecast_error` | Weather could not load | — |
 | `team_instagram_click` | Instagram button in team banner | — |
+| `team_sponsor_click` | Raas Bikes sponsor link in team banner | — |
 
 Never sent: location names, coordinates, search text or route files.
 

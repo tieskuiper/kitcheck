@@ -109,8 +109,8 @@ The page header (unit toggle, "use my location") lives outside the React island 
 `src/components/TeamBanner.astro`, shown below the calculator.
 
 - **Colours:** `--color-team-bg`, `--color-team-accent` and `--color-team-on-accent` in `src/styles/global.css`.
-- **Logos:** `src/assets/raas/` — `wordmark.svg` (RAAS / Racing Team), `signature.svg` (handwritten "Raas", used as the sign-off) and `emblem.svg` (R·R·T chain, the badge on the stripes). They use `currentColor`, so colour them with a `text-*` class; Astro inlines them, so there's no extra request.
-- The Instagram button is a plain link (no embed), so it needs no consent. Clicks are tracked as `team_instagram_click` in GA4 only for visitors who accepted analytics.
+- **Logos:** `src/assets/raas/` — `wordmark.svg` (RAAS / Racing Team), `raas-bikes.svg` (handwritten "Raas": logo of Raas Bikes, the bike repair shop that sponsors the team; links to raasbikes.cc with `rel="sponsored"`) and `emblem.svg` (R·R·T chain, small corner badge). They use `currentColor`, so colour them with a `text-*` class; Astro inlines them, so there's no extra request.
+- The Instagram button is a plain link (no embed), so it needs no consent. Clicks are tracked as `team_instagram_click` and `team_sponsor_click` in GA4, only for visitors who accepted analytics.
 
 ## Map tiles
 

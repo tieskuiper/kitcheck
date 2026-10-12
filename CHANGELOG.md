@@ -31,7 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Temperature guide pages for 0, 5, 10, 15, 20 and 25°C (with °F), generated from the calculator's own kit logic, each showing what changes with effort, wind, rain and warmth tendency
-- Raas Racing Team banner below the calculator in the style of the team jersey (blurred colour print with grain), with the team wordmark, signature and R·R·T emblem, and a link to the team's Instagram (plain link, no embed or tracking by Instagram)
+- Raas Racing Team banner below the calculator in the style of the team jersey (blurred colour print with grain), with the team wordmark and R·R·T emblem, a link to the team's Instagram and a sponsor link to Raas Bikes (plain links, no embeds or third-party tracking)
 - GA4 events for calculator usage (location method, settings, recommendation shown), sent only with consent
 
 ### Fixed

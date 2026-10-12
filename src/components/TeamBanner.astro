@@ -1,9 +1,10 @@
 ---
 import Wordmark from "../assets/raas/wordmark.svg";
-import Signature from "../assets/raas/signature.svg";
+import RaasBikes from "../assets/raas/raas-bikes.svg";
 import Emblem from "../assets/raas/emblem.svg";
 
 const INSTAGRAM_URL = "https://www.instagram.com/raasracingteam/";
+const SPONSOR_URL = "https://www.raasbikes.cc/";
 ---
 
 <section class="bg-bg" aria-labelledby="team-cta-title">
@@ -24,22 +25,48 @@ const INSTAGRAM_URL = "https://www.instagram.com/raasracingteam/";
         <div class="grain absolute inset-0"></div>
       </div>
 
-
       <!-- Chest emblem, small as on the jersey -->
-      <Emblem aria-hidden="true" class="absolute top-6 right-6 md:top-8 md:right-8 w-14 md:w-16 h-auto text-white/85" />
+      <Emblem
+        aria-hidden="true"
+        class="absolute top-6 right-6 md:top-8 md:right-8 w-14 md:w-16 h-auto text-white/85"
+      />
+
+      <!-- Desktop: wordmark on the print, like the chest of the jersey -->
+      <div
+        class="absolute inset-y-0 right-0 hidden md:flex w-[38%] items-center justify-center pointer-events-none"
+      >
+        <Wordmark
+          role="img"
+          aria-label="Raas Racing Team"
+          class="wordmark-print w-[48%] max-w-52 h-auto text-white"
+        />
+      </div>
 
       <div class="relative p-6 sm:p-8 md:p-10 lg:p-12 md:pr-[38%]">
-        <Wordmark role="img" aria-label="Raas Racing Team" class="h-12 md:h-14 w-auto text-white mb-6 md:mb-7" />
+        <!-- Mobile: wordmark above the copy (display:none on desktop, so read once) -->
+        <Wordmark
+          role="img"
+          aria-label="Raas Racing Team"
+          class="md:hidden h-12 w-auto text-white mb-6"
+        />
 
-        <p class="font-head text-[11px] font-semibold tracking-[0.12em] uppercase text-team-mint mb-2">
-          Rider-tested, sort of
+        <p
+          class="font-head text-[11px] font-semibold tracking-[0.12em] uppercase text-team-mint mb-2"
+        >
+          Rider-tested
         </p>
-        <h2 id="team-cta-title" class="font-head text-2xl md:text-[28px] font-bold tracking-tight leading-[1.15] mb-2">
-          Slow, but never badly dressed
+        <h2
+          id="team-cta-title"
+          class="font-head text-2xl md:text-[28px] font-bold tracking-tight leading-[1.15] mb-2"
+        >
+          Raas Racing Team rides with kitcheck.cc
         </h2>
-        <p class="text-sm md:text-[15px] text-white/75 leading-relaxed max-w-lg">
-          A home-built bunch of amateurs, racing for fun and mostly against the wind.
-          Results: debatable. Kit choices: spot on, because we check KitCheck before every ride.
+        <p
+          class="text-sm md:text-[15px] text-white/75 leading-relaxed max-w-lg"
+        >
+          Amateurs racing for fun, with one thing sorted: what to wear. Before
+          every ride we check kitcheck.cc for a kit list based on the real
+          forecast.
         </p>
 
         <div class="mt-6 flex flex-wrap items-center gap-x-6 gap-y-4">
@@ -50,22 +77,43 @@ const INSTAGRAM_URL = "https://www.instagram.com/raasracingteam/";
             data-team-instagram
             class="inline-flex items-center justify-center gap-2.5 rounded-xl bg-white text-team-night px-5 py-3 font-head text-[14px] font-bold shadow-[0_6px_24px_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
           >
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
               <rect x="3" y="3" width="18" height="18" rx="5"></rect>
               <circle cx="12" cy="12" r="4"></circle>
-              <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"></circle>
+              <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"
+              ></circle>
             </svg>
             Follow @raasracingteam
             <span class="sr-only">(opens Instagram in a new tab)</span>
           </a>
 
-          <!-- Team sign-off -->
-          <div class="flex items-center gap-3">
-            <Signature aria-hidden="true" class="h-10 w-auto text-white -rotate-6" />
-            <span class="font-head text-[10px] font-semibold tracking-[0.14em] uppercase text-white/55 leading-tight">
-              Autograph value:<br />€0.00
+          <!-- Team sponsor: Raas Bikes, the bike repair shop behind the team -->
+          <a
+            href={SPONSOR_URL}
+            target="_blank"
+            rel="sponsored noopener noreferrer"
+            data-team-sponsor
+            class="group flex items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+          >
+            <RaasBikes aria-hidden="true" class="h-10 w-auto text-white -rotate-6" />
+            <span class="font-head leading-tight">
+              <span class="block text-[10px] font-semibold tracking-[0.14em] uppercase text-white/55">
+                Team sponsor
+              </span>
+              <span class="block text-[13px] font-semibold text-white/85 group-hover:text-white transition-colors">
+                raasbikes.cc <span aria-hidden="true">↗</span>
+              </span>
+              <span class="sr-only">Raas Bikes, opens in a new tab</span>
             </span>
-          </div>
+          </a>
         </div>
       </div>
     </div>
@@ -81,29 +129,127 @@ const INSTAGRAM_URL = "https://www.instagram.com/raasracingteam/";
     filter: blur(26px);
     opacity: 0.9;
   }
-  .blob-cream  { width: 30%; height: 70%; right: 18%; top: -22%; background: #d8cba3; opacity: 0.8; transform: rotate(-20deg); }
-  .blob-cream2 { width: 12%; height: 30%; right: 4%; top: 6%; background: #e7dfc4; opacity: 0.55; }
-  .blob-teal   { width: 26%; height: 62%; right: -6%; top: 30%; background: var(--color-team-lagoon); }
-  .blob-teal2  { width: 14%; height: 34%; right: 40%; top: 10%; background: var(--color-team-teal); opacity: 0.8; }
-  .blob-blue   { width: 30%; height: 60%; right: 26%; bottom: -30%; background: #1f3f78; }
-  .blob-mint   { width: 11%; height: 26%; right: 22%; top: 42%; background: var(--color-team-mint); opacity: 0.85; }
-  .blob-green  { width: 22%; height: 50%; right: 50%; top: -20%; background: #2e6a4c; opacity: 0.55; }
+  .blob-cream {
+    width: 30%;
+    height: 70%;
+    right: 18%;
+    top: -22%;
+    background: #d8cba3;
+    opacity: 0.8;
+    transform: rotate(-20deg);
+  }
+  .blob-cream2 {
+    width: 12%;
+    height: 30%;
+    right: 4%;
+    top: 6%;
+    background: #e7dfc4;
+    opacity: 0.55;
+  }
+  .blob-teal {
+    width: 26%;
+    height: 62%;
+    right: -6%;
+    top: 30%;
+    background: var(--color-team-lagoon);
+  }
+  .blob-teal2 {
+    width: 14%;
+    height: 34%;
+    right: 40%;
+    top: 10%;
+    background: var(--color-team-teal);
+    opacity: 0.8;
+  }
+  .blob-blue {
+    width: 30%;
+    height: 60%;
+    right: 26%;
+    bottom: -30%;
+    background: #1f3f78;
+  }
+  .blob-mint {
+    width: 11%;
+    height: 26%;
+    right: 22%;
+    top: 42%;
+    background: var(--color-team-mint);
+    opacity: 0.85;
+  }
+  .blob-green {
+    width: 22%;
+    height: 50%;
+    right: 50%;
+    top: -20%;
+    background: #2e6a4c;
+    opacity: 0.55;
+  }
   /* dark gap between patches, as on the jersey */
-  .blob-dark   { width: 14%; height: 40%; right: 12%; top: 34%; background: var(--color-team-night); opacity: 0.8; }
+  .blob-dark {
+    width: 14%;
+    height: 40%;
+    right: 12%;
+    top: 34%;
+    background: var(--color-team-night);
+    opacity: 0.8;
+  }
 
   .scrim {
-    background: linear-gradient(to right, var(--color-team-night) 0%, rgb(1 13 20 / 0.8) 45%, transparent 75%);
+    background: linear-gradient(
+      to right,
+      var(--color-team-night) 0%,
+      rgb(1 13 20 / 0.8) 45%,
+      transparent 75%
+    );
   }
 
   @media (max-width: 767px) {
-    .blob-cream { width: 90%; height: 55%; right: -30%; top: auto; bottom: -12%; }
-    .blob-teal  { width: 75%; height: 45%; right: -35%; top: auto; bottom: 18%; }
-    .blob-blue  { width: 70%; height: 40%; right: 35%; bottom: -20%; }
-    .blob-mint  { width: 30%; height: 20%; right: 20%; top: auto; bottom: 22%; }
-    .blob-green, .blob-cream2, .blob-teal2, .blob-dark { display: none; }
-    .scrim {
-      background: linear-gradient(to bottom, var(--color-team-night) 0%, rgb(1 13 20 / 0.7) 55%, rgb(1 13 20 / 0.1) 100%);
+    .blob-cream {
+      width: 90%;
+      height: 55%;
+      right: -30%;
+      top: auto;
+      bottom: -12%;
     }
+    .blob-teal {
+      width: 75%;
+      height: 45%;
+      right: -35%;
+      top: auto;
+      bottom: 18%;
+    }
+    .blob-blue {
+      width: 70%;
+      height: 40%;
+      right: 35%;
+      bottom: -20%;
+    }
+    .blob-mint {
+      width: 30%;
+      height: 20%;
+      right: 20%;
+      top: auto;
+      bottom: 22%;
+    }
+    .blob-green,
+    .blob-cream2,
+    .blob-teal2,
+    .blob-dark {
+      display: none;
+    }
+    .scrim {
+      background: linear-gradient(
+        to bottom,
+        var(--color-team-night) 0%,
+        rgb(1 13 20 / 0.7) 55%,
+        rgb(1 13 20 / 0.1) 100%
+      );
+    }
+  }
+
+  /* Lifts the white wordmark off the light patches of the print */
+  .wordmark-print {
+    filter: drop-shadow(0 4px 18px rgb(1 13 20 / 0.55));
   }
 
   /* Printed-fabric grain (inline SVG noise; data: URIs are allowed by the CSP) */
@@ -112,14 +258,20 @@ const INSTAGRAM_URL = "https://www.instagram.com/raasracingteam/";
     mix-blend-mode: overlay;
     opacity: 0.5;
   }
-
 </style>
 
 <script>
   import { track } from "../lib/consent";
 
-  // Plain link, no Instagram embed: nothing loads from Instagram until someone clicks
-  document.querySelector("[data-team-instagram]")?.addEventListener("click", () => {
-    track("team_instagram_click");
-  });
+  // Plain links, no embeds: nothing loads from Instagram or the sponsor until someone clicks
+  document
+    .querySelector("[data-team-instagram]")
+    ?.addEventListener("click", () => {
+      track("team_instagram_click");
+    });
+  document
+    .querySelector("[data-team-sponsor]")
+    ?.addEventListener("click", () => {
+      track("team_sponsor_click");
+    });
 </script>
