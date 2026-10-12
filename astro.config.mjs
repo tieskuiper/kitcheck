@@ -14,5 +14,9 @@ export default defineConfig({
     optimizeDeps: {
       include: ['leaflet'],
     },
+    build: {
+      // MapLibre (~1 MB) is lazy-loaded only when a GPX route map is shown
+      chunkSizeWarningLimit: 1100,
+    },
   }
 })

@@ -21,20 +21,49 @@ export interface CityResult {
   lon:  number
 }
 
+// Round to 2 decimals (~1 km): plenty for a forecast or a place name, and the
+// exact position of the rider never leaves the browser (data minimisation)
+const coarse = (deg: number) => Math.round(deg * 100) / 100
+
+const HOURLY_FIELDS = [
+  'temperature_2m',
+  'apparent_temperature',
+  'windspeed_10m',
+  'winddirection_10m',
+  'precipitation_probability',
+  'weathercode',
+  'cloudcover',
+  'relativehumidity_2m',
+].join(',')
+
+/**
+ * Forecasts for several points in one request (used along a GPX route).
+ * Passing the route's own elevation matters: with rounded coordinates the terrain model
+ * can be hundreds of metres off in hilly areas, which is several degrees.
+ */
+export async function fetchForecasts(points: { lat: number; lon: number; ele?: number }[]) {
+  const withEle = points.every(p => p.ele !== undefined)
+  const params = new URLSearchParams({
+    latitude:        points.map(p => coarse(p.lat)).join(','),
+    longitude:       points.map(p => coarse(p.lon)).join(','),
+    hourly:          HOURLY_FIELDS,
+    forecast_days:   '7',
+    wind_speed_unit: 'kmh',
+    timezone:        'auto',
+  })
+  if (withEle) params.set('elevation', points.map(p => Math.round(p.ele!)).join(','))
+  const res = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`)
+  if (!res.ok) throw new Error('Weather data unavailable')
+  const data = await res.json()
+  // One point → a single object, several → an array
+  return Array.isArray(data) ? data : [data]
+}
+
 export async function fetchForecast(lat: number, lon: number) {
   const params = new URLSearchParams({
-    latitude:      String(lat),
-    longitude:     String(lon),
-    hourly:        [
-      'temperature_2m',
-      'apparent_temperature',
-      'windspeed_10m',
-      'winddirection_10m',
-      'precipitation_probability',
-      'weathercode',
-      'cloudcover',
-      'relativehumidity_2m',
-    ].join(','),
+    latitude:      String(coarse(lat)),
+    longitude:     String(coarse(lon)),
+    hourly:        HOURLY_FIELDS,
     forecast_days:   '7',
     wind_speed_unit: 'kmh',
     timezone:        'auto',
@@ -47,7 +76,7 @@ export async function fetchForecast(lat: number, lon: number) {
 export async function reverseGeocode(lat: number, lon: number): Promise<string> {
   try {
     const res = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`,
+      `https://nominatim.openstreetmap.org/reverse?lat=${coarse(lat)}&lon=${coarse(lon)}&zoom=10&format=json`,
       { headers: { 'Accept-Language': 'en' } }
     )
     const data = await res.json()

@@ -25,7 +25,7 @@ import SiteFooter from "../components/SiteFooter.astro";
           Cookie policy
         </h1>
         <p class="text-text-mid leading-relaxed">
-          Last updated: April 2026
+          Last updated: October 2026
         </p>
       </div>
     </div>
@@ -35,81 +35,86 @@ import SiteFooter from "../components/SiteFooter.astro";
     <div class="container py-14 md:py-18">
       <div class="max-w-2xl prose-custom">
 
-        <h2>What this page covers</h2>
+        <h2>In short</h2>
         <p>
-          This page explains what cookies and browser storage kitcheck.cc sets, what they
-          are used for, and how you can control them.
+          Without your consent, kitcheck.cc sets no cookies. Analytics cookies from Google
+          Analytics are only placed after you click <em>Accept</em>.
         </p>
 
-        <h2>Your consent preference</h2>
-        <p>
-          When you first visit kitcheck.cc, a banner asks whether you are happy for us to
-          use analytics cookies. Analytics are off by default and only turned on if you
-          click Accept.
-        </p>
-        <p>
-          Your choice is saved in browser local storage under the key
-          <code>kitcheck-consent</code>. It has no expiry date but is cleared if you
-          clear your browser data for this site.
-        </p>
-        <p>
-          To change your choice, clear the <code>kitcheck-consent</code> entry from your
-          browser's local storage and reload the page — the banner will reappear.
-        </p>
+        <div class="consent-box">
+          <p class="consent-status">Your current choice: <strong id="consent-status">…</strong></p>
+          <button type="button" data-consent-open class="btn-secondary">Change cookie settings</button>
+        </div>
 
-        <h2>Analytics cookies (optional)</h2>
+        <h2>Storage that doesn't need consent</h2>
         <p>
-          These cookies are only set after you accept. They are provided by Google
-          Analytics 4 (GA4) to help us understand how people use the calculator.
+          These only remember choices you make yourself, stay in your browser and are never
+          sent to us or anyone else.
         </p>
-
         <div class="cookie-table-wrap">
           <table>
-            <thead>
+            <thead><tr><th>Name</th><th>Type</th><th>Purpose</th><th>Expires</th></tr></thead>
+            <tbody>
               <tr>
-                <th>Cookie</th>
-                <th>Purpose</th>
-                <th>Expires</th>
+                <td><code>kitcheck-consent</code></td>
+                <td>Local storage</td>
+                <td>Remembers whether you accepted or declined analytics, and when</td>
+                <td>12 months, then we ask again</td>
               </tr>
-            </thead>
+              <tr>
+                <td><code>kitcheck-speed</code></td>
+                <td>Local storage</td>
+                <td>Remembers the average speed you set for GPX routes, so your next route uses it too</td>
+                <td>Until you choose <em>Use estimate</em> or clear your browser data</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Our host Cloudflare may set a security cookie (such as <code>__cf_bm</code>) when it
+          needs to tell real visitors from bots. It is strictly necessary and contains no
+          analytics data.
+        </p>
+
+        <h2>Analytics cookies (only with consent)</h2>
+        <p>
+          Set by Google Analytics 4 after you click <em>Accept</em>, to recognise a returning
+          browser and measure how the calculator is used. Advertising features are switched off.
+        </p>
+        <div class="cookie-table-wrap">
+          <table>
+            <thead><tr><th>Name</th><th>Provider</th><th>Purpose</th><th>Expires</th></tr></thead>
             <tbody>
               <tr>
                 <td><code>_ga</code></td>
-                <td>Distinguishes unique visitors</td>
+                <td>Google</td>
+                <td>Distinguishes browsers with a random ID</td>
                 <td>2 years</td>
               </tr>
               <tr>
                 <td><code>_ga_FSYJ9GNCNP</code></td>
-                <td>Maintains session state for this GA4 property</td>
+                <td>Google</td>
+                <td>Keeps track of the current session</td>
                 <td>2 years</td>
               </tr>
             </tbody>
           </table>
         </div>
-
         <p>
-          Google Analytics uses anonymised IP addresses. The data collected includes pages
-          visited, approximate location (city level), device type, and referral source.
-          No personally identifiable information is stored.
+          If you later choose <em>Decline</em>, Google Analytics stops immediately and these
+          cookies are deleted.
         </p>
+
 
         <h2>No other cookies</h2>
         <p>
-          kitcheck.cc does not set any other cookies. There are no advertising,
-          social-media, or tracking pixels on the site.
+          There are no advertising, social media or tracking pixels on kitcheck.cc. Fonts are
+          served from our own domain, and the weather and map services we use don't set cookies.
         </p>
 
-        <h2>Third-party resources</h2>
+        <h2>Questions</h2>
         <p>
-          The site loads fonts from Google Fonts. Google may set its own cookies or
-          collect data under its own privacy policy when serving these fonts.
-        </p>
-
-        <h2>More information</h2>
-        <p>
-          See our <a href="/privacy">Privacy policy</a> for full details on how we handle
-          data. If you have questions, contact us at
-          <a href="mailto:privacy@kitcheck.cc">privacy@kitcheck.cc</a>.
+          Contact <a href="mailto:privacy@kitcheck.cc">privacy@kitcheck.cc</a>.
         </p>
 
       </div>
@@ -117,6 +122,17 @@ import SiteFooter from "../components/SiteFooter.astro";
   </section>
 
   <SiteFooter />
+
+  <script>
+    import { getConsent } from '../lib/consent'
+    const el = document.getElementById('consent-status')!
+    const render = () => {
+      const c = getConsent()
+      el.textContent = c === 'accepted' ? 'Analytics accepted' : c === 'declined' ? 'Analytics declined' : 'No choice made yet'
+    }
+    render()
+    window.addEventListener('kitcheck:consent-change', render)
+  </script>
 </Base>
 
 <style>
@@ -149,6 +165,22 @@ import SiteFooter from "../components/SiteFooter.astro";
     padding: 1px 5px;
     color: var(--color-text);
   }
+  .consent-box {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: #fff;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin: 0.5rem 0 1.5rem;
+  }
+  .prose-custom .consent-status {
+    margin: 0;
+    color: var(--color-text);
+  }
   .cookie-table-wrap {
     overflow-x: auto;
     margin-bottom: 1rem;
@@ -157,6 +189,14 @@ import SiteFooter from "../components/SiteFooter.astro";
     width: 100%;
     border-collapse: collapse;
     font-size: 0.875rem;
+  }
+  th,
+  td {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+  td code {
+    word-break: break-all;
   }
   th {
     text-align: left;
@@ -171,6 +211,7 @@ import SiteFooter from "../components/SiteFooter.astro";
   }
   td {
     padding: 10px 12px;
+    font-size: 0.8125rem;
     border-bottom: 1px solid var(--color-border);
     color: var(--color-text-mid);
     vertical-align: top;

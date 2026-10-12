@@ -7,6 +7,54 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Kit card shows "Feels like X°C on the bike" instead of a 0–110 score; condition labels now use the same bands as the kit
+- Gloves and overshoes are chosen for the whole ride (nobody carries a second pair): the warmest pair needed, with a note if that's because of later cold or rain
+- Default GPX speeds raised to road-cycling values: easy 22, moderate 26, hard 30, race 35 km/h on the flat (was 18/23/28/33)
+- Kit notes say "take a … with you" instead of "pack a … for the return" (the cold part can be a summit, not only the way back)
+- Guide turned into a hub linking to the temperature pages; per-temperature FAQ entries moved to those pages
+- Homepage H1 and title focus on the tool ("What to wear cycling, sorted before you ride"); guide title targets "what to wear cycling by temperature"
+- `WebApplication` structured data only on the homepage instead of every page
+- Switched from npm to pnpm 11, with a 24-hour minimum release age and an explicit allowlist for install scripts
+- Upgraded MapLibre GL to v6 (worker bundled separately)
+- Type packages moved to `devDependencies`; Node pinned via `.node-version`
+- Hashed assets (`/_astro/*`) cached for a year; added HSTS and Cross-Origin-Opener-Policy headers; removed deprecated `X-XSS-Protection`
+- Upgraded to Astro 7, `@astrojs/react` 7, React 19.3 and Tailwind CSS 4.3
+- Route map now uses OpenFreeMap vector tiles (MapLibre GL) with automatic fallback to OpenStreetMap raster tiles
+- Calculator split into focused components under `src/components/calculator/`, with state in a `useKitCalculator` hook
+- README rewritten for KitCheck (setup, license key, structure, deployment)
+
+### Privacy
+- Google Analytics now loads only after explicit consent; before that no request is made to Google
+- Consent can be changed or withdrawn any time via "Cookie settings" in the footer; withdrawing deletes GA cookies
+- Consent expires after 12 months and is re-asked when the cookie policy changes
+- Cookie banner: equal Accept/Decline buttons, accessible dialog, clearer text
+- Fonts self-hosted instead of loaded from Google Fonts
+- Coordinates rounded to ~1 km before being sent to Open-Meteo and Nominatim
+- Privacy policy and cookie policy rewritten to match exactly what the site does
+
+### Added
+- Chance of showers (40–59%): packable rain jacket and light rain overshoes as options, with a "chance of showers" note
+- Heat note from 27°C: extra bottle and sunscreen
+- Note when the rain stops during the ride: the rain jacket can go in your pocket
+- GPX routes: wind is judged against your riding direction (a headwind counts fully, a tailwind barely), and the longest headwind stretch and the biggest cool descent show up in "Along your route"
+- GPX route map: the line is coloured by feels-like temperature along the way, with a pin for the coldest point and where rain starts, and a legend under the map
+- GPX routes: forecast along the whole route instead of only at the start. Points every ~6 km plus the summit, each at the time you'll get there and at the route's own altitude (one request). The kit advice and its "changes during the ride" notes use this, and the kit card shows the coldest point and where rain starts
+- GPX routes: ride duration now comes from an average speed you can adjust ("Adjust" under the estimate). Recorded rides (Strava/Garmin GPX with timestamps) use their real moving time; a speed you set is remembered for your next route; "Use estimate" goes back to the intensity-based estimate
+- Temperature guide pages for 0, 5, 10, 15, 20 and 25°C (with °F), generated from the calculator's own kit logic, each showing what changes with effort, wind, rain and warmth tendency
+- Raas Racing Team banner below the calculator in the style of the team jersey (blurred colour print with grain), with the team wordmark and R·R·T emblem, a link to the team's Instagram and a sponsor link to Raas Bikes (plain links, no embeds or third-party tracking)
+- GA4 events for calculator usage (location method, settings, recommendation shown), sent only with consent
+
+### Fixed
+- Rain kit now scales with temperature: waterproof jacket, gloves and winter overshoes in cold rain; packable jacket, optional light gloves and light rain overshoes in mild rain; jacket optional in warm rain (was winter gloves and thermal socks even at 25°C)
+- No more leg warmers under thermal bib tights
+- Effort and warmth tendency only partly lighten gloves, overshoes and head cover (racing at 0°C no longer suggests light gloves and toe covers)
+- Wind no longer counted twice: the forecast feels-like already includes wind chill, so the extra riding-into-the-wind adjustment is smaller
+- Route map showed "API key required" watermarks after CARTO stopped serving keyless tiles
+- Google Analytics requests to regional endpoints (`region1.google-analytics.com`) were blocked by the CSP
+- City suggestion dropdown reopened after searching or selecting a city
+- `http-cache-semantics` vulnerability (via `npm audit fix`)
+
 ## [1.2.0] - 2026-04-29
 
 ### Added

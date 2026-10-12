@@ -3,54 +3,52 @@
 
 <div
   id="cookie-banner"
+  role="dialog"
+  aria-modal="false"
+  aria-labelledby="cookie-banner-title"
+  aria-describedby="cookie-banner-text"
   class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-border shadow-[0_-4px_24px_rgba(0,0,0,0.06)] px-4 py-4 hidden"
 >
   <div class="container">
     <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
-      <p class="text-text-mid text-sm leading-relaxed flex-1">
-        We use analytics cookies to understand how people use kitcheck.cc. No personal data is sold or shared.
-        <a href="/cookies" class="underline hover:opacity-75 transition-opacity">Cookie policy</a>
-      </p>
+      <div class="flex-1">
+        <p id="cookie-banner-title" class="font-head text-sm font-bold text-text mb-1">Analytics cookies</p>
+        <p id="cookie-banner-text" class="text-text-mid text-sm leading-relaxed">
+          Can we use Google Analytics to see how the calculator is used? It sets cookies and
+          shares usage data with Google. You can change your choice any time via <em>Cookie settings</em> at the bottom of each page. <a href="/cookies/" class="underline hover:opacity-75 transition-opacity">Cookie policy</a>
+        </p>
+      </div>
+      <!-- Equal weight on purpose: declining must be as easy as accepting -->
       <div class="flex gap-2 shrink-0 justify-end">
-        <button
-          id="cookie-decline"
-          class="px-4 py-2 rounded-lg border border-border text-text-mid text-sm font-head font-semibold hover:border-text-mid hover:text-text transition-colors cursor-pointer bg-transparent"
-        >
-          Decline
-        </button>
-        <button
-          id="cookie-accept"
-          class="px-4 py-2 rounded-lg bg-coral text-white text-sm font-head font-semibold hover:opacity-85 transition-opacity cursor-pointer border-0"
-        >
-          Accept
-        </button>
+        <button id="cookie-decline" type="button" class="btn-secondary min-w-[96px]">Decline</button>
+        <button id="cookie-accept" type="button" class="btn-secondary min-w-[96px]">Accept</button>
       </div>
     </div>
   </div>
 </div>
 
-<script is:inline>
-  (function () {
-    var banner = document.getElementById('cookie-banner');
-    var consent = localStorage.getItem('kitcheck-consent');
+<script>
+  import { getConsent, setConsent, loadAnalytics, type ConsentStatus } from '../lib/consent'
 
-    if (consent === 'accepted') {
-      gtag('consent', 'update', { analytics_storage: 'granted' });
-    }
+  const banner = document.getElementById('cookie-banner')!
+  const acceptBtn = document.getElementById('cookie-accept')!
+  const declineBtn = document.getElementById('cookie-decline')!
 
-    if (consent === null) {
-      banner.style.display = 'block';
-    }
+  const show = (focus: boolean) => {
+    banner.classList.remove('hidden')
+    if (focus) declineBtn.focus()
+  }
+  const choose = (status: ConsentStatus) => {
+    setConsent(status)
+    banner.classList.add('hidden')
+  }
 
-    document.getElementById('cookie-accept').addEventListener('click', function () {
-      localStorage.setItem('kitcheck-consent', 'accepted');
-      gtag('consent', 'update', { analytics_storage: 'granted' });
-      banner.style.display = 'none';
-    });
+  const consent = getConsent()
+  if (consent === 'accepted') loadAnalytics()
+  else if (consent === null) show(false)
 
-    document.getElementById('cookie-decline').addEventListener('click', function () {
-      localStorage.setItem('kitcheck-consent', 'declined');
-      banner.style.display = 'none';
-    });
-  })();
+  acceptBtn.addEventListener('click', () => choose('accepted'))
+  declineBtn.addEventListener('click', () => choose('declined'))
+  window.addEventListener('kitcheck:consent-open', () => show(true))
+  banner.addEventListener('keydown', e => { if (e.key === 'Escape' && getConsent() !== null) banner.classList.add('hidden') })
 </script>

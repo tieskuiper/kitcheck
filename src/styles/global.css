@@ -19,6 +19,15 @@
   --color-coral: #FF5130;
   --color-orange: #FF7A1A;
 
+  /* ── Raas Racing Team (design spec) — used by TeamBanner.astro ─────── */
+  --color-team-night: #010D14;   /* base */
+  --color-team-forest: #052117;  /* second-biggest area */
+  --color-team-petrol: #083B3D;
+  --color-team-teal: #105E6D;
+  --color-team-lagoon: #35898C;  /* 4.8:1 on night — OK for small accent text */
+  --color-team-moss: #3F5546;
+  --color-team-mint: #8FD6C4;   /* light print colour from the jersey */
+
   /* ── Border ─────────────────────────────────────────────────────────── */
   --color-border: #E5E4DF;
 
