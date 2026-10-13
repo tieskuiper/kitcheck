@@ -1,4 +1,5 @@
 import { useState, useRef, useMemo, useEffect } from 'react'
+import { preferredUnit, saveUnit } from '../../lib/units'
 import {
   fetchForecast, reverseGeocode, searchCity,
   getHourlyRange, getDayLabels,
@@ -272,15 +273,16 @@ export function useKitCalculator() {
     return () => window.removeEventListener('kitcheck:geolocate', handler)
   }, [])
 
-  // US visitors start in °F (same check as the header toggle in index.astro)
+  // °C unless chosen before or in a US timezone (same check as the header toggle)
   useEffect(() => {
-    if (navigator.language === 'en-US') setUnit('F')
+    setUnit(preferredUnit())
   }, [])
 
   useEffect(() => {
     const handler = (e: Event) => {
       const next = (e as CustomEvent<{ unit: Unit }>).detail.unit
       setUnit(next)
+      saveUnit(next)
       track('unit_change', { unit: next })
     }
     window.addEventListener('kitcheck:unit', handler)

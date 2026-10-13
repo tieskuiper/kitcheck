@@ -12,7 +12,7 @@ KitCheck is a free cycling kit calculator. Riders enter a location (or upload a 
 - **Recommendation** — comfort score, kit per zone (head, upper body, hands, lower body, feet), required vs optional items, and notes when conditions change during the ride
 - **Route map** — GPX route with start/end markers and wind direction
 - **Guide** — `/guide/` is the hub, with pages per temperature in °C and °F, a temperature chart, a page per kit item (arm warmers, overshoes…) and per condition (rain, wind, winter, heat). Kit lists, ranges and quick answers are generated from `kitLogic.ts`, so the guide always matches the calculator
-- **Units** — °C by default, °F for visitors whose browser language is `en-US` (calculator and chart)
+- **Units** — °C by default; °F when the device's timezone is in the US, or when the visitor picked °F before (`lib/units.ts`, stored as `kitcheck-unit`). Browser language is ignored: many Europeans browse in en-US
 
 ## Tech stack
 
@@ -79,7 +79,9 @@ src/
 │   │   ├── DayTabs.tsx, WeatherChips.tsx, ui.tsx
 │   │   ├── constants.tsx        # tier colours, intensity options, zone icons
 │   │   └── format.ts            # unit + time formatting (°C/°F, km/mi)
-│   ├── guide/                   # guide templates: TempPage, ItemPage, ConditionPage + KitTable, FaqList…
+│   ├── guide/                   # guide templates (Temp/Item/ConditionPage), ChartExplorer (React island),
+│   │                            # EffortRanges, KitTable, FaqList
+│   ├── ui/                      # PageHero, SectionHead, AnswerCard, CtaBand: the page building blocks
 │   ├── SiteHeader.astro, SiteFooter.astro, CookieBanner.astro
 ├── layouts/Base.astro           # <head>, SEO meta, hreflang, one JSON-LD @graph per page
 ├── lib/
@@ -113,7 +115,8 @@ The goal: rank in Google and Bing, and be the source AI answers (Gemini/AI Overv
   - temperature pages in °C (`what-to-wear-cycling-10-degrees`) and °F (`what-to-wear-cycling-50-degrees-fahrenheit`), each with its own intro;
   - kit item pages (`when-to-wear-arm-warmers`…): range per effort level from `kitRanges.ts`;
   - condition pages (rain, wind, winter, heat) with a generated kit table.
-- **Chart** (`/guide/cycling-temperature-chart/`): every temperature in one table, °C and °F. Meant to be linked to and quoted.
+- **Chart** (`/guide/cycling-temperature-chart/`): interactive (temperature slider, effort, wind/rain, range bars per item), computed in the browser from `kitLogic`; the full table stays in the HTML (collapsed) for search engines. Meant to be linked to and quoted.
+- **FAQs** are collapsed with the first one open: crawlers read collapsed answers too.
 - **How it works / About:** the method in plain text and who's behind it (trust signals for Google and AI tools).
 - **Every article** starts with a generated "Short answer", ends with FAQs, and has `Article` + `BreadcrumbList` + `FAQPage` structured data in one `@graph` with the site's `WebSite`/`Organization`/`Person` nodes (`src/lib/site.ts`). Bump `CONTENT_UPDATED` there when guide content changes.
 - **`/llms.txt`** is generated at build time: summary, quick reference and links.

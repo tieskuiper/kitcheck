@@ -3,7 +3,7 @@
  * Item pages, the chart and llms.txt quote these, so the numbers always match the calculator.
  */
 import { getKitRecommendation, type Intensity, type KitResult, type RiderInput } from './kitLogic'
-import { BASELINE, ZONES } from './guideData'
+import { BASELINE, ZONES } from './guideBase'
 
 export type ItemStatus = 'required' | 'optional' | null
 

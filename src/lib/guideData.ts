@@ -4,14 +4,9 @@
  * temperature, plus what changes with effort, wind, rain and warmth tendency.
  */
 import { getKitRecommendation, scoreLabel, type KitResult, type RiderInput, type ZoneItem } from './kitLogic'
+import { BASELINE, ZONES, type Zone } from './guideBase'
 
-export const ZONES = ['head', 'torso', 'hands', 'legs', 'feet'] as const
-export type Zone = typeof ZONES[number]
-
-/** Reference conditions for every guide page: moderate effort, light wind, dry, average rider */
-export const BASELINE: Omit<RiderInput, 'apparentTemp'> = {
-  windspeed: 10, precipProb: 0, warmthBias: 0, intensity: 'moderate',
-}
+export { BASELINE, ZONES, type Zone }
 
 export const toF = (c: number) => Math.round(c * 9 / 5 + 32)
 export const fToC = (f: number) => (f - 32) * 5 / 9

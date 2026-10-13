@@ -9,6 +9,9 @@ export interface Faq { q: string; a: string }
 
 export interface KitItemPage {
   slug: string
+  /** Short label for navigation and cards ("Arm warmers") */
+  label: string
+  zone: 'head' | 'torso' | 'hands' | 'legs' | 'feet'
   /** Lower-case item name as used in sentences ("arm warmers") */
   name: string
   /** Plural or mass noun? Decides "they're" vs "it's" in generated sentences */
@@ -29,6 +32,8 @@ export interface KitItemPage {
 export const KIT_ITEM_PAGES: KitItemPage[] = [
   {
     slug: 'when-to-wear-arm-warmers',
+    label: 'Arm warmers',
+    zone: 'torso',
     name: 'arm warmers',
     plural: true,
     match: n => n === 'Arm warmers',
@@ -51,6 +56,8 @@ export const KIT_ITEM_PAGES: KitItemPage[] = [
   },
   {
     slug: 'when-to-wear-knee-warmers',
+    label: 'Knee warmers',
+    zone: 'legs',
     name: 'knee warmers',
     plural: true,
     match: n => n === 'Knee warmers',
@@ -73,6 +80,8 @@ export const KIT_ITEM_PAGES: KitItemPage[] = [
   },
   {
     slug: 'when-to-wear-leg-warmers',
+    label: 'Leg warmers',
+    zone: 'legs',
     name: 'leg warmers',
     plural: true,
     match: n => n === 'Leg warmers',
@@ -95,6 +104,8 @@ export const KIT_ITEM_PAGES: KitItemPage[] = [
   },
   {
     slug: 'bib-tights-or-bib-shorts',
+    label: 'Bib tights or shorts',
+    zone: 'legs',
     name: 'bib tights',
     plural: true,
     match: n => n.toLowerCase().includes('bib tights'),
@@ -117,6 +128,8 @@ export const KIT_ITEM_PAGES: KitItemPage[] = [
   },
   {
     slug: 'when-to-wear-a-base-layer-cycling',
+    label: 'Base layer',
+    zone: 'torso',
     name: 'a base layer',
     plural: false,
     match: n => n.toLowerCase().includes('base layer'),
@@ -139,6 +152,8 @@ export const KIT_ITEM_PAGES: KitItemPage[] = [
   },
   {
     slug: 'when-to-wear-overshoes-cycling',
+    label: 'Overshoes',
+    zone: 'feet',
     name: 'overshoes',
     plural: true,
     match: n => /overshoes|toe covers/i.test(n),
@@ -161,6 +176,8 @@ export const KIT_ITEM_PAGES: KitItemPage[] = [
   },
   {
     slug: 'when-to-wear-winter-cycling-gloves',
+    label: 'Winter gloves',
+    zone: 'hands',
     name: 'winter gloves',
     plural: true,
     match: n => /winter gloves/i.test(n),
@@ -183,6 +200,8 @@ export const KIT_ITEM_PAGES: KitItemPage[] = [
   },
   {
     slug: 'when-to-wear-a-cycling-gilet',
+    label: 'Gilet',
+    zone: 'torso',
     name: 'a gilet',
     plural: false,
     match: n => n === 'Wind gilet',
@@ -209,6 +228,12 @@ export const KIT_ITEM_PAGES: KitItemPage[] = [
 
 export interface ConditionPage {
   slug: string
+  label: string
+  icon: 'rain' | 'wind' | 'snow' | 'sun'
+  /** One line for cards */
+  teaser: string
+  /** Three key numbers for the hero — they mirror constants in kitLogic, update them together */
+  facts: { value: string; text: string }[]
   title: string
   metaTitle: string
   description: string
@@ -224,6 +249,14 @@ export interface ConditionPage {
 export const CONDITION_PAGES: ConditionPage[] = [
   {
     slug: 'what-to-wear-cycling-in-the-rain',
+    label: 'Rain',
+    icon: 'rain',
+    teaser: 'Rain kit scaled to the temperature: when you need waterproofs and when a packable jacket will do.',
+    facts: [
+      { value: '40%', text: 'chance of rain: a packable rain jacket as an option' },
+      { value: '60%', text: 'rain likely: full rain kit, scaled to the temperature' },
+      { value: '15°C', text: '59°F: below this at a moderate pace, a proper waterproof jacket' },
+    ],
     title: 'What to wear cycling in the rain',
     metaTitle: 'What to Wear Cycling in the Rain (by Temperature) | kitcheck.cc',
     description: 'Rain kit for road cycling, scaled to the temperature: when you need a waterproof jacket, gloves and overshoes, and when a packable jacket is enough.',
@@ -270,6 +303,14 @@ export const CONDITION_PAGES: ConditionPage[] = [
   },
   {
     slug: 'what-to-wear-cycling-in-wind',
+    label: 'Wind',
+    icon: 'wind',
+    teaser: 'Why wind makes it feel colder on the bike, and the one layer that helps most.',
+    facts: [
+      { value: '25 km/h', text: '16 mph: from here a wind gilet is suggested' },
+      { value: 'GPX', text: 'routes: wind is judged against your riding direction' },
+      { value: '1 step', text: 'warmer kit in strong wind, in the cool range' },
+    ],
     title: 'What to wear cycling in the wind',
     metaTitle: 'What to Wear Cycling in Strong Wind | kitcheck.cc',
     description: 'How wind changes what to wear on the bike: why it feels colder than the forecast, when a gilet helps, and what changes at each temperature.',
@@ -309,6 +350,14 @@ export const CONDITION_PAGES: ConditionPage[] = [
   },
   {
     slug: 'winter-cycling-clothing',
+    label: 'Winter',
+    icon: 'snow',
+    teaser: 'Layering, gloves and overshoes from 8°C (46°F) down to freezing.',
+    facts: [
+      { value: '3 layers', text: 'base layer, winter jersey, windproof or insulated jacket' },
+      { value: '8°C', text: '46°F: below this, bib tights at a moderate pace' },
+      { value: '1 pair', text: 'gloves and overshoes for the whole ride: start with the warmer pair' },
+    ],
     title: 'Winter cycling clothing: what to wear in the cold',
     metaTitle: 'Winter Cycling Clothing: What to Wear in the Cold | kitcheck.cc',
     description: 'What to wear for road cycling in winter, from 8°C (46°F) down to freezing and below: layers, gloves, overshoes and what changes with effort.',
@@ -350,6 +399,14 @@ export const CONDITION_PAGES: ConditionPage[] = [
   },
   {
     slug: 'what-to-wear-cycling-in-hot-weather',
+    label: 'Heat',
+    icon: 'sun',
+    teaser: 'The lightest kit, plus drinking, sun and timing when it is 25°C (77°F) or more.',
+    facts: [
+      { value: '27°C', text: '81°F feels-like: extra bottle and sunscreen' },
+      { value: '2 bottles', text: 'one with electrolytes on longer rides' },
+      { value: 'Early', text: 'or late: ride outside the hottest hours' },
+    ],
     title: 'What to wear cycling in hot weather',
     metaTitle: 'What to Wear Cycling in Hot Weather | kitcheck.cc',
     description: 'Road cycling in the heat: the lightest kit, sun protection, how much to drink and how to plan a ride when it is 25°C (77°F) or hotter.',

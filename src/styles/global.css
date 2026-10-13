@@ -217,3 +217,17 @@ body {
 .prose-custom a:hover {
   opacity: 0.75;
 }
+
+/* ── Optional bars in the temperature chart: light coral stripes ── */
+.bar-optional {
+  background: repeating-linear-gradient(-45deg, rgb(255 81 48 / 0.35) 0 3px, rgb(255 81 48 / 0.15) 3px 6px);
+}
+
+/* ── Hero background: a fine grid that fades out (PageHero + homepage) ── */
+.hero-grid {
+  background-image:
+    linear-gradient(to right, rgb(17 17 16 / 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(17 17 16 / 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 40%, transparent 100%);
+}

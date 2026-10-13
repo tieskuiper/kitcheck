@@ -2,11 +2,19 @@
 import Base from "../layouts/Base.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
-import Breadcrumb from "../components/guide/Breadcrumb.astro";
+import PageHero from "../components/ui/PageHero.astro";
+import CtaBand from "../components/ui/CtaBand.astro";
 import { abs, breadcrumbNode, AUTHOR } from "../lib/site";
+import { IconBike, IconShieldCheck, IconCloudySun } from "@central-icons-react/round-outlined-radius-3-stroke-2";
 
 const canonical = abs("/about/");
 const description = "kitcheck.cc is a free cycling kit calculator made by a road cyclist in the Netherlands and tested by Raas Racing Team. Who makes it, why, and where the data comes from.";
+
+const facts = [
+  { icon: IconBike, title: "Made by a road cyclist", text: `A free, personal project by ${AUTHOR.name} in the Netherlands. No shop or brand behind it, and no product placement in the advice.` },
+  { icon: IconCloudySun, title: "Real forecast data", text: "Hourly forecasts from Open-Meteo, place names from OpenStreetMap. No API keys, no accounts." },
+  { icon: IconShieldCheck, title: "Private by default", text: "No account, no newsletter, no ads. GPX files never leave your browser, and analytics only run if you accept them." },
+];
 ---
 
 <Base
@@ -27,62 +35,76 @@ const description = "kitcheck.cc is a free cycling kit calculator made by a road
   ]}
 >
   <SiteHeader>
-    <a href="/" class="btn-primary">Use the calculator</a>
+    <a href="/" class="btn-primary max-sm:hidden">Use the calculator</a>
   </SiteHeader>
 
+  <PageHero
+    align="center"
+    eyebrow="About"
+    title="What do I wear <span class='text-coral'>today?</span>"
+    lead="kitcheck.cc answers the question every road cyclist asks before a ride, based on the real forecast and how hard you're going."
+    crumbs={[{ name: "kitcheck.cc", href: "/" }, { name: "About" }]}
+  />
+
   <section class="bg-bg">
-    <div class="container">
-      <div class="max-w-2xl pt-16 md:pt-18 lg:pt-20 pb-10 md:pb-12">
-        <Breadcrumb items={[{ name: "kitcheck.cc", href: "/" }, { name: "About" }]} />
-        <h1 class="font-head text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1] text-text mb-4">About kitcheck.cc</h1>
-        <p class="text-text-mid leading-relaxed">
-          kitcheck.cc answers one question every road cyclist asks before a ride: what do I wear today?
-        </p>
+    <div class="container pb-16 md:pb-20">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        {facts.map((f) => (
+          <div class="bg-white rounded-2xl border border-border p-6">
+            <span class="flex items-center justify-center size-11 rounded-xl bg-coral/10 text-coral mb-5"><f.icon size={22} /></span>
+            <h2 class="font-head font-bold text-lg text-text mb-2">{f.title}</h2>
+            <p class="text-[15px] text-text-mid leading-relaxed">{f.text}</p>
+          </div>
+        ))}
       </div>
     </div>
   </section>
 
-  <section class="bg-bg border-t border-border">
-    <div class="container py-12 md:py-16">
-      <div class="max-w-2xl prose-custom">
-        <h2>Who makes it</h2>
-        <p>
-          kitcheck.cc is a free, personal project by {AUTHOR.name}, a road cyclist in the Netherlands.
-          There is no company or shop behind it, and the kit advice doesn't recommend brands.
-        </p>
-
-        <h2>Tested on the road</h2>
-        <p>
-          <a href="https://www.instagram.com/raasracingteam/" rel="noopener">Raas Racing Team</a>, an amateur road
-          team, checks kitcheck.cc before every ride. The logic is shaped by real rides, like the
-          rule that gloves and overshoes are chosen for the whole ride, because nobody carries a
-          second pair.
-        </p>
-
-        <h2>How it works</h2>
-        <p>
-          The calculator combines the hourly forecast for your ride with your effort level and how
-          warm you naturally run. <a href="/how-it-works/">How it works</a> explains every step,
-          and the <a href="/guide/">kit guide</a> and <a href="/guide/cycling-temperature-chart/">temperature chart</a>
-          use exactly the same logic.
-        </p>
-
-        <h2>Data sources</h2>
-        <ul>
-          <li>Weather forecast and place search: <a href="https://open-meteo.com" rel="noopener">Open-Meteo</a></li>
-          <li>Place names for your location: <a href="https://nominatim.org" rel="noopener">Nominatim</a> (OpenStreetMap)</li>
-          <li>Maps: <a href="https://openfreemap.org" rel="noopener">OpenFreeMap</a> and OpenStreetMap</li>
-        </ul>
-
-        <h2>Free and private</h2>
-        <p>
-          No account, no newsletter, no ads. GPX files never leave your browser, and analytics only
-          run if you accept them. The details are in the <a href="/privacy/">privacy policy</a>.
-          Questions or feedback: <a href="mailto:privacy@kitcheck.cc">privacy@kitcheck.cc</a>.
-        </p>
+  <!-- Team -->
+  <section class="bg-bg">
+    <div class="container pb-16 md:pb-20">
+      <div class="relative overflow-hidden rounded-3xl bg-team-night text-white px-6 py-10 sm:px-10 md:px-14 md:py-14">
+        <div aria-hidden="true" class="pointer-events-none absolute -right-20 -bottom-24 size-[420px] rounded-full bg-team-teal/50 blur-3xl"></div>
+        <div class="relative max-w-2xl">
+          <p class="font-head text-[11px] font-semibold tracking-[0.08em] uppercase text-team-mint mb-3">Rider-tested</p>
+          <h2 class="font-head font-bold text-2xl md:text-3xl tracking-tight mb-3">Raas Racing Team checks it before every ride</h2>
+          <p class="text-white/70 leading-relaxed">
+            An amateur road team that races for fun. The logic is shaped by real rides, like the rule that gloves and
+            overshoes are chosen for the whole ride, because nobody carries a second pair.
+          </p>
+          <a href="https://www.instagram.com/raasracingteam/" target="_blank" rel="noopener" class="inline-flex mt-6 font-head text-sm font-semibold text-team-mint hover:opacity-80">Follow @raasracingteam →</a>
+        </div>
       </div>
     </div>
   </section>
 
+  <section class="bg-white border-y border-border">
+    <div class="container py-16 md:py-20">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14 max-w-5xl">
+        <div>
+          <h2 class="font-head font-bold text-2xl tracking-tight text-text mb-3">How it works</h2>
+          <p class="text-[15px] text-text-mid leading-relaxed">
+            The calculator combines the hourly forecast for your ride with your effort level and how warm you naturally
+            run. <a href="/how-it-works/" class="text-coral">How it works</a> explains every step, and the
+            <a href="/guide/" class="text-coral">kit guide</a> and <a href="/guide/cycling-temperature-chart/" class="text-coral">temperature chart</a>
+            use exactly the same logic.
+          </p>
+        </div>
+        <div>
+          <h2 class="font-head font-bold text-2xl tracking-tight text-text mb-3">Get in touch</h2>
+          <p class="text-[15px] text-text-mid leading-relaxed">
+            Feedback, a question or advice that didn't work for you? Mail
+            <a href="mailto:info@kitcheck.cc" class="text-coral">info@kitcheck.cc</a>. Data sources:
+            <a href="https://open-meteo.com" rel="noopener" class="text-coral">Open-Meteo</a>,
+            <a href="https://nominatim.org" rel="noopener" class="text-coral">Nominatim</a> and
+            <a href="https://openfreemap.org" rel="noopener" class="text-coral">OpenFreeMap</a>. Privacy details are in the
+            <a href="/privacy/" class="text-coral">privacy policy</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand />
   <SiteFooter />
 </Base>
