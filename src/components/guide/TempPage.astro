@@ -5,10 +5,10 @@ import SiteFooter from "../SiteFooter.astro";
 import KitCard from "../calculator/KitCard";
 import FaqList from "./FaqList.astro";
 import PageHero from "../ui/PageHero.astro";
-import AnswerCard from "../ui/AnswerCard.astro";
+import KitChecklist from "../brand/KitChecklist.astro";
+import BibNumber from "../brand/BibNumber.astro";
 import SectionHead from "../ui/SectionHead.astro";
 import CtaBand from "../ui/CtaBand.astro";
-import { TIER_ACCENT } from "../calculator/constants";
 import { IconRacingFlag, IconBlip, IconWind, IconRainy, IconSnowFlakes, IconSun } from "@central-icons-react/round-outlined-radius-3-stroke-2";
 import {
   TEMP_PAGES, FAHRENHEIT_PAGES, ZONE_LABELS, kitAt, conditionsAt, variationsAt,
@@ -97,7 +97,7 @@ const crumbs = [
     lead={intro}
     crumbs={[{ name: "kitcheck.cc", href: "/" }, { name: "Kit guide", href: "/guide/" }, { name: label }]}
   >
-    <div class="w-full"><AnswerCard text={answer} /></div>
+    <div class="w-full"><KitChecklist kit={kit} /></div>
     <Fragment slot="aside">
       <KitCard kitResult={kit} score={score} unit={unit} />
       <p class="text-xs text-text-light mt-3 px-1">
@@ -118,9 +118,9 @@ const crumbs = [
         {variations.map((v) => {
           const Icon = VARIATION_ICONS[v.key];
           return (
-            <div class="bg-bg rounded-2xl border border-border p-5">
+            <div class="bg-bg rounded-[6px] border border-black/10 p-5">
               <div class="flex items-center gap-3 mb-4">
-                <span class="flex items-center justify-center size-9 rounded-xl bg-white border border-border text-coral shrink-0"><Icon size={17} /></span>
+                <Icon size={20} className="text-coral shrink-0" />
                 <div>
                   <h3 class="font-head text-[15px] font-bold text-text leading-tight">{v.title}</h3>
                   <p class="text-xs text-text-light">{v.detail}</p>
@@ -157,12 +157,7 @@ const crumbs = [
       <SectionHead eyebrow="Other temperatures" title={isF ? "More temperatures in °F" : "Colder or warmer?"} />
       <nav class="grid grid-cols-4 sm:grid-cols-8 gap-2" aria-label="Other temperatures">
         {siblings.map((s) => (
-          <a href={s.href} aria-current={s.current ? "page" : undefined}
-            class={`flex flex-col items-center rounded-xl border overflow-hidden transition-colors ${s.current ? "border-coral bg-coral/6" : "border-border bg-white hover:border-text-light"}`}>
-            <span class="h-1 w-full" style={`background:${TIER_ACCENT[s.tier]}`}></span>
-            <span class={`font-head font-bold text-base sm:text-lg pt-2.5 ${s.current ? "text-coral" : "text-text"}`}>{s.label}</span>
-            <span class="text-[11px] text-text-light pb-2.5">{s.sub}</span>
-          </a>
+          <BibNumber size="sm" href={s.href} value={s.label.replace(/[CF]$/, "")} sub={s.sub} tier={s.tier} current={s.current} />
         ))}
       </nav>
       <a href="/guide/cycling-temperature-chart/" class="inline-flex mt-5 font-head text-sm font-semibold text-coral hover:opacity-75">Every temperature in the interactive chart →</a>

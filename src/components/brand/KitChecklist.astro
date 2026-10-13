@@ -1,0 +1,61 @@
+---
+/**
+ * The answer as a pre-ride checklist: tick items off while you get dressed.
+ * Works as a plain list without JavaScript; the ticks are just for fun and aren't stored.
+ */
+import type { KitResult } from "../../lib/kitLogic";
+import { ZONES, ZONE_LABELS } from "../../lib/guideData";
+interface Props { kit: KitResult; title?: string }
+const { kit, title = "Before you roll out" } = Astro.props;
+const all = ZONES.flatMap((z) => kit[z].items.filter((i) => i.name !== "Helmet").map((i) => ({ ...i, zone: z })));
+const required = all.filter((i) => !i.optional);
+const optional = all.filter((i) => i.optional);
+---
+
+<div class="checklist bg-white rounded-[6px] border border-black/10 shadow-[0_1px_0_rgba(0,0,0,0.04),0_16px_32px_-20px_rgba(0,0,0,0.25)]">
+  <div class="flex items-center justify-between gap-3 px-5 pt-4 pb-3 border-b border-dashed border-black/15">
+    <p class="font-head font-bold text-[15px] text-text">{title}</p>
+    <p class="font-head text-[11px] font-semibold text-text-light tabular-nums" data-count>{required.length} items</p>
+  </div>
+  <ul class="px-2 py-2">
+    {required.map((i) => (
+      <li>
+        <button type="button" role="checkbox" aria-checked="false" class="check-row w-full flex items-center gap-3 px-3 py-2 rounded-md text-left cursor-pointer hover:bg-black/3">
+          <span class="box flex items-center justify-center size-[18px] rounded-[4px] border-[1.5px] border-black/25 shrink-0">
+            <svg class="tick size-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+          </span>
+          <span class="label text-[15px] text-text">{i.name}</span>
+          <span class="ml-auto font-head text-[10px] font-semibold uppercase tracking-[0.07em] text-text-light">{ZONE_LABELS[i.zone]}</span>
+        </button>
+      </li>
+    ))}
+  </ul>
+  {optional.length > 0 && (
+    <p class="px-5 pb-4 pt-1 text-[13px] text-text-mid border-t border-dashed border-black/15">
+      <span class="font-head font-semibold text-text">In your pocket, if you like: </span>
+      {optional.map((i) => i.name.replace(/ or no gloves$/, "")).join(", ")}
+    </p>
+  )}
+</div>
+
+<style>
+  .check-row .tick { opacity: 0; transition: opacity 0.15s; }
+  .check-row[aria-checked="true"] .box { background: var(--color-coral); border-color: var(--color-coral); }
+  .check-row[aria-checked="true"] .tick { opacity: 1; }
+  .check-row[aria-checked="true"] .label { color: var(--color-text-light); text-decoration: line-through; }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>(".checklist").forEach((list) => {
+    const rows = list.querySelectorAll<HTMLButtonElement>(".check-row");
+    const count = list.querySelector("[data-count]");
+    const update = () => {
+      const left = [...rows].filter((r) => r.getAttribute("aria-checked") !== "true").length;
+      if (count) count.textContent = left ? `${left} to go` : "Ready to ride";
+    };
+    rows.forEach((r) => r.addEventListener("click", () => {
+      r.setAttribute("aria-checked", String(r.getAttribute("aria-checked") !== "true"));
+      update();
+    }));
+  });
+</script>

@@ -7,7 +7,13 @@ import TeamBanner from "../components/TeamBanner.astro";
 import { TEMP_PAGES, toF, pathFor, kitAt, kitSentence, conditionsAt } from "../lib/guideData";
 import SectionHead from "../components/ui/SectionHead.astro";
 import { TIER_ACCENT } from "../components/calculator/constants";
-import { IconCloudySun, IconGauge, IconChecklist, IconChart2, IconRainy } from "@central-icons-react/round-outlined-radius-3-stroke-2";
+import { IconRainy } from "@central-icons-react/round-outlined-radius-3-stroke-2";
+import RouteProfile from "../components/brand/RouteProfile.astro";
+import ThermoBar from "../components/brand/ThermoBar.astro";
+import MiniRange from "../components/brand/MiniRange.astro";
+import { itemRanges } from "../lib/kitRanges";
+
+const armWarmers = itemRanges((n) => n === "Arm warmers", { intensity: "moderate" });
 
 // Quick reference for the homepage: the answer people (and AI tools) look for, in plain text
 const QUICK_TEMPS = [0, 5, 10, 15, 20, 25];
@@ -42,16 +48,11 @@ const QUICK_TEMPS = [0, 5, 10, 15, 20, 25];
 
   <!-- INTRO -->
   <section class="relative overflow-hidden bg-bg">
-    <div aria-hidden="true" class="pointer-events-none absolute inset-0">
-      <div class="absolute -top-40 right-[-10%] size-[560px] rounded-full bg-coral/10 blur-3xl"></div>
-      <div class="absolute inset-0 hero-grid"></div>
-    </div>
+    <RouteProfile variant="hero" class="absolute inset-x-0 bottom-0 h-28 md:h-36 opacity-70" />
     <div class="container relative">
-      <div class="max-w-2xl mx-auto text-center pt-14 md:pt-18 lg:pt-20 pb-8 md:pb-10">
-        <p class="inline-flex items-center gap-2 font-head text-[11px] font-semibold tracking-[0.08em] uppercase text-coral bg-coral/8 rounded-full px-3 py-1.5 mb-5">
-          <span class="size-1.5 rounded-full bg-coral" aria-hidden="true"></span>Free · °C and °F · No account
-        </p>
-        <h1 class="font-head text-[2rem] md:text-5xl lg:text-[3.5rem] font-bold tracking-tight leading-[1.05] text-text text-balance mb-5">
+      <div class="max-w-2xl mx-auto text-center pt-12 md:pt-16 lg:pt-18 pb-14 md:pb-20">
+        <p class="road-label justify-center mb-5">Free · °C and °F · No account</p>
+        <h1 class="font-head text-[2.25rem] md:text-5xl lg:text-[3.75rem] font-bold tracking-[-0.035em] leading-[1.02] text-text text-balance mb-5">
           <span class="text-coral">What to wear cycling</span>, sorted before you ride.
         </h1>
         <p class="text-lg text-text-mid leading-relaxed max-w-md mx-auto">
@@ -78,19 +79,21 @@ const QUICK_TEMPS = [0, 5, 10, 15, 20, 25];
         title="The forecast for your ride, turned into a kit list"
         lead="Most cyclists either overdress or underdress. kitcheck.cc is a free cycling clothing calculator that tells you what to wear, based on the real forecast and how hard you plan to push."
       />
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <ol class="relative grid grid-cols-1 md:grid-cols-3 gap-3">
         {[
-          { icon: IconCloudySun, title: "Live weather for your whole ride", text: "Feels-like temperature, wind and rain chance for every hour you're out, anywhere in the world. Upload a GPX and it follows your route." },
-          { icon: IconGauge, title: "Adjusted for your effort", text: "Riding hard feels several degrees warmer than an easy spin. Pick your intensity and how warm you run, and the kit follows." },
-          { icon: IconChecklist, title: "Every layer covered", text: "Head, upper body, hands, legs and feet, with required and optional items, and notes when conditions change during your ride." },
-        ].map((f) => (
-          <div class="bg-bg rounded-2xl border border-border p-6">
-            <span class="flex items-center justify-center size-11 rounded-xl bg-coral/10 text-coral mb-5"><f.icon size={22} /></span>
+          { km: "km 0", title: "Live weather for your whole ride", text: "Feels-like temperature, wind and rain chance for every hour you're out, anywhere in the world. Upload a GPX and it follows your route." },
+          { km: "km 40", title: "Adjusted for your effort", text: "Riding hard feels several degrees warmer than an easy spin. Pick your intensity and how warm you run, and the kit follows." },
+          { km: "Finish", title: "Every layer covered", text: "Head, upper body, hands, legs and feet, with required and optional items, and notes when conditions change during your ride." },
+        ].map((f, i) => (
+          <li class="relative bg-bg rounded-[6px] border border-black/10 p-6 pt-5">
+            <span class="inline-flex items-center gap-2 font-head text-[11px] font-bold tracking-[0.1em] uppercase text-text-light mb-6">
+              <span class:list={["size-3 rounded-full border-2", i === 2 ? "border-coral bg-coral" : "border-coral bg-white"]}></span>{f.km}
+            </span>
             <h3 class="font-head font-bold text-lg text-text mb-2">{f.title}</h3>
             <p class="text-[15px] text-text-mid leading-relaxed">{f.text}</p>
-          </div>
+          </li>
         ))}
-      </div>
+      </ol>
       <div class="flex justify-center mt-8">
         <a href="/how-it-works/" class="font-head text-sm font-semibold text-coral hover:opacity-75">The method, step by step →</a>
       </div>
@@ -109,7 +112,7 @@ const QUICK_TEMPS = [0, 5, 10, 15, 20, 25];
           />
           <a href="/guide/cycling-temperature-chart/" class="btn-primary py-3! px-5! text-[14px]! -mt-2">Open the interactive chart</a>
         </div>
-        <dl class="bg-white rounded-2xl border border-border divide-y divide-border overflow-hidden">
+        <dl class="bg-white rounded-[6px] border border-black/10 divide-y divide-dashed divide-black/15 overflow-hidden">
           {QUICK_TEMPS.map((c) => {
             const tier = conditionsAt(c).label;
             return (
@@ -133,18 +136,27 @@ const QUICK_TEMPS = [0, 5, 10, 15, 20, 25];
     <div class="container py-16 md:py-24">
       <SectionHead align="center" eyebrow="Kit guide" title="Not sure what kit you need?" lead="Answers for every temperature, every piece of kit and every kind of weather." />
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-        {[
-          { href: "/guide/cycling-temperature-chart/", icon: IconChart2, title: "Temperature chart", text: "Slide to any temperature from -10°C to 35°C (14–95°F) and see what to wear." },
-          { href: "/guide/", icon: IconChecklist, title: "When to wear what", text: "Arm warmers, overshoes, bib tights and more: the temperature where each comes in." },
-          { href: "/guide/what-to-wear-cycling-in-the-rain/", icon: IconRainy, title: "Rain, wind and winter", text: "What changes when the weather does, and how to stay warm and dry." },
-        ].map((c) => (
-          <a href={c.href} class="group flex flex-col bg-bg rounded-2xl border border-border p-6 hover:-translate-y-0.5 hover:shadow-[0_12px_28px_-12px_rgba(0,0,0,0.18)] transition-all">
-            <span class="flex items-center justify-center size-11 rounded-xl bg-white border border-border text-coral mb-5"><c.icon size={22} /></span>
-            <span class="font-head font-bold text-lg text-text">{c.title}</span>
-            <span class="text-[15px] text-text-mid leading-relaxed mt-1.5 flex-1">{c.text}</span>
-            <span class="font-head text-[13px] font-semibold text-coral mt-4 group-hover:translate-x-0.5 transition-transform">Open →</span>
-          </a>
-        ))}
+        <a href="/guide/cycling-temperature-chart/" class="group flex flex-col bg-bg rounded-[6px] border border-black/10 p-6 hover:border-coral/60 transition-colors">
+          <span class="road-label">Interactive</span>
+          <span class="font-head font-bold text-xl text-text mt-4">Temperature chart</span>
+          <span class="text-[15px] text-text-mid leading-relaxed mt-1.5 flex-1">Slide to any temperature from -10°C to 35°C (14–95°F) and see what to wear.</span>
+          <ThermoBar class="h-2 rounded-full mt-6" />
+          <span class="flex justify-between mt-1 font-head text-[10px] font-semibold text-text-light"><span>-10°</span><span>35°</span></span>
+        </a>
+        <a href="/guide/" class="group flex flex-col bg-bg rounded-[6px] border border-black/10 p-6 hover:border-coral/60 transition-colors">
+          <span class="road-label">Kit</span>
+          <span class="font-head font-bold text-xl text-text mt-4">When to wear what</span>
+          <span class="text-[15px] text-text-mid leading-relaxed mt-1.5 flex-1">Arm warmers, overshoes, bib tights and more: the temperature where each comes in. Arm warmers, for example:</span>
+          <span class="block mt-5"><MiniRange ranges={armWarmers} /></span>
+        </a>
+        <a href="/guide/what-to-wear-cycling-in-the-rain/" class="group relative overflow-hidden flex flex-col bg-bg rounded-[6px] border border-black/10 p-6 hover:border-coral/60 transition-colors">
+          <IconRainy size={110} className="absolute -right-6 -top-6 text-coral/10" />
+          <span class="road-label">Weather</span>
+          <span class="font-head font-bold text-xl text-text mt-4">Rain, wind and winter</span>
+          <span class="text-[15px] text-text-mid leading-relaxed mt-1.5 flex-1">What changes when the weather does, and how to stay warm and dry.</span>
+          <span class="font-head font-bold text-[2rem] tracking-tight text-text leading-none mt-5">60%</span>
+          <span class="text-xs text-text-light mt-1">rain chance: full rain kit, scaled to the temperature</span>
+        </a>
       </div>
       <nav class="flex flex-wrap justify-center gap-2 mt-8" aria-label="Kit by temperature">
         {TEMP_PAGES.map(({ tempC }) => (

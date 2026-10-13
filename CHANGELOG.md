@@ -42,6 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive temperature chart: slider, effort, wind and rain toggles, and range bars per piece of kit
 - New page layout: hero, section headings, answer cards, CTA band, header navigation (with mobile menu) and a multi-column footer; guide hub, articles, how it works and about rebuilt on it
 - Contact address info@kitcheck.cc on the about page, FAQs and footer
+- Brand devices instead of template styling: temperature-scale bar under the header, race-number tiles for temperatures, a road-stage elevation profile (hero, heading rules, CTA), road-marking labels, a pre-ride checklist on temperature pages, kilometre markers on How it works, a checkered finish edge on the CTA, mini temperature ranges on kit cards and tighter corners
 - Chance of showers (40–59%): packable rain jacket and light rain overshoes as options, with a "chance of showers" note
 - Heat note from 27°C: extra bottle and sunscreen
 - Note when the rain stops during the ride: the rain jacket can go in your pocket

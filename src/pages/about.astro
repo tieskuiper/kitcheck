@@ -50,8 +50,8 @@ const facts = [
     <div class="container pb-16 md:pb-20">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
         {facts.map((f) => (
-          <div class="bg-white rounded-2xl border border-border p-6">
-            <span class="flex items-center justify-center size-11 rounded-xl bg-coral/10 text-coral mb-5"><f.icon size={22} /></span>
+          <div class="relative overflow-hidden bg-white rounded-[6px] border border-black/10 p-6">
+            <f.icon size={96} className="absolute -right-5 -top-5 text-coral/8" />
             <h2 class="font-head font-bold text-lg text-text mb-2">{f.title}</h2>
             <p class="text-[15px] text-text-mid leading-relaxed">{f.text}</p>
           </div>
@@ -63,7 +63,7 @@ const facts = [
   <!-- Team -->
   <section class="bg-bg">
     <div class="container pb-16 md:pb-20">
-      <div class="relative overflow-hidden rounded-3xl bg-team-night text-white px-6 py-10 sm:px-10 md:px-14 md:py-14">
+      <div class="relative overflow-hidden rounded-[10px] bg-team-night text-white px-6 py-10 sm:px-10 md:px-14 md:py-14">
         <div aria-hidden="true" class="pointer-events-none absolute -right-20 -bottom-24 size-[420px] rounded-full bg-team-teal/50 blur-3xl"></div>
         <div class="relative max-w-2xl">
           <p class="font-head text-[11px] font-semibold tracking-[0.08em] uppercase text-team-mint mb-3">Rider-tested</p>

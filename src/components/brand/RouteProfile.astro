@@ -1,0 +1,39 @@
+---
+/**
+ * Elevation profile of a road stage. "hero": large, faint, with km markers along the bottom.
+ * "rule": a short coral line under headings. "band": a thin line across dark blocks.
+ */
+import { stagePath, MINI_STAGE } from "../../lib/brand";
+interface Props { variant?: "hero" | "rule" | "band"; class?: string }
+const { variant = "hero", class: className = "" } = Astro.props;
+
+const W = variant === "rule" ? 64 : 1200;
+const H = variant === "rule" ? 14 : variant === "band" ? 60 : 220;
+const { line, area } = stagePath(W, H, variant === "rule" ? 2 : 6, variant === "rule" ? MINI_STAGE : undefined);
+const gid = `rp-${variant}`;
+const KM = [0, 40, 80, 120, 160];
+---
+
+{variant === "rule" ? (
+  <svg class={className} width={W} height={H} viewBox={`0 0 ${W} ${H}`} fill="none" aria-hidden="true">
+    <path d={line} stroke="var(--color-coral)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+) : (
+  <div class={`pointer-events-none ${className}`} aria-hidden="true">
+    <svg class="w-full h-full" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" fill="none">
+      <defs>
+        <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="var(--color-coral)" stop-opacity={variant === "band" ? 0.25 : 0.1} />
+          <stop offset="1" stop-color="var(--color-coral)" stop-opacity="0" />
+        </linearGradient>
+      </defs>
+      <path d={area} fill={`url(#${gid})`} />
+      <path d={line} stroke="var(--color-coral)" stroke-opacity={variant === "band" ? 0.9 : 0.35} stroke-width="2" vector-effect="non-scaling-stroke" />
+    </svg>
+    {variant === "hero" && (
+      <div class="absolute inset-x-0 bottom-2 flex justify-between px-4 md:px-6 lg:px-8 font-head text-[10px] font-semibold tracking-[0.08em] text-text-light/70">
+        {KM.map((k) => <span>{k} km</span>)}
+      </div>
+    )}
+  </div>
+)}

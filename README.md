@@ -82,6 +82,7 @@ src/
 │   ├── guide/                   # guide templates (Temp/Item/ConditionPage), ChartExplorer (React island),
 │   │                            # EffortRanges, KitTable, FaqList
 │   ├── ui/                      # PageHero, SectionHead, AnswerCard, CtaBand: the page building blocks
+│   ├── brand/                   # RouteProfile, ThermoBar, BibNumber, MiniRange, KitChecklist (see lib/brand.ts)
 │   ├── SiteHeader.astro, SiteFooter.astro, CookieBanner.astro
 ├── layouts/Base.astro           # <head>, SEO meta, hreflang, one JSON-LD @graph per page
 ├── lib/
@@ -105,6 +106,10 @@ public/
 ```
 
 The page header (unit toggle, "use my location") lives outside the React island and talks to the calculator through window events: `kitcheck:unit` and `kitcheck:geolocate`.
+
+## Brand
+
+Coral (`--color-coral`), Space Grotesk for headings and DM Sans for text. The visual language comes from road cycling rather than SaaS templates: the kit card's temperature scale (`THERMO_GRADIENT`), race numbers with pin holes, a stage elevation profile, road-marking labels, kilometre markers and a checkered finish. Prefer these, and data visuals (ranges, scales), over icon tiles, glows and pill labels.
 
 ## SEO and GEO structure
 

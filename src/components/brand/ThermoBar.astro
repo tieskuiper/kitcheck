@@ -1,0 +1,8 @@
+---
+/** The temperature scale: kit card tier colours from extreme cold to hot */
+import { THERMO_GRADIENT } from "../../lib/brand";
+interface Props { class?: string }
+const { class: className = "h-[3px]" } = Astro.props;
+---
+
+<div class={className} style={`background:${THERMO_GRADIENT}`} aria-hidden="true"></div>

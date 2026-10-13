@@ -28,6 +28,11 @@
   --color-team-moss: #3F5546;
   --color-team-mint: #8FD6C4;   /* light print colour from the jersey */
 
+  /* ── Radius: tighter than the Tailwind defaults, more print than app ── */
+  --radius-xl: 0.5rem;
+  --radius-2xl: 0.625rem;
+  --radius-3xl: 0.75rem;
+
   /* ── Border ─────────────────────────────────────────────────────────── */
   --color-border: #E5E4DF;
 
@@ -223,11 +228,23 @@ body {
   background: repeating-linear-gradient(-45deg, rgb(255 81 48 / 0.35) 0 3px, rgb(255 81 48 / 0.15) 3px 6px);
 }
 
-/* ── Hero background: a fine grid that fades out (PageHero + homepage) ── */
-.hero-grid {
-  background-image:
-    linear-gradient(to right, rgb(17 17 16 / 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(17 17 16 / 0.04) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 40%, transparent 100%);
+/* ── Road-marking label: dashed centre line + small caps, instead of pill eyebrows ── */
+.road-label {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-family: var(--font-head);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-coral);
+}
+
+.road-label::before {
+  content: "";
+  width: 22px;
+  height: 2px;
+  flex-shrink: 0;
+  background: repeating-linear-gradient(90deg, var(--color-coral) 0 6px, transparent 6px 10px);
 }
