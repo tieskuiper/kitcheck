@@ -182,3 +182,38 @@ body {
   text-wrap: pretty;
   overflow-x: clip;
 }
+/* ── Long-form text (about, how it works; privacy and cookies add their own extras) ── */
+.prose-custom h2 {
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: var(--color-text);
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.prose-custom p,
+.prose-custom ul {
+  font-size: 0.9375rem;
+  line-height: 1.75;
+  color: var(--color-text-mid);
+  margin-bottom: 1rem;
+}
+
+.prose-custom ul {
+  padding-left: 1.25rem;
+  list-style: disc;
+}
+
+.prose-custom li {
+  margin-bottom: 0.25rem;
+}
+
+.prose-custom a {
+  color: var(--color-coral);
+  text-decoration: none;
+}
+
+.prose-custom a:hover {
+  opacity: 0.75;
+}

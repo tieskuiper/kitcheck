@@ -272,6 +272,11 @@ export function useKitCalculator() {
     return () => window.removeEventListener('kitcheck:geolocate', handler)
   }, [])
 
+  // US visitors start in °F (same check as the header toggle in index.astro)
+  useEffect(() => {
+    if (navigator.language === 'en-US') setUnit('F')
+  }, [])
+
   useEffect(() => {
     const handler = (e: Event) => {
       const next = (e as CustomEvent<{ unit: Unit }>).detail.unit

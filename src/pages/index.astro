@@ -4,7 +4,10 @@ import Calculator from "../components/calculator/Calculator";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import TeamBanner from "../components/TeamBanner.astro";
-import { TEMP_PAGES, toF, pathFor } from "../lib/guideData";
+import { TEMP_PAGES, toF, pathFor, kitAt, kitSentence } from "../lib/guideData";
+
+// Quick reference for the homepage: the answer people (and AI tools) look for, in plain text
+const QUICK_TEMPS = [0, 5, 10, 15, 20, 25];
 ---
 
 <Base
@@ -112,6 +115,35 @@ import { TEMP_PAGES, toF, pathFor } from "../lib/guideData";
     </div>
   </section>
 
+  <!-- QUICK REFERENCE -->
+  <section class="border-t border-border bg-bg">
+    <div class="container py-14 md:py-16">
+      <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-8 lg:gap-12">
+        <div>
+          <h2 class="font-head font-bold text-2xl md:text-3xl tracking-tight text-text mb-3">
+            What to wear cycling by temperature
+          </h2>
+          <p class="text-text-mid leading-relaxed mb-5">
+            The short version, at a moderate pace in light wind and no rain. Your ride is never
+            exactly one temperature, which is what the calculator above is for.
+          </p>
+          <a href="/guide/cycling-temperature-chart/" class="btn-primary-outline">Full temperature chart</a>
+        </div>
+        <dl class="bg-white rounded-2xl border border-border divide-y divide-border">
+          {QUICK_TEMPS.map((c) => (
+            <div class="grid grid-cols-[88px_1fr] sm:grid-cols-[120px_1fr] gap-3 px-4 sm:px-5 py-3.5">
+              <dt>
+                <a href={pathFor(c)} class="font-head font-bold text-text hover:text-coral transition-colors">{c}°C</a>
+                <span class="block text-xs text-text-light">{toF(c)}°F</span>
+              </dt>
+              <dd class="text-sm text-text-mid leading-relaxed">{kitSentence(kitAt(c))}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </div>
+  </section>
+
   <!-- GUIDE TEASER -->
   <section class="bg-bg-dark">
     <div class="container py-12 md:py-14">
@@ -148,15 +180,22 @@ import { TEMP_PAGES, toF, pathFor } from "../lib/guideData";
     const btnC = document.getElementById("unit-c") as HTMLButtonElement;
     const btnF = document.getElementById("unit-f") as HTMLButtonElement;
 
-    function setUnit(unit: "C" | "F") {
+    function paint(unit: "C" | "F") {
       btnC.style.background = unit === "C" ? "#FF5130" : "transparent";
       btnC.style.color = unit === "C" ? "#ffffff" : "#6B6A67";
       btnF.style.background = unit === "F" ? "#FF5130" : "transparent";
       btnF.style.color = unit === "F" ? "#ffffff" : "#6B6A67";
+    }
+
+    function setUnit(unit: "C" | "F") {
+      paint(unit);
       window.dispatchEvent(
         new CustomEvent("kitcheck:unit", { detail: { unit } }),
       );
     }
+
+    // US visitors start in °F: the calculator makes the same check on load
+    if (navigator.language === "en-US") paint("F");
 
     btnC.addEventListener("click", () => setUnit("C"));
     btnF.addEventListener("click", () => setUnit("F"));

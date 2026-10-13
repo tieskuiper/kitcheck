@@ -1,169 +1,26 @@
 ---
-import Base from "../../layouts/Base.astro";
-import SiteHeader from "../../components/SiteHeader.astro";
-import SiteFooter from "../../components/SiteFooter.astro";
-import KitCard from "../../components/calculator/KitCard";
-import {
-  TEMP_PAGES, ZONE_LABELS, kitAt, conditionsAt, variationsAt,
-  toF, slugFor, pathFor,
-} from "../../lib/guideData";
+/**
+ * Every guide article lives at /guide/<slug>/: temperature pages (°C and °F), kit item pages
+ * and condition pages. One route, three templates.
+ */
+import TempPage from "../../components/guide/TempPage.astro";
+import ItemPage from "../../components/guide/ItemPage.astro";
+import ConditionPage from "../../components/guide/ConditionPage.astro";
+import { TEMP_PAGES, FAHRENHEIT_PAGES, slugFor, slugForF } from "../../lib/guideData";
+import { KIT_ITEM_PAGES, CONDITION_PAGES } from "../../lib/guideContent";
 
 export function getStaticPaths() {
-  return TEMP_PAGES.map((page) => ({
-    params: { slug: slugFor(page.tempC) },
-    props: { page },
-  }));
+  return [
+    ...TEMP_PAGES.map((p) => ({ params: { slug: slugFor(p.tempC) }, props: { kind: "temp" as const, unit: "C" as const, value: p.tempC, intro: p.intro } })),
+    ...FAHRENHEIT_PAGES.map((p) => ({ params: { slug: slugForF(p.tempF) }, props: { kind: "temp" as const, unit: "F" as const, value: p.tempF, intro: p.intro } })),
+    ...KIT_ITEM_PAGES.map((page) => ({ params: { slug: page.slug }, props: { kind: "item" as const, page } })),
+    ...CONDITION_PAGES.map((page) => ({ params: { slug: page.slug }, props: { kind: "condition" as const, page } })),
+  ];
 }
 
-const { page } = Astro.props;
-const c = page.tempC;
-const f = toF(c);
-const kit = kitAt(c);
-const score = conditionsAt(c);
-const variations = variationsAt(c);
-const canonical = `https://kitcheck.cc${pathFor(c)}`;
-
-const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
-// One headline item per zone keeps descriptions distinct between neighbouring temperatures;
-// drop items from the end until it fits Google's ~155-character snippet
-const headline = (["torso", "legs", "hands", "feet"] as const)
-  .map((z) => kit[z].items.find((i) => !i.optional)?.name)
-  .filter((n): n is string => !!n)
-  .map(lower);
-const describe = (items: string[]) =>
-  `What to wear cycling at ${c}°C (${f}°F): ${items.join(", ")}. Plus what changes with wind, rain and effort.`;
-let items = headline;
-while (describe(items).length > 155 && items.length > 2) items = items.slice(0, -1);
-const description = describe(items);
-
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [
-    { "@type": "ListItem", position: 1, name: "kitcheck.cc", item: "https://kitcheck.cc/" },
-    { "@type": "ListItem", position: 2, name: "Kit guide", item: "https://kitcheck.cc/guide/" },
-    { "@type": "ListItem", position: 3, name: `${c}°C (${f}°F)`, item: canonical },
-  ],
-};
+const props = Astro.props;
 ---
 
-<Base
-  title={`What to Wear Cycling at ${c}°C (${f}°F) | kitcheck.cc`}
-  description={description}
-  canonical={canonical}
->
-  <Fragment slot="head">
-    <script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
-  </Fragment>
-
-  <SiteHeader>
-    <a href="/" class="btn-primary">Use the calculator</a>
-  </SiteHeader>
-
-  <!-- INTRO -->
-  <section class="bg-bg">
-    <div class="container">
-      <div class="max-w-2xl pt-16 md:pt-18 lg:pt-20 pb-10 md:pb-12">
-        <nav class="flex items-center gap-2 text-xs text-text-light mb-5" aria-label="Breadcrumb">
-          <a href="/" class="hover:text-text-mid transition-colors">kitcheck.cc</a>
-          <span aria-hidden="true">›</span>
-          <a href="/guide/" class="hover:text-text-mid transition-colors">Kit guide</a>
-          <span aria-hidden="true">›</span>
-          <span class="text-text-mid">{c}°C</span>
-        </nav>
-        <h1 class="font-head text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1] text-text mb-4">
-          What to wear cycling at {c}°C <span class="text-text-light">({f}°F)</span>
-        </h1>
-        <p class="text-text-mid leading-relaxed">{page.intro}</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- KIT -->
-  <section class="bg-bg border-t border-border">
-    <div class="container py-12 md:py-16">
-      <div class="grid grid-cols-1 md:grid-cols-[1fr_minmax(0,380px)] gap-7 items-start">
-        <div>
-          <h2 class="font-head font-bold text-xl text-text mb-1">The kit list</h2>
-          <p class="text-sm text-text-light mb-4">
-            Feels like {c}°C, moderate pace, light wind, no rain. Same logic as the calculator.
-          </p>
-          <KitCard kitResult={kit} score={score} unit="C" />
-        </div>
-
-        <aside class="bg-white rounded-2xl border border-border p-5 sm:p-[22px] md:sticky md:top-[88px]">
-          <p class="font-head text-[11px] font-semibold tracking-[0.08em] uppercase text-coral mb-2">Your ride</p>
-          <p class="font-head font-bold text-lg text-text leading-snug mb-2">
-            It's never exactly {c}°C for the whole ride.
-          </p>
-          <p class="text-sm text-text-mid leading-relaxed mb-4">
-            The calculator checks the hourly forecast for your location and ride window,
-            including wind, rain and how hard you're going.
-          </p>
-          <a href="/" class="btn-primary">Check the forecast for your ride</a>
-        </aside>
-      </div>
-    </div>
-  </section>
-
-  <!-- VARIATIONS -->
-  <section class="bg-bg border-t border-border">
-    <div class="container py-12 md:py-16">
-      <h2 class="font-head font-bold text-xl md:text-2xl text-text mb-2">When to change your kit at {c}°C</h2>
-      <p class="text-text-mid leading-relaxed mb-6 max-w-2xl">
-        Effort, wind, rain and how warm you run all shift the recommendation. Here's what to
-        wear instead, only for the parts that change.
-      </p>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        {variations.map((v) => (
-          <div class="bg-white rounded-2xl border border-border p-5 sm:p-[22px]">
-            <h3 class="font-head text-[15px] font-bold text-text">{v.title}</h3>
-            <p class="text-xs text-text-light mb-3">{v.detail}</p>
-            {v.changes.length ? (
-              <dl class="space-y-2">
-                {v.changes.map((ch) => (
-                  <div class="text-sm">
-                    <dt class="font-head text-[10px] font-bold tracking-[0.07em] uppercase text-text-light">{ZONE_LABELS[ch.zone]}</dt>
-                    <dd class="text-text-mid">
-                      {ch.items.map((it, i) => (
-                        <>
-                          {i > 0 && ", "}
-                          {it.optional ? <span class="text-text-light">{i === 0 ? it.name : lower(it.name)} (optional)</span> : <span class="text-text">{i === 0 ? it.name : lower(it.name)}</span>}
-                        </>
-                      ))}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            ) : (
-              <p class="text-sm text-text-mid">Same kit as above.</p>
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- OTHER TEMPERATURES -->
-  <section class="bg-bg border-t border-border">
-    <div class="container py-12 md:py-14">
-      <h2 class="font-head font-bold text-xl text-text mb-4">Other temperatures</h2>
-      <nav class="flex flex-wrap gap-2" aria-label="Other temperatures">
-        {TEMP_PAGES.map((p) =>
-          p.tempC === c ? (
-            <span aria-current="page" class="px-4 py-2 rounded-[10px] border-[1.5px] border-coral bg-coral/[6%] font-head text-sm font-semibold text-coral">
-              {p.tempC}°C · {toF(p.tempC)}°F
-            </span>
-          ) : (
-            <a href={pathFor(p.tempC)} class="px-4 py-2 rounded-[10px] border-[1.5px] border-border font-head text-sm font-semibold text-text-mid hover:border-text-light transition-colors">
-              {p.tempC}°C · {toF(p.tempC)}°F
-            </a>
-          ),
-        )}
-        <a href="/guide/" class="px-4 py-2 font-head text-sm font-semibold text-coral hover:opacity-75 transition-opacity">All temperatures →</a>
-      </nav>
-    </div>
-  </section>
-
-  <SiteFooter />
-</Base>
+{props.kind === "temp" && <TempPage unit={props.unit} value={props.value} intro={props.intro} />}
+{props.kind === "item" && <ItemPage page={props.page} />}
+{props.kind === "condition" && <ConditionPage page={props.page} />}

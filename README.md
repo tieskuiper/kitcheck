@@ -11,7 +11,8 @@ KitCheck is a free cycling kit calculator. Riders enter a location (or upload a 
 - **Rider profile** — intensity (easy → race) and warmth tendency (always cold → always warm)
 - **Recommendation** — comfort score, kit per zone (head, upper body, hands, lower body, feet), required vs optional items, and notes when conditions change during the ride
 - **Route map** — GPX route with start/end markers and wind direction
-- **Guide** — `/guide/` is the hub, with a page per temperature (`/guide/what-to-wear-cycling-10-degrees/` etc.). Kit lists and "what changes" are generated from `kitLogic.ts`, so the guide always matches the calculator
+- **Guide** — `/guide/` is the hub, with pages per temperature in °C and °F, a temperature chart, a page per kit item (arm warmers, overshoes…) and per condition (rain, wind, winter, heat). Kit lists, ranges and quick answers are generated from `kitLogic.ts`, so the guide always matches the calculator
+- **Units** — °C by default, °F for visitors whose browser language is `en-US` (calculator and chart)
 
 ## Tech stack
 
@@ -78,18 +79,23 @@ src/
 │   │   ├── DayTabs.tsx, WeatherChips.tsx, ui.tsx
 │   │   ├── constants.tsx        # tier colours, intensity options, zone icons
 │   │   └── format.ts            # unit + time formatting (°C/°F, km/mi)
+│   ├── guide/                   # guide templates: TempPage, ItemPage, ConditionPage + KitTable, FaqList…
 │   ├── SiteHeader.astro, SiteFooter.astro, CookieBanner.astro
-├── layouts/Base.astro           # <head>, SEO meta, GA consent
+├── layouts/Base.astro           # <head>, SEO meta, hreflang, one JSON-LD @graph per page
 ├── lib/
 │   ├── kitLogic.ts              # comfort score + kit rules (the core logic)
-│   ├── guideData.ts             # guide temperatures, intros and variations (derived from kitLogic)
+│   ├── guideData.ts             # guide temperatures (°C + °F), intros, variations, quick-answer sentences
+│   ├── guideContent.ts          # copy for kit item and condition pages
+│   ├── kitRanges.ts             # temperature range per kit item, read off kitLogic
+│   ├── site.ts                  # site facts + structured data builders (Organization, Article, FAQ…)
 │   ├── openmeteo.ts             # forecast, geocoding, hourly slices
 │   ├── gpx.ts                   # GPX parsing (distance, elevation, start point)
 │   ├── rideDuration.ts          # GPX duration from average speed (estimate, recorded or your own)
 │   ├── routeForecast.ts         # GPX: forecast along the route at the time you pass, headwind and descents
 │   ├── consent.ts               # consent storage, GA4 loading, track() for events
 │   └── mapTiles.ts              # map tile providers (primary + fallback)
-├── pages/                       # index, guide/ (hub + [slug] temperature pages), privacy, cookies, 404
+├── pages/                       # index, guide/ (hub, chart, [slug] = temp/item/condition pages), how-it-works,
+│                                # about, llms.txt (generated), privacy, cookies, 404
 └── styles/global.css            # Tailwind theme tokens
 public/
 ├── _headers                     # security headers incl. CSP (Cloudflare Pages)
@@ -98,12 +104,21 @@ public/
 
 The page header (unit toggle, "use my location") lives outside the React island and talks to the calculator through window events: `kitcheck:unit` and `kitcheck:geolocate`.
 
-## SEO structure
+## SEO and GEO structure
 
-- **Homepage = the tool.** Targets tool searches ("cycling kit calculator"); only page with `WebApplication` structured data (`appSchema` prop on `Base.astro`).
-- **Guide = the answers.** `/guide/` targets "what to wear cycling by temperature"; each temperature page targets "what to wear cycling at X°C / X°F", with `BreadcrumbList` structured data.
-- **Adding a temperature:** add an entry with a hand-written intro to `TEMP_PAGES` in `src/lib/guideData.ts`. Only add temperatures where the advice actually differs — near-duplicate pages hurt more than they help.
-- **Changing `kitLogic.ts` thresholds:** the generated kit lists update automatically, but re-read the intros in `guideData.ts` and the general FAQ answers in `src/pages/guide/index.astro`.
+The goal: rank in Google and Bing, and be the source AI answers (Gemini/AI Overviews, ChatGPT, Perplexity, Claude) quote. AI tools can't run the calculator, so the knowledge inside `kitLogic.ts` is also published as plain, quotable text.
+
+- **Homepage = the tool.** Targets tool searches ("cycling kit calculator"); only page with `WebApplication` structured data (`appSchema` prop). Also carries a generated quick reference by temperature.
+- **Guide = the answers.** `/guide/` targets "what to wear cycling by temperature". Under it, one `[slug]` route with three templates:
+  - temperature pages in °C (`what-to-wear-cycling-10-degrees`) and °F (`what-to-wear-cycling-50-degrees-fahrenheit`), each with its own intro;
+  - kit item pages (`when-to-wear-arm-warmers`…): range per effort level from `kitRanges.ts`;
+  - condition pages (rain, wind, winter, heat) with a generated kit table.
+- **Chart** (`/guide/cycling-temperature-chart/`): every temperature in one table, °C and °F. Meant to be linked to and quoted.
+- **How it works / About:** the method in plain text and who's behind it (trust signals for Google and AI tools).
+- **Every article** starts with a generated "Short answer", ends with FAQs, and has `Article` + `BreadcrumbList` + `FAQPage` structured data in one `@graph` with the site's `WebSite`/`Organization`/`Person` nodes (`src/lib/site.ts`). Bump `CONTENT_UPDATED` there when guide content changes.
+- **`/llms.txt`** is generated at build time: summary, quick reference and links.
+- **Adding pages:** temperature → `TEMP_PAGES` / `FAHRENHEIT_PAGES` in `guideData.ts`; item or condition → `guideContent.ts`. Only add pages where the advice actually differs.
+- **Changing `kitLogic.ts` thresholds:** generated lists, ranges and answers update automatically, but re-read the hand-written intros (`guideData.ts`), the copy in `guideContent.ts` and the FAQ in `src/pages/guide/index.astro`.
 
 ## Raas Racing Team banner
 

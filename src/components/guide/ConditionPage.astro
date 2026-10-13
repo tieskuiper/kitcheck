@@ -1,0 +1,91 @@
+---
+import Base from "../../layouts/Base.astro";
+import SiteHeader from "../SiteHeader.astro";
+import SiteFooter from "../SiteFooter.astro";
+import Breadcrumb from "./Breadcrumb.astro";
+import FaqList from "./FaqList.astro";
+import LinkChips from "./LinkChips.astro";
+import GuideCta from "./GuideCta.astro";
+import KitTable from "./KitTable.astro";
+import { CONDITION_PAGES, KIT_ITEM_PAGES, type ConditionPage } from "../../lib/guideContent";
+import { kitAt, toF, pathFor, TEMP_PAGES } from "../../lib/guideData";
+import { abs, articleNode, breadcrumbNode, faqNode } from "../../lib/site";
+
+interface Props { page: ConditionPage }
+const { page } = Astro.props;
+const canonical = abs(`/guide/${page.slug}/`);
+
+const rows = page.table?.temps.map((c) => ({
+  label: `${c}°C`,
+  sublabel: `${toF(c)}°F`,
+  // Link the row to its temperature page when there is one
+  href: TEMP_PAGES.some((p) => p.tempC === c) ? pathFor(c) : undefined,
+  kit: kitAt(c, page.table!.overrides),
+}));
+
+const crumbs = [
+  { name: "kitcheck.cc", url: abs("/") },
+  { name: "Kit guide", url: abs("/guide/") },
+  { name: page.title, url: canonical },
+];
+const related = page.related
+  .map((slug) => KIT_ITEM_PAGES.find((p) => p.slug === slug))
+  .filter((p) => !!p)
+  .map((p) => ({ label: p.title.replace(/:.*$/, ""), href: `/guide/${p.slug}/` }));
+const otherConditions = CONDITION_PAGES.map((p) => ({ label: p.title.replace(/:.*$/, ""), href: `/guide/${p.slug}/`, current: p.slug === page.slug }));
+---
+
+<Base
+  title={page.metaTitle}
+  description={page.description}
+  canonical={canonical}
+  schema={[
+    articleNode({ url: canonical, headline: page.title, description: page.description, lang: "en" }),
+    breadcrumbNode(crumbs),
+    faqNode(page.faq),
+  ]}
+>
+  <SiteHeader>
+    <a href="/" class="btn-primary">Use the calculator</a>
+  </SiteHeader>
+
+  <section class="bg-bg">
+    <div class="container">
+      <div class="max-w-2xl pt-16 md:pt-18 lg:pt-20 pb-10 md:pb-12">
+        <Breadcrumb items={[{ name: "kitcheck.cc", href: "/" }, { name: "Kit guide", href: "/guide/" }, { name: page.title.replace(/:.*$/, "") }]} />
+        <h1 class="font-head text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1] text-text mb-5">{page.title}</h1>
+        <p class="text-text-mid leading-relaxed">{page.intro}</p>
+      </div>
+    </div>
+  </section>
+
+  {page.table && rows && (
+    <section class="bg-bg border-t border-border">
+      <div class="container py-12 md:py-16">
+        <h2 class="font-head font-bold text-xl md:text-2xl text-text mb-5">{page.table.heading}</h2>
+        <KitTable rows={rows} caption={`${page.table.caption} Generated from the same logic as the calculator.`} />
+      </div>
+    </section>
+  )}
+
+  <section class="bg-bg border-t border-border">
+    <div class="container py-12 md:py-16">
+      <div class="max-w-2xl space-y-10">
+        {page.sections.map((s) => (
+          <div>
+            <h2 class="font-head font-bold text-xl md:text-2xl text-text mb-3">{s.heading}</h2>
+            {s.body.map((p) => <p class="text-text-mid leading-relaxed mb-3">{p}</p>)}
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <FaqList faq={page.faq} />
+
+  {related.length > 0 && <LinkChips heading="Kit for these conditions" links={related} />}
+  <LinkChips heading="Other conditions" links={otherConditions} more={{ label: "Temperature chart", href: "/guide/cycling-temperature-chart/" }} />
+
+  <GuideCta />
+  <SiteFooter />
+</Base>

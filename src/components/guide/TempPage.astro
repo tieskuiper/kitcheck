@@ -1,0 +1,179 @@
+---
+import Base from "../../layouts/Base.astro";
+import SiteHeader from "../SiteHeader.astro";
+import SiteFooter from "../SiteFooter.astro";
+import KitCard from "../calculator/KitCard";
+import Breadcrumb from "./Breadcrumb.astro";
+import FaqList from "./FaqList.astro";
+import LinkChips from "./LinkChips.astro";
+import {
+  TEMP_PAGES, FAHRENHEIT_PAGES, ZONE_LABELS, kitAt, conditionsAt, variationsAt,
+  toF, fToC, pathFor, pathForF, kitSentence, listJoin, type TempUnit,
+} from "../../lib/guideData";
+import { abs, articleNode, breadcrumbNode, faqNode } from "../../lib/site";
+
+interface Props { unit: TempUnit; value: number; intro: string }
+const { unit, value, intro } = Astro.props;
+
+const isF = unit === "F";
+const c = isF ? fToC(value) : value;
+const cRounded = Math.round(c);
+const f = isF ? value : toF(value);
+// Lead with the unit people searched in
+const label = isF ? `${f}°F` : `${c}°C`;
+const other = isF ? `${cRounded}°C` : `${f}°F`;
+const kit = kitAt(c);
+const score = conditionsAt(c);
+const variations = variationsAt(c);
+const path = isF ? pathForF(value) : pathFor(value);
+const canonical = abs(path);
+const wind = isF ? "6 mph" : "10 km/h";
+
+const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
+// One headline item per zone keeps descriptions distinct between neighbouring temperatures;
+// drop items from the end until it fits Google's ~155-character snippet
+const headline = (["torso", "legs", "hands", "feet"] as const)
+  .map((z) => kit[z].items.find((i) => !i.optional)?.name)
+  .filter((n): n is string => !!n)
+  .map(lower);
+const describe = (items: string[]) =>
+  `What to wear cycling at ${label} (${other}): ${items.join(", ")}. Plus what changes with wind, rain and effort.`;
+let items = headline;
+while (describe(items).length > 155 && items.length > 2) items = items.slice(0, -1);
+const description = describe(items);
+
+const h1 = `What to wear cycling at ${label}`;
+const answer = kitSentence(kit);
+const rain = variations.find((v) => v.key === "rain");
+const race = variations.find((v) => v.key === "race");
+const changeText = (v: typeof rain) =>
+  v && v.changes.length
+    ? v.changes.map((ch) => `${ZONE_LABELS[ch.zone].toLowerCase()}: ${listJoin(ch.items.map((i) => lower(i.name) + (i.optional ? " (optional)" : "")))}`).join("; ")
+    : null;
+
+// Generated from the same logic as the kit card, so the answers can't drift from the calculator
+const faq = [
+  { q: `What should I wear cycling at ${label} (${other})?`, a: `At a moderate pace in light wind and no rain: ${answer}` },
+  { q: `Do I need gloves cycling at ${label}?`, a: kitSentence(kit, ["hands"]) },
+  { q: `Shorts or tights at ${label}?`, a: kitSentence(kit, ["legs"]) },
+  ...(changeText(rain) ? [{ q: `What changes if it rains at ${label}?`, a: `With rain likely, change this: ${changeText(rain)}.` }] : []),
+  ...(changeText(race) ? [{ q: `What if I ride hard at ${label}?`, a: `At race pace or on a fast group ride you warm up a lot more. Change this: ${changeText(race)}.` }] : []),
+];
+
+const siblings = isF
+  ? FAHRENHEIT_PAGES.map((p) => ({ label: `${p.tempF}°F`, href: pathForF(p.tempF), current: p.tempF === value }))
+  : TEMP_PAGES.map((p) => ({ label: `${p.tempC}°C · ${toF(p.tempC)}°F`, href: pathFor(p.tempC), current: p.tempC === value }));
+
+const crumbs = [
+  { name: "kitcheck.cc", url: abs("/") },
+  { name: "Kit guide", url: abs("/guide/") },
+  { name: label, url: canonical },
+];
+---
+
+<Base
+  title={`What to Wear Cycling at ${label} (${other}) | kitcheck.cc`}
+  description={description}
+  canonical={canonical}
+  schema={[
+    articleNode({ url: canonical, headline: h1, description, lang: "en" }),
+    breadcrumbNode(crumbs),
+    faqNode(faq),
+  ]}
+>
+  <SiteHeader>
+    <a href="/" class="btn-primary">Use the calculator</a>
+  </SiteHeader>
+
+  <!-- INTRO -->
+  <section class="bg-bg">
+    <div class="container">
+      <div class="max-w-2xl pt-16 md:pt-18 lg:pt-20 pb-10 md:pb-12">
+        <Breadcrumb items={[{ name: "kitcheck.cc", href: "/" }, { name: "Kit guide", href: "/guide/" }, { name: label }]} />
+        <h1 class="font-head text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1] text-text mb-4">
+          {h1} <span class="text-text-light">({other})</span>
+        </h1>
+        <p class="text-text-mid leading-relaxed mb-5">{intro}</p>
+        <p class="text-sm leading-relaxed bg-white border border-border rounded-xl p-4">
+          <strong class="font-head text-text">Short answer:</strong>
+          <span class="text-text-mid">{answer}</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- KIT -->
+  <section class="bg-bg border-t border-border">
+    <div class="container py-12 md:py-16">
+      <div class="grid grid-cols-1 md:grid-cols-[1fr_minmax(0,380px)] gap-7 items-start">
+        <div>
+          <h2 class="font-head font-bold text-xl text-text mb-1">The kit list</h2>
+          <p class="text-sm text-text-light mb-4">
+            Feels like {label}, moderate pace, light wind ({wind}), no rain. Same logic as the calculator.
+          </p>
+          <KitCard kitResult={kit} score={score} unit={unit} />
+        </div>
+
+        <aside class="bg-white rounded-2xl border border-border p-5 sm:p-[22px] md:sticky md:top-[88px]">
+          <p class="font-head text-[11px] font-semibold tracking-[0.08em] uppercase text-coral mb-2">Your ride</p>
+          <p class="font-head font-bold text-lg text-text leading-snug mb-2">
+            It's never exactly {label} for the whole ride.
+          </p>
+          <p class="text-sm text-text-mid leading-relaxed mb-4">
+            The calculator checks the hourly forecast for your location and ride window,
+            including wind, rain and how hard you're going.
+          </p>
+          <a href="/" class="btn-primary">Check the forecast for your ride</a>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- VARIATIONS -->
+  <section class="bg-bg border-t border-border">
+    <div class="container py-12 md:py-16">
+      <h2 class="font-head font-bold text-xl md:text-2xl text-text mb-2">When to change your kit at {label}</h2>
+      <p class="text-text-mid leading-relaxed mb-6 max-w-2xl">
+        Effort, wind, rain and how warm you run all shift the recommendation. Here's what to
+        wear instead, only for the parts that change.
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {variations.map((v) => (
+          <div class="bg-white rounded-2xl border border-border p-5 sm:p-[22px]">
+            <h3 class="font-head text-[15px] font-bold text-text">{v.title}</h3>
+            <p class="text-xs text-text-light mb-3">{v.detail}</p>
+            {v.changes.length ? (
+              <dl class="space-y-2">
+                {v.changes.map((ch) => (
+                  <div class="text-sm">
+                    <dt class="font-head text-[10px] font-bold tracking-[0.07em] uppercase text-text-light">{ZONE_LABELS[ch.zone]}</dt>
+                    <dd class="text-text-mid">
+                      {ch.items.map((it, i) => (
+                        <>
+                          {i > 0 && ", "}
+                          {it.optional ? <span class="text-text-light">{i === 0 ? it.name : lower(it.name)} (optional)</span> : <span class="text-text">{i === 0 ? it.name : lower(it.name)}</span>}
+                        </>
+                      ))}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            ) : (
+              <p class="text-sm text-text-mid">Same kit as above.</p>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <FaqList faq={faq} heading={`Cycling at ${label}: quick answers`} />
+
+  <LinkChips
+    heading={isF ? "Other temperatures in °F" : "Other temperatures"}
+    links={siblings}
+    more={{ label: "Full temperature chart", href: "/guide/cycling-temperature-chart/" }}
+  />
+
+  <SiteFooter />
+</Base>

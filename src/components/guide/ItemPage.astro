@@ -1,0 +1,141 @@
+---
+import Base from "../../layouts/Base.astro";
+import SiteHeader from "../SiteHeader.astro";
+import SiteFooter from "../SiteFooter.astro";
+import Breadcrumb from "./Breadcrumb.astro";
+import FaqList from "./FaqList.astro";
+import LinkChips from "./LinkChips.astro";
+import GuideCta from "./GuideCta.astro";
+import { KIT_ITEM_PAGES, type KitItemPage } from "../../lib/guideContent";
+import { itemRangesByIntensity, rangePhrase, itemSentence } from "../../lib/kitRanges";
+import { TEMP_PAGES, toF, pathFor } from "../../lib/guideData";
+import { INTENSITY_OPTIONS } from "../calculator/constants";
+import { abs, articleNode, breadcrumbNode, faqNode } from "../../lib/site";
+
+interface Props { page: KitItemPage }
+const { page } = Astro.props;
+
+const canonical = abs(`/guide/${page.slug}/`);
+const byIntensity = itemRangesByIntensity(page.match, page.overrides);
+const moderate = byIntensity.find((r) => r.intensity === "moderate")!;
+const answer = itemSentence(page, moderate);
+
+// Temperature pages where the item is needed at a moderate pace
+const inRange = TEMP_PAGES.filter(({ tempC }) => {
+  const r = moderate.required ?? moderate.optional;
+  return r && (r.from === null || tempC >= r.from) && (r.to === null || tempC < r.to);
+});
+
+const faq = [
+  { q: `At what temperature should I wear ${page.name} cycling?`, a: answer },
+  ...page.faq,
+];
+const crumbs = [
+  { name: "kitcheck.cc", url: abs("/") },
+  { name: "Kit guide", url: abs("/guide/") },
+  { name: page.title, url: canonical },
+];
+const effortLabel = (v: string) => INTENSITY_OPTIONS.find((o) => o.value === v);
+---
+
+<Base
+  title={page.metaTitle}
+  description={page.description}
+  canonical={canonical}
+  schema={[
+    articleNode({ url: canonical, headline: page.title, description: page.description, lang: "en" }),
+    breadcrumbNode(crumbs),
+    faqNode(faq),
+  ]}
+>
+  <SiteHeader>
+    <a href="/" class="btn-primary">Use the calculator</a>
+  </SiteHeader>
+
+  <section class="bg-bg">
+    <div class="container">
+      <div class="max-w-2xl pt-16 md:pt-18 lg:pt-20 pb-10 md:pb-12">
+        <Breadcrumb items={[{ name: "kitcheck.cc", href: "/" }, { name: "Kit guide", href: "/guide/" }, { name: page.title }]} />
+        <h1 class="font-head text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1] text-text mb-5">
+          {page.title}
+        </h1>
+        <p class="text-sm leading-relaxed bg-white border border-border rounded-xl p-4 mb-6">
+          <strong class="font-head text-text">Short answer:</strong>
+          <span class="text-text-mid">{answer}</span>
+        </p>
+        {page.intro.map((p) => <p class="text-text-mid leading-relaxed mb-4">{p}</p>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-bg border-t border-border">
+    <div class="container py-12 md:py-16">
+      <h2 class="font-head font-bold text-xl md:text-2xl text-text mb-2">The temperature range per effort level</h2>
+      <p class="text-text-mid leading-relaxed mb-6 max-w-2xl">
+        Riding harder makes it feel warmer on the bike, so the range moves to colder temperatures.
+        Feels-like temperature from the forecast, {page.condition ?? "light wind, no rain"}.
+      </p>
+      <div class="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
+        <table class="w-full text-sm border-separate border-spacing-0 bg-white rounded-2xl border border-border overflow-hidden">
+          <thead>
+            <tr class="text-left">
+              <th scope="col" class="font-head text-[10px] font-bold tracking-[0.07em] uppercase text-text-light px-4 py-3 border-b border-border">Effort</th>
+              <th scope="col" class="font-head text-[10px] font-bold tracking-[0.07em] uppercase text-text-light px-4 py-3 border-b border-border">Recommended</th>
+              <th scope="col" class="font-head text-[10px] font-bold tracking-[0.07em] uppercase text-text-light px-4 py-3 border-b border-border">Optional</th>
+            </tr>
+          </thead>
+          <tbody>
+            {byIntensity.map((r, i) => {
+              const last = i === byIntensity.length - 1 ? "" : "border-b border-border";
+              const o = effortLabel(r.intensity);
+              return (
+                <tr class={r.intensity === "moderate" ? "bg-coral/[4%]" : ""}>
+                  <th scope="row" class={`text-left font-head font-semibold text-text px-4 py-3 ${last}`}>
+                    {o?.label}<span class="block text-xs font-normal text-text-light">{o?.desc}</span>
+                  </th>
+                  <td class={`px-4 py-3 text-text ${last}`}>{r.required ? rangePhrase(r.required) : <span class="text-text-light">Not needed</span>}</td>
+                  <td class={`px-4 py-3 text-text-mid ${last}`}>{r.optional ? rangePhrase(r.optional) : <span class="text-text-light">–</span>}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-xs text-text-light mt-3">
+        Do you always run cold or warm? Set your warmth tendency in the <a href="/" class="text-coral hover:opacity-75">calculator</a> and it shifts these ranges for you.
+      </p>
+    </div>
+  </section>
+
+  <section class="bg-bg border-t border-border">
+    <div class="container py-12 md:py-16">
+      <h2 class="font-head font-bold text-xl md:text-2xl text-text mb-4">Tips</h2>
+      <ul class="max-w-2xl space-y-3">
+        {page.tips.map((t) => (
+          <li class="flex gap-3 text-text-mid leading-relaxed">
+            <span class="mt-[9px] size-1.5 rounded-full bg-coral shrink-0" aria-hidden="true"></span>
+            <span>{t}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <FaqList faq={faq} />
+
+  {inRange.length > 0 && (
+    <LinkChips
+      heading="Full kit lists in this range"
+      links={inRange.map(({ tempC }) => ({ label: `${tempC}°C · ${toF(tempC)}°F`, href: pathFor(tempC) }))}
+      more={{ label: "Temperature chart", href: "/guide/cycling-temperature-chart/" }}
+    />
+  )}
+
+  <LinkChips
+    heading="More kit questions"
+    links={KIT_ITEM_PAGES.filter((p) => p.slug !== page.slug).map((p) => ({ label: p.title.replace(/:.*$/, ""), href: `/guide/${p.slug}/` }))}
+  />
+
+  <GuideCta />
+  <SiteFooter />
+</Base>

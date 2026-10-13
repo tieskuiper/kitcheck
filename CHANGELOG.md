@@ -34,6 +34,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Privacy policy and cookie policy rewritten to match exactly what the site does
 
 ### Added
+- SEO/GEO: temperature chart page (°C and °F), Fahrenheit temperature pages (30–80°F), -5°C and 30°C pages, kit item pages (arm, knee and leg warmers, bib tights, base layer, overshoes, winter gloves, gilet) with ranges per effort level, and condition pages (rain, wind, winter, heat)
+- "How it works" and "About" pages; generated `/llms.txt`
+- Generated "Short answer" and FAQs on every guide article; `Article`, `FAQPage`, `BreadcrumbList`, `WebSite`, `Organization` and `Person` structured data in one graph per page; hreflang support in the layout
+- Homepage quick reference: what to wear by temperature
+- Calculator and chart start in °F for visitors with a US browser language
 - Chance of showers (40–59%): packable rain jacket and light rain overshoes as options, with a "chance of showers" note
 - Heat note from 27°C: extra bottle and sunscreen
 - Note when the rain stops during the ride: the rain jacket can go in your pocket

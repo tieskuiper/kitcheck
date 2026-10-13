@@ -1,0 +1,140 @@
+---
+/**
+ * The method behind the recommendations, in plain text. AI tools and search engines can't run
+ * the calculator, but they can quote this. Numbers come from kitLogic where possible.
+ */
+import Base from "../layouts/Base.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import Breadcrumb from "../components/guide/Breadcrumb.astro";
+import GuideCta from "../components/guide/GuideCta.astro";
+import { getKitRecommendation } from "../lib/kitLogic";
+import { INTENSITY_OPTIONS, WARMTH_LABELS } from "../components/calculator/constants";
+import { toF } from "../lib/guideData";
+import { abs, articleNode, breadcrumbNode } from "../lib/site";
+
+const canonical = abs("/how-it-works/");
+const title = "How kitcheck.cc decides what you should wear";
+const description = "The method behind the kitcheck.cc cycling kit calculator: forecast data, effort, warmth tendency, wind, rain and why gloves and overshoes are chosen differently.";
+
+const at10 = (o: Partial<Parameters<typeof getKitRecommendation>[0]>) =>
+  getKitRecommendation({ apparentTemp: 10, windspeed: 10, precipProb: 0, warmthBias: 0, intensity: "moderate", ...o }).feelsLikeC;
+const effort = INTENSITY_OPTIONS.map((o) => ({ label: o.label, desc: o.desc, c: at10({ intensity: o.value }) }));
+const warmth = WARMTH_LABELS.map((label, i) => ({ label, c: at10({ warmthBias: i - 2 }) }));
+const t = (c: number) => `${c}°C (${toF(c)}°F)`;
+---
+
+<Base
+  title="How the Cycling Kit Calculator Works | kitcheck.cc"
+  description={description}
+  canonical={canonical}
+  schema={[
+    articleNode({ url: canonical, headline: title, description, lang: "en" }),
+    breadcrumbNode([{ name: "kitcheck.cc", url: abs("/") }, { name: "How it works", url: canonical }]),
+  ]}
+>
+  <SiteHeader>
+    <a href="/" class="btn-primary">Use the calculator</a>
+  </SiteHeader>
+
+  <section class="bg-bg">
+    <div class="container">
+      <div class="max-w-2xl pt-16 md:pt-18 lg:pt-20 pb-10 md:pb-12">
+        <Breadcrumb items={[{ name: "kitcheck.cc", href: "/" }, { name: "How it works" }]} />
+        <h1 class="font-head text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1] text-text mb-4">{title}</h1>
+        <p class="text-text-mid leading-relaxed">
+          kitcheck.cc turns the weather forecast for your ride into a kit list for five body zones:
+          head, upper body, hands, legs and feet. This page explains how, step by step, so you know
+          what the recommendation is based on and where its limits are.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-bg border-t border-border">
+    <div class="container py-12 md:py-16">
+      <div class="max-w-2xl prose-custom">
+        <h2>1. The forecast for your whole ride</h2>
+        <p>
+          The calculator takes the hourly forecast from <a href="https://open-meteo.com" rel="noopener">Open-Meteo</a> for
+          your location and every hour of your ride window: the feels-like temperature (which already
+          includes wind chill and humidity), wind speed and the chance of rain. It doesn't look at a
+          single snapshot, so a cold start or rain later in the ride shows up in the advice.
+        </p>
+        <p>
+          With a GPX route, it goes further: it takes the forecast at points along the route
+          (about every 6 km, plus the highest point) for the time you'll pass them, at the right
+          altitude, and judges the wind against your direction of travel. A headwind counts fully,
+          a tailwind barely.
+        </p>
+
+        <h2>2. How it feels on the bike</h2>
+        <p>
+          Riding hard makes it feel much warmer than standing still; an easy spin feels colder. The
+          calculator shifts the feels-like temperature for your effort level. With a forecast of {t(10)}:
+        </p>
+        <ul>
+          {effort.map((e) => <li><strong>{e.label}</strong> ({e.desc.toLowerCase()}): feels like about {t(e.c)}</li>)}
+        </ul>
+        <p>
+          How warm you naturally run matters too. Riders who are always cold get warmer kit, riders
+          who always run warm get less. At a moderate pace and {t(10)}:
+        </p>
+        <ul>
+          {warmth.map((w) => <li><strong>{w.label}</strong>: feels like about {t(w.c)}</li>)}
+        </ul>
+        <p>
+          Strong wind adds a small extra penalty on top of the forecast's feels-like temperature,
+          for the airflow of riding into it. From about 25 km/h (16 mph) a wind gilet is suggested
+          as an option.
+        </p>
+
+        <h2>3. Hands, feet and head are different</h2>
+        <p>
+          Effort warms your body, but your fingers, toes and ears barely benefit. So the calculator
+          counts effort only for about a third and warmth tendency for three quarters when it picks
+          gloves, overshoes and head covering. That's why you can ride in a lighter jacket at race
+          pace and still need winter gloves.
+        </p>
+        <p>
+          Gloves and overshoes are also chosen for the whole ride: nobody carries a second pair. If
+          it gets colder or starts raining later, you get the warmer pair from the start, with a
+          note explaining why.
+        </p>
+
+        <h2>4. Rain and heat</h2>
+        <p>
+          From a 40% chance of rain, a packable rain jacket is added as an option. From 60%, rain is
+          treated as likely and the rain kit scales with the temperature: a waterproof jacket,
+          waterproof gloves and overshoes in the cold; a packable jacket and thin rain overshoes when
+          it's mild; optional when it's warm. From a feels-like {t(27)}, a heat note reminds you to
+          take an extra bottle and sunscreen.
+        </p>
+
+        <h2>5. Required and optional</h2>
+        <p>
+          Every zone gets required items and, where it's a judgement call, optional ones. Optional
+          items sit in the band where riders genuinely disagree: arm warmers on a fresh spring
+          morning, toe covers on a long descent. When conditions change during the ride, notes tell
+          you when to take something off or put it on.
+        </p>
+
+        <h2>Limits</h2>
+        <p>
+          The recommendation is a well-informed starting point, not a guarantee. Forecasts can be
+          wrong, especially for rain more than a day ahead, and people differ: use the warmth
+          tendency setting if the advice is consistently too warm or too cold for you. The logic is
+          built for road cycling; for mountain biking or commuting at low speed, you'll usually need
+          a bit more.
+        </p>
+        <p>
+          The <a href="/guide/">kit guide</a> and the <a href="/guide/cycling-temperature-chart/">temperature chart</a> are
+          generated from the same logic as the calculator, so they never disagree with it.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <GuideCta />
+  <SiteFooter />
+</Base>
