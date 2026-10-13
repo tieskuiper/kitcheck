@@ -17,6 +17,8 @@ export interface KitItemPage {
   /** Plural or mass noun? Decides "they're" vs "it's" in generated sentences */
   plural: boolean
   match: (itemName: string) => boolean
+  /** A second item covered on the same page (leg warmers on the bib tights page) */
+  extra?: { label: string; name: string; plural: boolean; match: (itemName: string) => boolean }
   /** Conditions the item depends on (wind for a gilet, rain for a rain jacket) */
   overrides?: Partial<RiderInput>
   /** "in strong wind (…)": goes into the generated sentence and the table description */
@@ -31,75 +33,28 @@ export interface KitItemPage {
 
 export const KIT_ITEM_PAGES: KitItemPage[] = [
   {
-    slug: 'when-to-wear-arm-warmers',
-    label: 'Arm warmers',
+    slug: 'when-to-wear-arm-and-knee-warmers',
+    label: 'Arm & knee warmers',
     zone: 'torso',
-    name: 'arm warmers',
+    name: 'arm and knee warmers',
     plural: true,
-    match: n => n === 'Arm warmers',
-    title: 'When to wear arm warmers cycling',
-    metaTitle: 'When to Wear Arm Warmers Cycling (Temperature Guide) | kitcheck.cc',
-    description: 'At what temperature do you need arm warmers on the bike? Ranges in °C and °F per effort level, from easy rides to racing.',
+    match: n => n === 'Arm warmers' || n === 'Knee warmers',
+    title: 'When to wear arm and knee warmers cycling',
+    metaTitle: 'When to Wear Arm and Knee Warmers Cycling | kitcheck.cc',
+    description: 'At what temperature do you need arm and knee warmers on the bike? Ranges in °C and °F per effort level, plus when to switch to long sleeves or leg warmers.',
     intro: [
-      "Arm warmers turn a short-sleeve jersey into a long-sleeve one, and back again without stopping. That's why they're the most useful piece of kit for spring and autumn: you start with them on, and when the sun comes through or the road goes up, you push them down to your wrists or take them off and put them in a back pocket.",
-      "Below their range you're better off in a proper long-sleeve jersey, which is warmer and doesn't leave a cold gap at the shoulders. Above it, they're dead weight.",
+      "Arm and knee warmers turn summer kit into spring kit. You start with them on, and when the sun comes through or the road goes up, you push them down or take them off and put them in a back pocket. That makes them the most useful pieces of kit for the in-between months.",
+      "They come in together: the temperature where your arms want cover is about where your knees do too. Knees have almost no muscle or fat around them, which is why many riders keep them covered on cool days. Below this range, a long-sleeve jersey and leg warmers take over.",
     ],
     tips: [
-      'Push them down to your wrists before taking them off. Pulling them off over your gloves while riding is how they end up in the road.',
-      'Thermal (fleece-backed) arm warmers for cold mornings, thin Lycra ones for summer mornings and long descents.',
-      'Make sure the gripper sits under the jersey sleeve. A gap at the biceps lets cold air straight in.',
+      'Push arm warmers down to your wrists before taking them off. Pulling them over your gloves while riding is how they end up in the road.',
+      'Put knee warmers on before your bib shorts and pull the shorts over the top, so the grippers stay put.',
+      'Thermal (fleece-backed) warmers for cold mornings, thin Lycra ones for summer mornings and long descents.',
     ],
     faq: [
       { q: 'Arm warmers or a long-sleeve jersey?', a: 'A long-sleeve jersey is warmer and more comfortable when it stays cold all ride. Arm warmers win when the temperature changes: a cold start that warms up, or a ride with a long climb and descent. If you expect to take something off during the ride, take arm warmers.' },
-      { q: 'Do I need arm warmers if I ride hard?', a: 'Less often. A hard effort makes it feel several degrees warmer on the bike, so the range where you need arm warmers moves to colder temperatures. The table above shows how much.' },
-    ],
-  },
-  {
-    slug: 'when-to-wear-knee-warmers',
-    label: 'Knee warmers',
-    zone: 'legs',
-    name: 'knee warmers',
-    plural: true,
-    match: n => n === 'Knee warmers',
-    title: 'When to wear knee warmers cycling',
-    metaTitle: 'When to Wear Knee Warmers Cycling (Temperature Guide) | kitcheck.cc',
-    description: 'At what temperature should you wear knee warmers on the bike? Ranges in °C and °F per effort level, plus knee warmers vs leg warmers.',
-    intro: [
-      "Your knees have almost no muscle or fat around them, and they move through the air the whole ride. That's why they get cold before the rest of your legs do, and why many riders and coaches like to keep them covered on cool days. Knee warmers do exactly that, without the bulk of leg warmers or tights.",
-      'They cover the mild band: too warm for leg warmers, too cool for bare knees, especially at the start of a ride or on a descent.',
-    ],
-    tips: [
-      'Put them on before your bib shorts, then pull the shorts over the top so the gripper stays put.',
-      'They roll down to fit in a back pocket, but most riders keep them on once they are on: knees rarely overheat.',
-      'If you are unsure between knee and leg warmers, look at the start temperature: leg warmers when it is the colder side of the range, knee warmers when it will warm up quickly.',
-    ],
-    faq: [
-      { q: 'Knee warmers or leg warmers?', a: 'Leg warmers for the colder end of the range, knee warmers when it is mild. Leg warmers cover the whole leg and are the step before bib tights; knee warmers are the step before bare legs.' },
-      { q: 'Should I always cover my knees below a certain temperature?', a: "Many road cyclists keep their knees covered on cool days because the joint has little natural insulation. kitcheck.cc recommends knee or leg warmers over the whole range where bare knees would get cold, and makes them optional on the warm edge of that range." },
-    ],
-  },
-  {
-    slug: 'when-to-wear-leg-warmers',
-    label: 'Leg warmers',
-    zone: 'legs',
-    name: 'leg warmers',
-    plural: true,
-    match: n => n === 'Leg warmers',
-    title: 'When to wear leg warmers cycling',
-    metaTitle: 'When to Wear Leg Warmers Cycling (Temperature Guide) | kitcheck.cc',
-    description: 'At what temperature do you need leg warmers on the bike? Ranges in °C and °F per effort level, and when to switch to bib tights.',
-    intro: [
-      "Leg warmers sit between bib shorts and bib tights. With bib shorts they give you full leg coverage on a cool morning, and unlike tights you can take them off if it warms up, as long as you can get them over your shoes.",
-      "Below their range, bib tights are the better choice: no gap at the thigh, and a warmer, often windproof fabric.",
-    ],
-    tips: [
-      'Take them off before you get properly warm. Pulling leg warmers over cycling shoes on the side of the road is fiddly, and that only gets worse when you are sweating.',
-      'Fleece-lined leg warmers are nearly as warm as tights. Thin ones are closer to knee warmers with extra coverage.',
-      'With leg warmers your knees are covered too, so you never need knee warmers on top.',
-    ],
-    faq: [
-      { q: 'Leg warmers or bib tights?', a: 'Bib tights when it stays cold the whole ride, leg warmers when it might warm up. Tights are warmer and more comfortable; leg warmers give you the option to take them off.' },
-      { q: 'Do leg warmers count as winter kit?', a: 'Not really. They are for the cool months either side of winter. In real winter conditions bib tights or thermal bib tights keep you warmer and drier.' },
+      { q: 'Knee warmers or leg warmers?', a: 'Leg warmers for the colder end, knee warmers when it is mild. Leg warmers cover the whole leg and are the step before bib tights; knee warmers are the step before bare legs.' },
+      { q: 'Do I need warmers if I ride hard?', a: 'Less often. A hard effort makes it feel several degrees warmer on the bike, so the range moves to colder temperatures. The ranges on this page show how much.' },
     ],
   },
   {
@@ -109,19 +64,21 @@ export const KIT_ITEM_PAGES: KitItemPage[] = [
     name: 'bib tights',
     plural: true,
     match: n => n.toLowerCase().includes('bib tights'),
-    title: 'Bib tights or bib shorts: at what temperature?',
+    extra: { label: 'Leg warmers', name: 'leg warmers', plural: true, match: n => n === 'Leg warmers' },
+    title: 'Bib tights, leg warmers or bib shorts?',
     metaTitle: 'Bib Tights or Bib Shorts? The Temperature to Switch | kitcheck.cc',
-    description: 'At what temperature should you wear bib tights instead of bib shorts? The switch point in °C and °F per effort level, and when thermal tights make sense.',
+    description: 'At what temperature should you wear bib tights, bib shorts with leg warmers, or just bib shorts? Switch points in °C and °F per effort level.',
     intro: [
-      "Bib tights are the default for winter riding: full leg coverage, no gaps, and usually a fleece-backed fabric that holds heat. Thermal bib tights go a step further with a heavier lining, sometimes with windproof panels on the front.",
-      "Above their range it's bib shorts, first with leg warmers, then knee warmers, then nothing. The table below shows where each step starts.",
+      "Your legs go through three steps as it gets colder: bib shorts, then bib shorts with leg warmers, then bib tights. Leg warmers are the flexible middle step: full coverage on a cool morning, and you can take them off if it warms up, as long as you can get them over your shoes.",
+      "Bib tights are the default for winter: no gap at the thigh, and usually a fleece-backed fabric that holds heat. Thermal bib tights go a step further for the coldest days, sometimes with windproof panels on the front.",
     ],
     tips: [
-      'Bib tights with a chamois are the simplest option. Tights without a chamois can be worn over your summer bib shorts, which is cheaper if you already own good shorts.',
-      'Windproof panels on the front of thermal tights help a lot when it is freezing, and are too warm for anything milder.',
-      'If you are in doubt on the warm end of the range, bib shorts with leg warmers give you a way out.',
+      'Take leg warmers off before you get properly warm: pulling them over cycling shoes on the side of the road only gets harder when you are sweating.',
+      'Tights without a chamois can go over your summer bib shorts, which is cheaper if you already own good shorts.',
+      'On the warm end of the tights range, bib shorts with leg warmers give you a way out.',
     ],
     faq: [
+      { q: 'Leg warmers or bib tights?', a: 'Bib tights when it stays cold the whole ride, leg warmers when it might warm up. Tights are warmer and more comfortable; leg warmers give you the option to take them off.' },
       { q: 'Thermal bib tights or regular bib tights?', a: 'Thermal bib tights for the coldest days, roughly around freezing and below at a moderate pace. Regular, fleece-backed bib tights cover the rest of the cold range.' },
       { q: 'Can I wear bib tights over bib shorts?', a: 'Yes, if the tights have no chamois. Two chamois on top of each other is uncomfortable; tights without a pad over your normal bib shorts work well.' },
     ],
@@ -196,32 +153,6 @@ export const KIT_ITEM_PAGES: KitItemPage[] = [
     faq: [
       { q: 'At what temperature do I need full-finger gloves?', a: 'Light full-finger gloves come in a few degrees above the winter glove range, in the cool band where fingerless gloves let too much wind through. The calculator shows the right pair for your ride.' },
       { q: 'Waterproof or thermal winter gloves?', a: 'Waterproof winter gloves when it is freezing or when rain is likely in the cold: wet hands lose heat very fast. Thermal gloves for cold, dry rides.' },
-    ],
-  },
-  {
-    slug: 'when-to-wear-a-cycling-gilet',
-    label: 'Gilet',
-    zone: 'torso',
-    name: 'a gilet',
-    plural: false,
-    match: n => n === 'Wind gilet',
-    overrides: { windspeed: 30 },
-    condition: 'in strong wind (30 km/h, 19 mph)',
-    title: 'When to wear a cycling gilet',
-    metaTitle: 'When to Wear a Cycling Gilet (Wind Vest) | kitcheck.cc',
-    description: 'When is a cycling gilet or wind vest worth it? Temperatures in °C and °F, why wind matters more than temperature, and gilet vs rain jacket.',
-    intro: [
-      'A gilet (or wind vest) blocks the wind on your chest and stomach and leaves your arms free, so you stay warm without overheating. It packs into a jersey pocket, which makes it the go-to layer for windy days, early starts and long descents.',
-      "Wind is what decides it, more than the temperature. That's why kitcheck.cc lists a gilet as optional when the wind is strong, and leaves it out on calm days. If rain is likely, a rain jacket replaces it.",
-    ],
-    tips: [
-      'Put it on at the top of a climb, before the descent, not halfway down.',
-      'A gilet with a mesh back lets heat out on the climbs; a full windproof one is warmer on the flat into a headwind.',
-      'If you only take one extra layer on a changeable day, a gilet is usually the best choice.',
-    ],
-    faq: [
-      { q: 'Gilet or rain jacket?', a: 'A gilet for wind, a rain jacket for rain. A gilet is not waterproof and does nothing for your arms in the rain. If showers are possible, a packable rain jacket in your pocket does both jobs, just less breathably.' },
-      { q: 'Do I need a gilet in summer?', a: 'For long Alpine descents or early starts, often yes. On a warm, calm day at home, no.' },
     ],
   },
 ]
@@ -299,7 +230,7 @@ export const CONDITION_PAGES: ConditionPage[] = [
       { q: 'How do I keep my feet dry cycling in the rain?', a: 'Waterproof overshoes over your shoes, and mudguards on the bike. In warm rain, thin rain overshoes are enough. Nothing keeps feet dry for hours in heavy rain, so in the cold add thermal socks: warm and wet is better than cold and wet.' },
       { q: 'Should I ride in the rain at all?', a: 'In warm rain, there is little reason not to. In cold rain, keep the ride shorter and closer to home, and be careful on painted lines, metal covers and the first wet minutes after a dry spell, when roads are slippery.' },
     ],
-    related: ['when-to-wear-overshoes-cycling', 'when-to-wear-winter-cycling-gloves', 'when-to-wear-a-cycling-gilet'],
+    related: ['when-to-wear-overshoes-cycling', 'when-to-wear-winter-cycling-gloves'],
   },
   {
     slug: 'what-to-wear-cycling-in-wind',
@@ -344,9 +275,10 @@ export const CONDITION_PAGES: ConditionPage[] = [
     },
     faq: [
       { q: 'How much colder does wind make a bike ride feel?', a: "It depends on the temperature and wind speed, and the forecast's feels-like temperature already accounts for most of it. On the bike, riding into a strong headwind adds a few degrees on top. On a windy day, plan for kit one step warmer than the plain temperature suggests." },
+      { q: 'Gilet or rain jacket?', a: 'A gilet for wind, a rain jacket for rain. A gilet is not waterproof and does nothing for your arms in the rain. If showers are possible, a packable rain jacket in your pocket does both jobs, just less breathably.' },
       { q: 'Should I ride into the wind first?', a: 'Yes, if you can. Start into the wind and finish with it behind you, so you are not fighting a headwind when you are tired and riding slower.' },
     ],
-    related: ['when-to-wear-a-cycling-gilet', 'when-to-wear-arm-warmers', 'when-to-wear-overshoes-cycling'],
+    related: ['when-to-wear-arm-and-knee-warmers', 'when-to-wear-overshoes-cycling'],
   },
   {
     slug: 'winter-cycling-clothing',
@@ -396,46 +328,5 @@ export const CONDITION_PAGES: ConditionPage[] = [
       { q: 'How many layers should I wear cycling in winter?', a: 'Usually three on your upper body: a base layer, a winter jersey and a windproof or insulated jacket. In milder winter weather, two layers (a thermal base layer under a softshell or winter jersey) are enough.' },
     ],
     related: ['bib-tights-or-bib-shorts', 'when-to-wear-winter-cycling-gloves', 'when-to-wear-overshoes-cycling', 'when-to-wear-a-base-layer-cycling'],
-  },
-  {
-    slug: 'what-to-wear-cycling-in-hot-weather',
-    label: 'Heat',
-    icon: 'sun',
-    teaser: 'The lightest kit, plus drinking, sun and timing when it is 25°C (77°F) or more.',
-    facts: [
-      { value: '27°C', text: '81°F feels-like: extra bottle and sunscreen' },
-      { value: '2 bottles', text: 'one with electrolytes on longer rides' },
-      { value: 'Early', text: 'or late: ride outside the hottest hours' },
-    ],
-    title: 'What to wear cycling in hot weather',
-    metaTitle: 'What to Wear Cycling in Hot Weather | kitcheck.cc',
-    description: 'Road cycling in the heat: the lightest kit, sun protection, how much to drink and how to plan a ride when it is 25°C (77°F) or hotter.',
-    intro: 'Once it is properly warm, your kit is simple: a lightweight summer jersey and bib shorts. What makes or breaks a hot ride is everything around the kit: when you ride, what you drink, and how you deal with the sun.',
-    sections: [
-      {
-        heading: 'Kit for the heat',
-        body: [
-          'The lightest, thinnest jersey you own, ideally light-coloured and with a full-length zip so you can open it on climbs. Bib shorts, summer socks, and fingerless gloves only if you like them for grip. A thin cycling cap under the helmet keeps sun off your head and sweat out of your eyes.',
-        ],
-      },
-      {
-        heading: 'Drink and plan',
-        body: [
-          "From a feels-like temperature of 27°C (81°F), kitcheck.cc adds a heat note: take an extra bottle and put on sunscreen. Put electrolytes in at least one bottle, plan a café or water stop on longer rides, and start early in the morning or ride late in the afternoon, when it's cooler.",
-          'Ride a notch easier than usual on the climbs. Your body has to work harder to cool down, and pushing your normal pace in the heat costs more than it gives.',
-        ],
-      },
-      {
-        heading: 'Sun protection',
-        body: [
-          "Sunscreen on your arms, legs, neck and the backs of your knees, and reapply it on long rides. Sunglasses help against glare and keep insects out of your eyes.",
-        ],
-      },
-    ],
-    faq: [
-      { q: 'What is too hot for cycling?', a: 'There is no single limit, and it depends on humidity, how used you are to the heat and how hard you ride. Above about 30°C (86°F), ride early, shorten the route, plan water stops and stop if you feel dizzy or stop sweating.' },
-      { q: 'Should I wear a base layer in hot weather?', a: 'Some riders like a thin mesh base layer in the heat because it moves sweat away from the skin. It is a personal choice; kitcheck.cc does not list one when it is warm.' },
-    ],
-    related: ['when-to-wear-arm-warmers', 'when-to-wear-a-cycling-gilet'],
   },
 ]

@@ -13,13 +13,8 @@ export const fToC = (f: number) => (f - 32) * 5 / 9
 const signed = (n: number) => n < 0 ? `minus-${-n}` : `${n}`
 export const slugFor = (c: number) => `what-to-wear-cycling-${signed(c)}-degrees`
 export const pathFor = (c: number) => `/guide/${slugFor(c)}/`
-export const slugForF = (f: number) => `what-to-wear-cycling-${signed(f)}-degrees-fahrenheit`
-export const pathForF = (f: number) => `/guide/${slugForF(f)}/`
 
 export type TempUnit = 'C' | 'F'
-export interface TempPage { unit: TempUnit; value: number; intro: string }
-export const tempCOf = (p: { unit: TempUnit; value: number }) => p.unit === 'C' ? p.value : fToC(p.value)
-export const pathForPage = (p: { unit: TempUnit; value: number }) => p.unit === 'C' ? pathFor(p.value) : pathForF(p.value)
 
 // Intros are hand-written per temperature (unique content per page) but must stay in line
 // with what kitLogic recommends — re-read them when the thresholds change.
@@ -51,46 +46,6 @@ export const TEMP_PAGES: { tempC: number; intro: string }[] = [
   {
     tempC: 25,
     intro: "From 25°C the question isn't what to wear but how little. The lightest jersey you own and bib shorts, and the rest is about heat: ride early or late, drink more than you think you need, and don't forget sunscreen on the back of your neck.",
-  },
-  {
-    tempC: 30,
-    intro: "At 30°C your kit can't get any lighter, so the ride plan has to adapt instead. Start early, pick a route with shade or a café halfway, and carry two bottles with electrolytes in at least one. A light-coloured, thin jersey with a full zip helps, and so does riding a notch easier than usual on the climbs.",
-  },
-]
-
-// Fahrenheit pages for riders in the US: their own intros, °F first, wind in mph
-export const FAHRENHEIT_PAGES: { tempF: number; intro: string }[] = [
-  {
-    tempF: 30,
-    intro: "At 30°F you're just below freezing, and that means full winter kit: a thermal skull cap under your helmet, thermal base layer, winter jersey and an insulated jacket, waterproof winter gloves, thermal bib tights and full overshoes over thermal socks. Watch for ice on shaded roads and bridges, and keep the route short enough that cold feet don't decide when you turn around.",
-  },
-  {
-    tempF: 40,
-    intro: "40 degrees is cold-weather kit, one step down from deep winter. Regular bib tights are enough on your legs, but a thermal base layer under a winter jersey or softshell is still the way to go. Your hands and feet get cold first, so thermal gloves and overshoes matter more than a third layer on your chest.",
-  },
-  {
-    tempF: 45,
-    intro: "45°F is where winter kit starts to feel like too much on a climb. A long-sleeve jersey with an optional base layer, light full-finger gloves, bib tights and light overshoes or toe covers is the setup. If you're going out hard, skip the base layer; if it's a slow social ride, wear it.",
-  },
-  {
-    tempF: 50,
-    intro: "50 degrees is the classic in-between temperature: cold at the start, warm by the first climb. A long-sleeve jersey with bib shorts and leg warmers gives you options, and light gloves keep your fingers working on the descents. Ride hard and you'll want less; ride easy and the optional base layer earns its place.",
-  },
-  {
-    tempF: 55,
-    intro: "At 55°F a short-sleeve jersey works again, as long as you add arm warmers and knee warmers. Toe covers are optional but nice on longer descents. Light full-finger gloves help if you run cold; otherwise fingerless gloves are fine.",
-  },
-  {
-    tempF: 60,
-    intro: "60 degrees is the sweet spot for road riding: jersey and bib shorts, with arm and knee warmers as optional extras for an early start or a long descent. Once you're warmed up they come off and fit in a back pocket.",
-  },
-  {
-    tempF: 70,
-    intro: "At 70°F it's full summer kit: a lightweight jersey and bib shorts, no gloves needed unless you like them for grip. The things that matter now are a second bottle and sunscreen on your arms, neck and the backs of your knees.",
-  },
-  {
-    tempF: 80,
-    intro: "80 degrees and up is all about heat management. Your lightest jersey and bib shorts, two bottles with electrolytes in one, and a ride time early or late in the day. Light-coloured kit helps, and unzipping on the climbs does more than you'd think.",
   },
 ]
 

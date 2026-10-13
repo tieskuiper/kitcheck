@@ -6,7 +6,7 @@ import PageHero from "../../components/ui/PageHero.astro";
 import SectionHead from "../../components/ui/SectionHead.astro";
 import CtaBand from "../../components/ui/CtaBand.astro";
 import FaqList from "../../components/guide/FaqList.astro";
-import { TEMP_PAGES, FAHRENHEIT_PAGES, kitAt, conditionsAt, toF, pathFor, pathForF } from "../../lib/guideData";
+import { TEMP_PAGES, kitAt, conditionsAt, toF, pathFor } from "../../lib/guideData";
 import { KIT_ITEM_PAGES, CONDITION_PAGES } from "../../lib/guideContent";
 import { itemRanges, rangePhrase } from "../../lib/kitRanges";
 import { abs, breadcrumbNode, faqNode } from "../../lib/site";
@@ -49,7 +49,7 @@ const faq = [
 
 <Base
   title="What to Wear Cycling by Temperature (°C and °F) | kitcheck.cc"
-  description="What to wear cycling at every temperature, from -5°C (23°F) to 30°C (86°F). Kit lists per temperature in °C and °F, a full chart, and kit for rain, wind and winter."
+  description="What to wear cycling at every temperature, from -5°C (23°F) to 25°C (77°F). Kit lists per temperature, an interactive chart, and kit for rain, wind and winter."
   canonical="https://kitcheck.cc/guide/"
   schema={[
     faqNode(faq),
@@ -67,7 +67,7 @@ const faq = [
     align="center"
     eyebrow="Kit guide"
     title="What to wear cycling, <span class='text-coral'>at any temperature</span>"
-    lead="Kit lists per temperature, when each piece of kit comes in, and what changes with rain, wind and cold. Same logic as the calculator."
+    lead="What to wear at each temperature, when each piece of kit comes in, and what changes with rain, wind and cold."
     crumbs={[{ name: "kitcheck.cc", href: "/" }, { name: "Kit guide" }]}
   >
     <a href="/guide/cycling-temperature-chart/" class="btn-primary py-3! px-5! text-[14px]!">Open the temperature chart</a>
@@ -78,7 +78,7 @@ const faq = [
   <section class="bg-bg">
     <div class="container pb-16 md:pb-24">
       <SectionHead eyebrow="By temperature" title="Pick your temperature" lead="Feels-like temperature, moderate pace, light wind and no rain." />
-      <div class="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-8 gap-2.5">
+      <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5">
         {temps.map((t) => (
           <a href={pathFor(t.tempC)} class="group relative flex flex-col bg-white rounded-2xl border border-border overflow-hidden hover:-translate-y-0.5 hover:shadow-[0_12px_28px_-12px_rgba(0,0,0,0.18)] transition-all">
             <span class="h-1.5" style={`background:${TIER_ACCENT[t.label]}`} aria-hidden="true"></span>
@@ -93,16 +93,6 @@ const faq = [
         ))}
       </div>
 
-      <div id="fahrenheit" class="scroll-mt-24 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5 mt-5 bg-white rounded-2xl border border-border p-4 sm:px-5">
-        <span class="font-head text-sm font-bold text-text shrink-0">Prefer Fahrenheit?</span>
-        <nav class="flex flex-wrap gap-1.5" aria-label="What to wear cycling in Fahrenheit">
-          {FAHRENHEIT_PAGES.map(({ tempF }) => (
-            <a href={pathForF(tempF)} class="px-3 py-1.5 rounded-lg border border-border font-head text-[13px] font-semibold text-text-mid hover:border-text-light hover:text-text transition-colors">
-              {tempF}°F
-            </a>
-          ))}
-        </nav>
-      </div>
     </div>
   </section>
 
@@ -110,7 +100,7 @@ const faq = [
   <section class="bg-white border-y border-border">
     <div class="container py-16 md:py-24">
       <SectionHead eyebrow="By piece of kit" title="When to wear what" lead="The temperature where each piece of kit comes in, at a moderate pace. Every page shows the range per effort level." />
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
         {items.map((p) => {
           const Icon = CAT_ICONS[p.zone];
           return (
@@ -133,8 +123,8 @@ const faq = [
   <!-- CONDITIONS -->
   <section class="bg-bg">
     <div class="container py-16 md:py-24">
-      <SectionHead eyebrow="By weather" title="Rain, wind, winter and heat" lead="What changes when the weather does." />
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <SectionHead eyebrow="By weather" title="Rain, wind and winter" lead="What changes when the weather does." />
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {CONDITION_PAGES.map((p) => {
           const Icon = CONDITION_ICONS[p.icon];
           return (

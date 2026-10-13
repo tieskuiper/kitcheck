@@ -17,23 +17,13 @@ const hasAside = Astro.slots.has("aside");
 const center = align === "center";
 ---
 
-<section class="relative overflow-hidden bg-bg">
-  <!-- Decorative: soft coral glow and a fading grid -->
-  <div aria-hidden="true" class="pointer-events-none absolute inset-0">
-    <div class="absolute -top-40 right-[-10%] size-[560px] rounded-full bg-coral/10 blur-3xl"></div>
-    <div class="absolute inset-0 hero-grid"></div>
-  </div>
-
-  <div class="container relative">
-    <div class={`pt-12 md:pt-16 lg:pt-20 pb-12 md:pb-16 ${hasAside ? "grid grid-cols-1 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] gap-10 lg:gap-14 items-center" : ""}`}>
+<section class="bg-bg">
+  <div class="container">
+    <div class={`pt-10 md:pt-14 lg:pt-16 pb-12 md:pb-16 ${hasAside ? "grid grid-cols-1 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] gap-10 lg:gap-14 items-center" : ""}`}>
       <div class={center ? "max-w-3xl mx-auto text-center" : "max-w-2xl"}>
         {crumbs && <div class={center ? "flex justify-center" : ""}><Breadcrumb items={crumbs} /></div>}
-        {eyebrow && (
-          <p class="inline-flex items-center gap-2 font-head text-[11px] font-semibold tracking-[0.08em] uppercase text-coral bg-coral/8 rounded-full px-3 py-1.5 mb-5">
-            <span class="size-1.5 rounded-full bg-coral" aria-hidden="true"></span>{eyebrow}
-          </p>
-        )}
-        <h1 class="font-head text-[2rem] md:text-5xl lg:text-[3.5rem] font-bold tracking-tight leading-[1.05] text-text text-balance">
+        {eyebrow && <p class="font-head text-[12px] font-semibold tracking-[0.08em] uppercase text-coral mb-4">{eyebrow}</p>}
+        <h1 class="font-head text-[2rem] md:text-[2.75rem] lg:text-5xl font-bold tracking-tight leading-[1.08] text-text text-balance">
           <Fragment set:html={title} />
         </h1>
         {lead && <p class={`text-lg text-text-mid leading-relaxed mt-5 ${center ? "max-w-xl mx-auto" : ""}`}>{lead}</p>}

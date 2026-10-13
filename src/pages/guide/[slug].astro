@@ -1,18 +1,17 @@
 ---
 /**
- * Every guide article lives at /guide/<slug>/: temperature pages (°C and °F), kit item pages
+ * Every guide article lives at /guide/<slug>/: temperature pages, kit item pages
  * and condition pages. One route, three templates.
  */
 import TempPage from "../../components/guide/TempPage.astro";
 import ItemPage from "../../components/guide/ItemPage.astro";
 import ConditionPage from "../../components/guide/ConditionPage.astro";
-import { TEMP_PAGES, FAHRENHEIT_PAGES, slugFor, slugForF } from "../../lib/guideData";
+import { TEMP_PAGES, slugFor } from "../../lib/guideData";
 import { KIT_ITEM_PAGES, CONDITION_PAGES } from "../../lib/guideContent";
 
 export function getStaticPaths() {
   return [
-    ...TEMP_PAGES.map((p) => ({ params: { slug: slugFor(p.tempC) }, props: { kind: "temp" as const, unit: "C" as const, value: p.tempC, intro: p.intro } })),
-    ...FAHRENHEIT_PAGES.map((p) => ({ params: { slug: slugForF(p.tempF) }, props: { kind: "temp" as const, unit: "F" as const, value: p.tempF, intro: p.intro } })),
+    ...TEMP_PAGES.map((p) => ({ params: { slug: slugFor(p.tempC) }, props: { kind: "temp" as const, tempC: p.tempC, intro: p.intro } })),
     ...KIT_ITEM_PAGES.map((page) => ({ params: { slug: page.slug }, props: { kind: "item" as const, page } })),
     ...CONDITION_PAGES.map((page) => ({ params: { slug: page.slug }, props: { kind: "condition" as const, page } })),
   ];
@@ -21,6 +20,6 @@ export function getStaticPaths() {
 const props = Astro.props;
 ---
 
-{props.kind === "temp" && <TempPage unit={props.unit} value={props.value} intro={props.intro} />}
+{props.kind === "temp" && <TempPage tempC={props.tempC} intro={props.intro} />}
 {props.kind === "item" && <ItemPage page={props.page} />}
 {props.kind === "condition" && <ConditionPage page={props.page} />}

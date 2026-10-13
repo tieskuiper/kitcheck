@@ -19,7 +19,13 @@ const { page } = Astro.props;
 
 const canonical = abs(`/guide/${page.slug}/`);
 const moderate = itemRanges(page.match, { ...page.overrides, intensity: "moderate" });
-const answer = itemSentence(page, moderate);
+const extra = page.extra
+  ? { ...page.extra, sentence: itemSentence(page.extra, itemRanges(page.extra.match, { ...page.overrides, intensity: "moderate" })) }
+  : null;
+// One quotable answer: the main item, plus the second item on the page (without repeating the effort note)
+const answer = extra
+  ? `${itemSentence(page, moderate, false)} ${extra.sentence.replace(/^At a moderate pace, wear/, "Wear")}`
+  : itemSentence(page, moderate);
 
 // Temperature pages where the item is needed at a moderate pace
 const inRange = TEMP_PAGES.filter(({ tempC }) => {
@@ -27,7 +33,11 @@ const inRange = TEMP_PAGES.filter(({ tempC }) => {
   return r && (r.from === null || tempC >= r.from) && (r.to === null || tempC < r.to);
 });
 
-const faq = [{ q: `At what temperature should I wear ${page.name} cycling?`, a: answer }, ...page.faq];
+const faq = [
+  { q: `At what temperature should I wear ${page.name} cycling?`, a: extra ? itemSentence(page, moderate) : answer },
+  ...(extra ? [{ q: `At what temperature should I wear ${extra.name} cycling?`, a: extra.sentence }] : []),
+  ...page.faq,
+];
 const crumbs = [
   { name: "kitcheck.cc", url: abs("/") },
   { name: "Kit guide", url: abs("/guide/") },
@@ -58,7 +68,10 @@ const related = KIT_ITEM_PAGES.filter((p) => p.slug !== page.slug);
   >
     <div class="w-full"><AnswerCard text={answer} /></div>
     <Fragment slot="aside">
-      <EffortRanges match={page.match} overrides={page.overrides} label={page.label} />
+      <div class="flex flex-col gap-3">
+        <EffortRanges match={page.match} overrides={page.overrides} label={extra ? page.name.charAt(0).toUpperCase() + page.name.slice(1) : page.label} />
+        {extra && <EffortRanges match={extra.match} overrides={page.overrides} label={extra.label} />}
+      </div>
       <p class="text-xs text-text-light mt-3 px-1">
         Feels-like temperature from the forecast, {page.condition ?? "light wind, no rain"}. Always cold or warm?
         Set your warmth tendency in the <a href="/" class="text-coral hover:opacity-75">calculator</a>.

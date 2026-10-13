@@ -34,13 +34,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Privacy policy and cookie policy rewritten to match exactly what the site does
 
 ### Added
-- SEO/GEO: temperature chart page (°C and °F), Fahrenheit temperature pages (30–80°F), -5°C and 30°C pages, kit item pages (arm, knee and leg warmers, bib tights, base layer, overshoes, winter gloves, gilet) with ranges per effort level, and condition pages (rain, wind, winter, heat)
+- SEO/GEO: interactive temperature chart page, a -5°C page, kit pages (arm & knee warmers, bib tights/leg warmers, base layer, overshoes, winter gloves) with ranges per effort level, and condition pages (rain, wind, winter)
 - "How it works" and "About" pages; generated `/llms.txt`
 - Generated "Short answer" and FAQs on every guide article; `Article`, `FAQPage`, `BreadcrumbList`, `WebSite`, `Organization` and `Person` structured data in one graph per page; hreflang support in the layout
 - Homepage quick reference: what to wear by temperature
 - Calculator and chart start in °F for visitors in a US timezone; a manual °C/°F choice is remembered (`kitcheck-unit`, listed in the cookie policy)
 - Interactive temperature chart: slider, effort, wind and rain toggles, and range bars per piece of kit
-- New page layout: hero, section headings, answer cards, CTA band, header navigation (with mobile menu) and a multi-column footer; guide hub, articles, how it works and about rebuilt on it
+- New page layout: hero, section headings, answer cards, CTA band, header navigation (with mobile menu) and a compact footer; guide hub, articles, how it works and about rebuilt on it. Homepage stays tool-first: calculator, team, quick reference
 - Contact address info@kitcheck.cc on the about page, FAQs and footer
 - Chance of showers (40–59%): packable rain jacket and light rain overshoes as options, with a "chance of showers" note
 - Heat note from 27°C: extra bottle and sunscreen

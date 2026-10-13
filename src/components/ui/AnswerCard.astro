@@ -1,14 +1,10 @@
 ---
 /** The quotable one-paragraph answer at the top of an article */
-import { IconLightBulb } from "@central-icons-react/round-outlined-radius-3-stroke-2";
 interface Props { text: string; label?: string }
 const { text, label = "Short answer" } = Astro.props;
 ---
 
-<div class="relative bg-white rounded-2xl border border-border p-5 sm:p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_-12px_rgba(0,0,0,0.12)]">
-  <div class="flex items-center gap-2 mb-2.5">
-    <span class="flex items-center justify-center size-7 rounded-lg bg-coral/10 text-coral"><IconLightBulb size={16} /></span>
-    <span class="font-head text-[11px] font-semibold tracking-[0.08em] uppercase text-coral">{label}</span>
-  </div>
+<div class="bg-white rounded-2xl border border-border p-5 sm:p-6">
+  <p class="font-head text-[11px] font-semibold tracking-[0.08em] uppercase text-coral mb-2">{label}</p>
   <p class="text-[15px] text-text leading-relaxed">{text}</p>
 </div>

@@ -8,7 +8,7 @@ import SectionHead from "../../components/ui/SectionHead.astro";
 import KitTable from "../../components/guide/KitTable.astro";
 import FaqList from "../../components/guide/FaqList.astro";
 import ChartExplorer from "../../components/guide/ChartExplorer";
-import { kitAt, toF, fToC, pathFor, pathForF, TEMP_PAGES, FAHRENHEIT_PAGES } from "../../lib/guideData";
+import { kitAt, toF, fToC, pathFor, TEMP_PAGES } from "../../lib/guideData";
 import { getKitRecommendation } from "../../lib/kitLogic";
 import { INTENSITY_OPTIONS } from "../../components/calculator/constants";
 import { abs, articleNode, breadcrumbNode, faqNode } from "../../lib/site";
@@ -27,7 +27,6 @@ const cRows = C_ROWS.map((c) => ({
 }));
 const fRows = F_ROWS.map((f) => ({
   label: `${f}°F`, sublabel: `${Math.round(fToC(f))}°C`,
-  href: FAHRENHEIT_PAGES.some((p) => p.tempF === f) ? pathForF(f) : undefined,
   kit: kitAt(fToC(f)),
 }));
 

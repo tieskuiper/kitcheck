@@ -4,7 +4,6 @@ const { pathname } = Astro.url;
 const NAV = [
   { href: "/guide/", label: "Kit guide" },
   { href: "/guide/cycling-temperature-chart/", label: "Temperature chart" },
-  { href: "/how-it-works/", label: "How it works" },
 ];
 // The guide link stays active on every guide article, except the chart (its own item)
 const isActive = (href: string) =>

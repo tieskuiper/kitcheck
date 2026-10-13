@@ -1,54 +1,48 @@
 ---
-import { TEMP_PAGES, pathFor, toF } from "../lib/guideData";
-import { KIT_ITEM_PAGES, CONDITION_PAGES } from "../lib/guideContent";
-
-
 const columns = [
   {
-    title: "Calculator",
+    title: "Tool",
     links: [
       { label: "Kit calculator", href: "/" },
       { label: "Temperature chart", href: "/guide/cycling-temperature-chart/" },
       { label: "How it works", href: "/how-it-works/" },
-      { label: "Kit guide", href: "/guide/" },
     ],
   },
   {
-    title: "By temperature",
+    title: "Guide",
     links: [
-      ...TEMP_PAGES.filter((p) => p.tempC >= 0 && p.tempC <= 20).map((p) => ({ label: `${p.tempC}°C (${toF(p.tempC)}°F)`, href: pathFor(p.tempC) })),
-      { label: "All temperatures in °F", href: "/guide/#fahrenheit" },
+      { label: "Kit by temperature", href: "/guide/" },
+      { label: "Rain", href: "/guide/what-to-wear-cycling-in-the-rain/" },
+      { label: "Winter", href: "/guide/winter-cycling-clothing/" },
     ],
   },
   {
-    title: "Kit",
-    links: KIT_ITEM_PAGES.map((p) => ({ label: p.label, href: `/guide/${p.slug}/` })),
-  },
-  {
-    title: "Weather",
-    links: CONDITION_PAGES.map((p) => ({ label: p.label, href: `/guide/${p.slug}/` })),
+    title: "kitcheck.cc",
+    links: [
+      { label: "About", href: "/about/" },
+      { label: "Contact", href: "mailto:info@kitcheck.cc" },
+      { label: "Privacy", href: "/privacy/" },
+      { label: "Cookies", href: "/cookies/" },
+    ],
   },
 ];
 ---
 
 <footer class="bg-bg-dark text-white mt-auto">
   <div class="container">
-    <div class="grid grid-cols-2 md:grid-cols-[1.4fr_repeat(4,1fr)] gap-x-6 gap-y-10 py-14 md:py-16">
-      <div class="col-span-2 md:col-span-1 md:pr-6">
-        <a href="/" class="font-head font-bold text-xl tracking-tight hover:opacity-80 transition-opacity">
+    <div class="grid grid-cols-2 md:grid-cols-[1.5fr_repeat(3,1fr)] gap-x-6 gap-y-8 py-12">
+      <div class="col-span-2 md:col-span-1">
+        <a href="/" class="font-head font-bold text-lg tracking-tight hover:opacity-80 transition-opacity">
           kitcheck<span class="text-coral">.cc</span>
         </a>
-        <p class="text-sm text-white/60 leading-relaxed mt-3 max-w-xs">
-          Know exactly what to wear before you ride. Free, no account, in °C and °F.
-        </p>
-        <p class="text-xs text-white/40 mt-5">
-          Rider-tested by <a href="https://www.instagram.com/raasracingteam/" target="_blank" rel="noopener" class="text-white/60 hover:text-white transition-colors">Raas Racing Team</a>
+        <p class="text-sm text-white/55 leading-relaxed mt-2 max-w-xs">
+          Know exactly what to wear before you ride.
         </p>
       </div>
       {columns.map((col) => (
         <nav aria-label={col.title}>
-          <p class="font-head text-[11px] font-semibold tracking-[0.08em] uppercase text-white/40 mb-4">{col.title}</p>
-          <ul class="space-y-2.5">
+          <p class="font-head text-[11px] font-semibold tracking-[0.08em] uppercase text-white/40 mb-3">{col.title}</p>
+          <ul class="space-y-2">
             {col.links.map((l) => (
               <li><a href={l.href} class="text-sm text-white/70 hover:text-white transition-colors">{l.label}</a></li>
             ))}
@@ -57,17 +51,11 @@ const columns = [
       ))}
     </div>
 
-    <div class="flex flex-col sm:flex-row flex-wrap justify-between gap-3 py-6 border-t border-white/10">
+    <div class="flex flex-wrap justify-between gap-3 py-5 border-t border-white/10">
       <span class="text-xs text-white/50">
-        © 2026 kitcheck.cc · Weather by <a href="https://open-meteo.com" target="_blank" rel="noopener" class="text-white/50 hover:text-white/80">Open-Meteo</a>
+        © 2026 kitcheck.cc · Weather by <a href="https://open-meteo.com" target="_blank" rel="noopener" class="text-white/50 hover:text-white/80">Open-Meteo</a> · Free to use
       </span>
-      <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
-        <a href="/about/" class="text-xs text-white/50 hover:text-white/80 transition-colors">About</a>
-        <a href="mailto:info@kitcheck.cc" class="text-xs text-white/50 hover:text-white/80 transition-colors">Contact</a>
-        <a href="/privacy/" class="text-xs text-white/50 hover:text-white/80 transition-colors">Privacy</a>
-        <a href="/cookies/" class="text-xs text-white/50 hover:text-white/80 transition-colors">Cookies</a>
-        <button type="button" data-consent-open class="text-xs text-white/50 hover:text-white/80 transition-colors cursor-pointer bg-transparent border-0 p-0">Cookie settings</button>
-      </div>
+      <button type="button" data-consent-open class="text-xs text-white/50 hover:text-white/80 transition-colors cursor-pointer bg-transparent border-0 p-0">Cookie settings</button>
     </div>
   </div>
 </footer>

@@ -58,7 +58,7 @@ export function rangePhrase(r: TempRange): string {
 }
 
 /** The quotable one-liner for an item page, at a moderate pace */
-export function itemSentence(item: { name: string; plural: boolean; condition?: string }, r: ItemRanges): string {
+export function itemSentence(item: { name: string; plural: boolean; condition?: string }, r: ItemRanges, withEffortNote = true): string {
   const parts: string[] = []
   const pronoun = item.plural ? "they're" : "it's"
   const when = `At a moderate pace${item.condition ? ` ${item.condition}` : ''}`
@@ -66,6 +66,6 @@ export function itemSentence(item: { name: string; plural: boolean; condition?: 
   if (r.optional) parts.push(r.required
     ? `At ${rangePhrase(r.optional)} ${pronoun} optional.`
     : `${when}, ${item.name} ${item.plural ? 'are' : 'is'} optional when the feels-like temperature is ${rangePhrase(r.optional)}.`)
-  parts.push('Ride harder and the range moves colder; ride easier and it moves warmer.')
+  if (withEffortNote) parts.push('Ride harder and the range moves colder; ride easier and it moves warmer.')
   return parts.join(' ')
 }

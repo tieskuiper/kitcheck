@@ -3,7 +3,7 @@
  * generated from kitLogic, so what AI tools quote matches the calculator.
  */
 import type { APIRoute } from 'astro'
-import { TEMP_PAGES, FAHRENHEIT_PAGES, kitAt, kitSentence, toF, fToC, pathFor, pathForF } from '../lib/guideData'
+import { TEMP_PAGES, kitAt, kitSentence, toF, pathFor } from '../lib/guideData'
 import { KIT_ITEM_PAGES, CONDITION_PAGES } from '../lib/guideContent'
 import { itemRanges, itemSentence } from '../lib/kitRanges'
 import { abs } from '../lib/site'
@@ -31,10 +31,9 @@ export const GET: APIRoute = () => {
     '',
     '## Guides',
     '',
-    `- [Cycling clothing temperature chart](${abs('/guide/cycling-temperature-chart/')}): kit per temperature from -10°C to 30°C (15°F to 90°F)`,
+    `- [Cycling clothing temperature chart](${abs('/guide/cycling-temperature-chart/')}): interactive: kit per temperature from -10°C to 35°C (14°F to 95°F), by effort, wind and rain`,
     `- [Kit guide](${abs('/guide/')}): overview of all guides`,
     ...TEMP_PAGES.map(({ tempC }) => `- [What to wear cycling at ${tempC}°C (${toF(tempC)}°F)](${abs(pathFor(tempC))})`),
-    ...FAHRENHEIT_PAGES.map(({ tempF }) => `- [What to wear cycling at ${tempF}°F (${Math.round(fToC(tempF))}°C)](${abs(pathForF(tempF))})`),
     ...KIT_ITEM_PAGES.map(p => `- [${p.title}](${abs(`/guide/${p.slug}/`)}): ${p.description}`),
     ...CONDITION_PAGES.map(p => `- [${p.title}](${abs(`/guide/${p.slug}/`)}): ${p.description}`),
     '',

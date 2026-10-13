@@ -11,27 +11,20 @@ import CtaBand from "../ui/CtaBand.astro";
 import { TIER_ACCENT } from "../calculator/constants";
 import { IconRacingFlag, IconBlip, IconWind, IconRainy, IconSnowFlakes, IconSun } from "@central-icons-react/round-outlined-radius-3-stroke-2";
 import {
-  TEMP_PAGES, FAHRENHEIT_PAGES, ZONE_LABELS, kitAt, conditionsAt, variationsAt,
-  toF, fToC, pathFor, pathForF, kitSentence, listJoin, type TempUnit,
+  TEMP_PAGES, ZONE_LABELS, kitAt, conditionsAt, variationsAt,
+  toF, pathFor, kitSentence, listJoin,
 } from "../../lib/guideData";
 import { abs, articleNode, breadcrumbNode, faqNode } from "../../lib/site";
 
-interface Props { unit: TempUnit; value: number; intro: string }
-const { unit, value, intro } = Astro.props;
+interface Props { tempC: number; intro: string }
+const { tempC: c, intro } = Astro.props;
 
-const isF = unit === "F";
-const c = isF ? fToC(value) : value;
-const cRounded = Math.round(c);
-const f = isF ? value : toF(value);
-// Lead with the unit people searched in
-const label = isF ? `${f}°F` : `${c}°C`;
-const other = isF ? `${cRounded}°C` : `${f}°F`;
+const label = `${c}°C`;
+const other = `${toF(c)}°F`;
 const kit = kitAt(c);
 const score = conditionsAt(c);
 const variations = variationsAt(c);
-const path = isF ? pathForF(value) : pathFor(value);
-const canonical = abs(path);
-const wind = isF ? "6 mph" : "10 km/h";
+const canonical = abs(pathFor(c));
 
 const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
 // One headline item per zone keeps descriptions distinct between neighbouring temperatures;
@@ -64,9 +57,7 @@ const faq = [
   ...(changeText(race) ? [{ q: `What if I ride hard at ${label}?`, a: `At race pace or on a fast group ride you warm up a lot more. Change this: ${changeText(race)}.` }] : []),
 ];
 
-const siblings = isF
-  ? FAHRENHEIT_PAGES.map((p) => ({ label: `${p.tempF}°F`, sub: `${Math.round(fToC(p.tempF))}°C`, href: pathForF(p.tempF), current: p.tempF === value, tier: conditionsAt(fToC(p.tempF)).label }))
-  : TEMP_PAGES.map((p) => ({ label: `${p.tempC}°C`, sub: `${toF(p.tempC)}°F`, href: pathFor(p.tempC), current: p.tempC === value, tier: conditionsAt(p.tempC).label }));
+const siblings = TEMP_PAGES.map((p) => ({ label: `${p.tempC}°C`, sub: `${toF(p.tempC)}°F`, href: pathFor(p.tempC), current: p.tempC === c, tier: conditionsAt(p.tempC).label }));
 
 const VARIATION_ICONS: Record<string, typeof IconWind> = { race: IconRacingFlag, easy: IconBlip, wind: IconWind, rain: IconRainy, cold: IconSnowFlakes, warm: IconSun };
 
@@ -99,9 +90,9 @@ const crumbs = [
   >
     <div class="w-full"><AnswerCard text={answer} /></div>
     <Fragment slot="aside">
-      <KitCard kitResult={kit} score={score} unit={unit} />
+      <KitCard kitResult={kit} score={score} unit="C" />
       <p class="text-xs text-text-light mt-3 px-1">
-        Feels like {label}, moderate pace, light wind ({wind}), no rain. Same logic as the calculator.
+        Feels like {label}, moderate pace, light wind (10 km/h, 6 mph), no rain. Same logic as the calculator.
       </p>
     </Fragment>
   </PageHero>
@@ -154,7 +145,7 @@ const crumbs = [
   <!-- OTHER TEMPERATURES -->
   <section class="bg-bg border-t border-border">
     <div class="container py-16 md:py-20">
-      <SectionHead eyebrow="Other temperatures" title={isF ? "More temperatures in °F" : "Colder or warmer?"} />
+      <SectionHead eyebrow="Other temperatures" title="Colder or warmer?" />
       <nav class="grid grid-cols-4 sm:grid-cols-8 gap-2" aria-label="Other temperatures">
         {siblings.map((s) => (
           <a href={s.href} aria-current={s.current ? "page" : undefined}
