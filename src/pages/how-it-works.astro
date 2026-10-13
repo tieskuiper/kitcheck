@@ -12,6 +12,7 @@ import { getKitRecommendation } from "../lib/kitLogic";
 import { INTENSITY_OPTIONS, WARMTH_LABELS } from "../components/calculator/constants";
 import { toF } from "../lib/guideData";
 import { abs, articleNode, breadcrumbNode } from "../lib/site";
+import { IconCloudySun, IconGauge, IconHand5Finger, IconRainy, IconChecklist } from "@central-icons-react/round-outlined-radius-3-stroke-2";
 
 const canonical = abs("/how-it-works/");
 const title = "How kitcheck.cc decides what you should wear";
@@ -53,8 +54,9 @@ const barWidth = (c: number) => `${Math.max(6, Math.min(100, (c / 25) * 100))}%`
       <ol class="max-w-4xl mx-auto flex flex-col gap-4">
 
         <li class="step">
-          <div class="borne" aria-hidden="true"><span class="borne-cap"></span><span class="borne-km">0</span><span class="borne-unit">km</span></div>
+          <div class="step-num"><IconCloudySun size={20} /></div>
           <div>
+            <p class="step-eyebrow">Step 1</p>
             <h2 class="step-title">The forecast for your whole ride</h2>
             <p class="step-text">
               The hourly forecast from <a href="https://open-meteo.com" rel="noopener" class="text-coral">Open-Meteo</a> for every
@@ -70,8 +72,9 @@ const barWidth = (c: number) => `${Math.max(6, Math.min(100, (c / 25) * 100))}%`
         </li>
 
         <li class="step">
-          <div class="borne" aria-hidden="true"><span class="borne-cap"></span><span class="borne-km">40</span><span class="borne-unit">km</span></div>
+          <div class="step-num"><IconGauge size={20} /></div>
           <div class="min-w-0">
+            <p class="step-eyebrow">Step 2</p>
             <h2 class="step-title">How it feels on the bike</h2>
             <p class="step-text">Riding hard feels much warmer than an easy spin. With a forecast of {t(10)}, it feels like:</p>
             <ul class="grid gap-2 mt-4">
@@ -97,8 +100,9 @@ const barWidth = (c: number) => `${Math.max(6, Math.min(100, (c / 25) * 100))}%`
         </li>
 
         <li class="step">
-          <div class="borne" aria-hidden="true"><span class="borne-cap"></span><span class="borne-km">80</span><span class="borne-unit">km</span></div>
+          <div class="step-num"><IconHand5Finger size={20} /></div>
           <div>
+            <p class="step-eyebrow">Step 3</p>
             <h2 class="step-title">Hands, feet and head are different</h2>
             <p class="step-text">
               Effort warms your body, but your fingers, toes and ears barely benefit. For gloves, overshoes and head
@@ -113,8 +117,9 @@ const barWidth = (c: number) => `${Math.max(6, Math.min(100, (c / 25) * 100))}%`
         </li>
 
         <li class="step">
-          <div class="borne" aria-hidden="true"><span class="borne-cap"></span><span class="borne-km">120</span><span class="borne-unit">km</span></div>
+          <div class="step-num"><IconRainy size={20} /></div>
           <div>
+            <p class="step-eyebrow">Step 4</p>
             <h2 class="step-title">Rain and heat</h2>
             <div class="grid sm:grid-cols-3 gap-2 mt-4">
               <div class="fact"><span class="fact-value">40%</span><span class="fact-text">chance of rain: packable rain jacket as an option</span></div>
@@ -129,8 +134,9 @@ const barWidth = (c: number) => `${Math.max(6, Math.min(100, (c / 25) * 100))}%`
         </li>
 
         <li class="step">
-          <div class="borne" aria-hidden="true"><span class="borne-cap"></span><span class="borne-km">160</span><span class="borne-unit">km</span></div>
+          <div class="step-num"><IconChecklist size={20} /></div>
           <div>
+            <p class="step-eyebrow">Step 5</p>
             <h2 class="step-title">Required and optional</h2>
             <p class="step-text">
               Every zone gets required items and, where it's a judgement call, optional ones: arm warmers on a fresh
@@ -141,7 +147,7 @@ const barWidth = (c: number) => `${Math.max(6, Math.min(100, (c / 25) * 100))}%`
         </li>
       </ol>
 
-      <div class="max-w-4xl mx-auto mt-10 rounded-[6px] border border-dashed border-black/15 p-6 sm:p-7">
+      <div class="max-w-4xl mx-auto mt-10 rounded-2xl border border-dashed border-black/15 p-6 sm:p-7">
         <h2 class="font-head font-bold text-lg text-text mb-2">Limits</h2>
         <p class="text-[15px] text-text-mid leading-relaxed">
           The recommendation is a well-informed starting point, not a guarantee. Forecasts can be wrong, especially for
@@ -163,20 +169,16 @@ const barWidth = (c: number) => `${Math.max(6, Math.min(100, (c / 25) * 100))}%`
       gap: 1rem 1.25rem;
       background: #fff;
       border: 1px solid var(--color-border);
-      border-radius: 6px;
+      border-radius: 1rem;
       padding: 1.5rem;
     }
     @media (min-width: 640px) { .step { padding: 2rem; gap: 1rem 1.75rem; } }
-    /* Kilometre marker, like the roadside stones on a mountain climb */
-    .borne {
-      position: relative; display: flex; flex-direction: column; align-items: center;
-      width: 3rem; height: 3.75rem; padding-top: 1.1rem;
-      background: #fff; border: 1px solid rgb(0 0 0 / 0.12); border-radius: 1.5rem 1.5rem 0.25rem 0.25rem;
-      overflow: hidden;
+    .step-num {
+      display: flex; align-items: center; justify-content: center;
+      width: 2.75rem; height: 2.75rem; border-radius: 0.75rem;
+      background: rgb(255 81 48 / 0.1); color: var(--color-coral);
     }
-    .borne-cap { position: absolute; inset: 0 0 auto 0; height: 0.85rem; background: var(--color-coral); }
-    .borne-km { font-family: var(--font-head); font-weight: 700; font-size: 1rem; line-height: 1; color: var(--color-text); }
-    .borne-unit { font-family: var(--font-head); font-size: 9px; font-weight: 600; color: var(--color-text-light); }
+    .step-eyebrow { font-family: var(--font-head); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-coral); }
     .step-title { font-family: var(--font-head); font-weight: 700; font-size: 1.25rem; color: var(--color-text); margin: 0.25rem 0 0.5rem; }
     .step-text { font-size: 0.9375rem; line-height: 1.75; color: var(--color-text-mid); margin-top: 0.5rem; }
     .fact { display: flex; flex-direction: column; gap: 0.25rem; background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 0.75rem; padding: 0.875rem 1rem; }

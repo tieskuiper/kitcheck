@@ -1,10 +1,9 @@
 ---
 /**
- * Page hero: breadcrumb, road-marking label, title, lead, actions (default slot) and an
- * optional aside (named slot "aside"). A faint stage profile runs along the bottom.
+ * Page hero: breadcrumb, eyebrow, title, lead, actions (default slot) and an optional
+ * aside (named slot "aside") that sits next to the text on desktop.
  */
 import Breadcrumb from "../guide/Breadcrumb.astro";
-import RouteProfile from "../brand/RouteProfile.astro";
 
 interface Props {
   title: string;
@@ -19,14 +18,22 @@ const center = align === "center";
 ---
 
 <section class="relative overflow-hidden bg-bg">
-  <RouteProfile variant="hero" class="absolute inset-x-0 bottom-0 h-36 md:h-48" />
+  <!-- Decorative: soft coral glow and a fading grid -->
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0">
+    <div class="absolute -top-40 right-[-10%] size-[560px] rounded-full bg-coral/10 blur-3xl"></div>
+    <div class="absolute inset-0 hero-grid"></div>
+  </div>
 
   <div class="container relative">
-    <div class={`pt-10 md:pt-14 lg:pt-16 pb-24 md:pb-32 ${hasAside ? "grid grid-cols-1 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] gap-10 lg:gap-14 items-center" : ""}`}>
+    <div class={`pt-12 md:pt-16 lg:pt-20 pb-12 md:pb-16 ${hasAside ? "grid grid-cols-1 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] gap-10 lg:gap-14 items-center" : ""}`}>
       <div class={center ? "max-w-3xl mx-auto text-center" : "max-w-2xl"}>
         {crumbs && <div class={center ? "flex justify-center" : ""}><Breadcrumb items={crumbs} /></div>}
-        {eyebrow && <p class={`road-label mb-5 ${center ? "justify-center" : ""}`}>{eyebrow}</p>}
-        <h1 class="font-head text-[2.25rem] md:text-5xl lg:text-[3.75rem] font-bold tracking-[-0.035em] leading-[1.02] text-text text-balance">
+        {eyebrow && (
+          <p class="inline-flex items-center gap-2 font-head text-[11px] font-semibold tracking-[0.08em] uppercase text-coral bg-coral/8 rounded-full px-3 py-1.5 mb-5">
+            <span class="size-1.5 rounded-full bg-coral" aria-hidden="true"></span>{eyebrow}
+          </p>
+        )}
+        <h1 class="font-head text-[2rem] md:text-5xl lg:text-[3.5rem] font-bold tracking-tight leading-[1.05] text-text text-balance">
           <Fragment set:html={title} />
         </h1>
         {lead && <p class={`text-lg text-text-mid leading-relaxed mt-5 ${center ? "max-w-xl mx-auto" : ""}`}>{lead}</p>}

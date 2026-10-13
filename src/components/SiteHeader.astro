@@ -1,5 +1,4 @@
 ---
-import ThermoBar from "./brand/ThermoBar.astro";
 const { pathname } = Astro.url;
 
 const NAV = [
@@ -15,7 +14,6 @@ const isActive = (href: string) =>
 ---
 
 <header class="bg-bg/90 backdrop-blur-md border-b border-border sticky top-0 z-40">
-  <ThermoBar />
   <div class="container">
     <div class="flex items-center justify-between gap-4 h-16">
       <a

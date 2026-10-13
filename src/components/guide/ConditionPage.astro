@@ -7,11 +7,9 @@ import SectionHead from "../ui/SectionHead.astro";
 import CtaBand from "../ui/CtaBand.astro";
 import FaqList from "./FaqList.astro";
 import KitTable from "./KitTable.astro";
-import MiniRange from "../brand/MiniRange.astro";
-import ThermoBar from "../brand/ThermoBar.astro";
-import { itemRanges } from "../../lib/kitRanges";
 import { CONDITION_PAGES, KIT_ITEM_PAGES, type ConditionPage } from "../../lib/guideContent";
 import { kitAt, toF, pathFor, TEMP_PAGES } from "../../lib/guideData";
+import { CAT_ICONS } from "../calculator/constants";
 import { abs, articleNode, breadcrumbNode, faqNode } from "../../lib/site";
 import { IconRainy, IconWind, IconSnowFlakes, IconSun } from "@central-icons-react/round-outlined-radius-3-stroke-2";
 
@@ -64,10 +62,12 @@ const others = CONDITION_PAGES.filter((p) => p.slug !== page.slug);
     {page.table && <a href="#kit-table" class="btn-primary py-3! px-5! text-[14px]!">{page.table.heading}</a>}
     <a href="/" class="btn-secondary-outline py-3! px-5! text-[14px]!">Check your ride</a>
     <Fragment slot="aside">
-      <div class="relative overflow-hidden bg-white rounded-[6px] border border-black/10 p-5 sm:p-6 shadow-[0_1px_0_rgba(0,0,0,0.04),0_16px_32px_-20px_rgba(0,0,0,0.25)]">
-        <Icon size={120} className="absolute -right-6 -top-6 text-coral/8" />
-        <p class="road-label mb-5 relative">{page.label} at a glance</p>
-        <dl class="relative divide-y divide-dashed divide-black/15">
+      <div class="bg-white rounded-2xl border border-border p-5 sm:p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_-12px_rgba(0,0,0,0.12)]">
+        <div class="flex items-center gap-3 mb-5">
+          <span class="flex items-center justify-center size-11 rounded-xl bg-coral/10 text-coral"><Icon size={22} /></span>
+          <p class="font-head text-[11px] font-semibold tracking-[0.08em] uppercase text-coral">{page.label} at a glance</p>
+        </div>
+        <dl class="divide-y divide-border">
           {page.facts.map((f) => (
             <div class="grid grid-cols-[110px_1fr] gap-4 py-3.5 first:pt-0 last:pb-0 items-baseline">
               <dt class="font-head font-bold text-xl text-text tracking-tight">{f.value}</dt>
@@ -93,7 +93,7 @@ const others = CONDITION_PAGES.filter((p) => p.slug !== page.slug);
       <SectionHead eyebrow="What to know" title={`${page.label}: the essentials`} />
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
         {page.sections.map((s, i) => (
-          <article class="bg-white rounded-[6px] border border-black/10 p-6 sm:p-7">
+          <article class="bg-white rounded-2xl border border-border p-6 sm:p-7">
             <span class="font-head text-[11px] font-bold tracking-[0.08em] text-coral">{String(i + 1).padStart(2, "0")}</span>
             <h3 class="font-head font-bold text-lg text-text mt-2 mb-2">{s.heading}</h3>
             {s.body.map((p) => <p class="text-[15px] text-text-mid leading-relaxed mt-2">{p}</p>)}
@@ -112,12 +112,15 @@ const others = CONDITION_PAGES.filter((p) => p.slug !== page.slug);
           <div>
             <p class="font-head text-[11px] font-semibold tracking-[0.08em] uppercase text-coral mb-4">Kit for these conditions</p>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              {related.map((p) => (
-                <a href={`/guide/${p!.slug}/`} class="group flex flex-col bg-white rounded-[6px] border border-black/10 p-4 hover:border-coral/60 transition-colors">
-                  <span class="font-head font-bold text-[14px] text-text mb-3">{p!.label} <span class="text-coral opacity-0 group-hover:opacity-100 transition-opacity">→</span></span>
-                  <MiniRange ranges={itemRanges(p!.match, { ...p!.overrides, intensity: "moderate" })} />
-                </a>
-              ))}
+              {related.map((p) => {
+                const Icon = CAT_ICONS[p!.zone];
+                return (
+                  <a href={`/guide/${p!.slug}/`} class="flex items-center gap-3 bg-white rounded-2xl border border-border p-4 hover:border-text-light transition-colors">
+                    <span class="flex items-center justify-center size-9 rounded-xl bg-coral/10 text-coral shrink-0"><Icon size={16} /></span>
+                    <span class="font-head font-bold text-[14px] text-text">{p!.label}</span>
+                  </a>
+                );
+              })}
             </div>
           </div>
         )}
@@ -125,20 +128,17 @@ const others = CONDITION_PAGES.filter((p) => p.slug !== page.slug);
           <p class="font-head text-[11px] font-semibold tracking-[0.08em] uppercase text-coral mb-4">Other conditions</p>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             {others.map((p) => {
-              const OtherIcon = ICONS[p.icon];
+              const Icon = ICONS[p.icon];
               return (
-                <a href={`/guide/${p.slug}/`} class="group relative overflow-hidden flex flex-col bg-white rounded-[6px] border border-black/10 p-4 hover:border-coral/60 transition-colors">
-                  <OtherIcon size={56} className="absolute -right-3 -top-3 text-coral/10" />
+                <a href={`/guide/${p.slug}/`} class="flex items-center gap-3 bg-white rounded-2xl border border-border p-4 hover:border-text-light transition-colors">
+                  <span class="flex items-center justify-center size-9 rounded-xl bg-coral/10 text-coral shrink-0"><Icon size={16} /></span>
                   <span class="font-head font-bold text-[14px] text-text">{p.label}</span>
-                  <span class="font-head font-bold text-xl text-text mt-2">{p.facts[0].value}</span>
-                  <span class="text-xs text-text-light">{p.facts[0].text}</span>
                 </a>
               );
             })}
-            <a href="/guide/cycling-temperature-chart/" class="group flex flex-col bg-white rounded-[6px] border border-black/10 p-4 hover:border-coral/60 transition-colors">
+            <a href="/guide/cycling-temperature-chart/" class="flex items-center gap-3 bg-white rounded-2xl border border-border p-4 hover:border-text-light transition-colors">
+              <span class="flex items-center justify-center size-9 rounded-xl bg-coral/10 text-coral shrink-0 font-head font-bold text-sm">°</span>
               <span class="font-head font-bold text-[14px] text-text">Temperature chart</span>
-              <span class="text-xs text-text-light mt-1 mb-3">Every temperature, interactive</span>
-              <ThermoBar class="h-1.5 rounded-full mt-auto" />
             </a>
           </div>
         </div>

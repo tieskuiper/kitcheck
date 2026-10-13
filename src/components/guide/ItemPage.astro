@@ -8,11 +8,10 @@ import SectionHead from "../ui/SectionHead.astro";
 import CtaBand from "../ui/CtaBand.astro";
 import FaqList from "./FaqList.astro";
 import EffortRanges from "./EffortRanges.astro";
-import MiniRange from "../brand/MiniRange.astro";
 import { KIT_ITEM_PAGES, type KitItemPage } from "../../lib/guideContent";
 import { itemRanges, itemSentence } from "../../lib/kitRanges";
 import { TEMP_PAGES, toF, pathFor, conditionsAt } from "../../lib/guideData";
-import { CAT_LABELS, TIER_ACCENT } from "../calculator/constants";
+import { CAT_ICONS, CAT_LABELS, TIER_ACCENT } from "../calculator/constants";
 import { abs, articleNode, breadcrumbNode, faqNode } from "../../lib/site";
 
 interface Props { page: KitItemPage }
@@ -72,14 +71,14 @@ const related = KIT_ITEM_PAGES.filter((p) => p.slug !== page.slug);
     <div class="container py-16 md:py-20">
       <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-8 lg:gap-14">
         <div>
-          <p class="road-label mb-3">Good to know</p>
-          <h2 class="font-head font-bold text-[1.75rem] md:text-[2.25rem] tracking-[-0.03em] leading-[1.08] text-text text-balance">Practical tips</h2>
+          <p class="font-head text-[11px] font-semibold tracking-[0.08em] uppercase text-coral mb-3">Good to know</p>
+          <h2 class="font-head font-bold text-2xl md:text-[2rem] tracking-tight leading-tight text-text text-balance">Practical tips</h2>
           {page.intro.slice(1).map((p) => <p class="text-text-mid leading-relaxed mt-4">{p}</p>)}
         </div>
         <ol class="grid grid-cols-1 sm:grid-cols-3 gap-3 self-start">
           {page.tips.map((t, i) => (
-            <li class="bg-bg rounded-[6px] border border-black/10 p-5">
-              <span class="block font-head font-bold text-[2rem] leading-none tracking-tight text-coral/80 mb-3 tabular-nums">{String(i + 1).padStart(2, "0")}</span>
+            <li class="bg-bg rounded-2xl border border-border p-5">
+              <span class="flex items-center justify-center size-8 rounded-full bg-coral text-white font-head text-sm font-bold mb-4">{i + 1}</span>
               <p class="text-sm text-text-mid leading-relaxed">{t}</p>
             </li>
           ))}
@@ -116,10 +115,11 @@ const related = KIT_ITEM_PAGES.filter((p) => p.slug !== page.slug);
       <SectionHead eyebrow="More kit" title="When to wear the rest" />
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {related.map((p) => {
+          const Icon = CAT_ICONS[p.zone];
           return (
-            <a href={`/guide/${p.slug}/`} class="group flex flex-col bg-white rounded-[6px] border border-black/10 p-4 hover:border-coral/60 transition-colors">
-              <span class="font-head font-bold text-[14px] text-text mb-3">{p.label} <span class="text-coral opacity-0 group-hover:opacity-100 transition-opacity">→</span></span>
-              <MiniRange ranges={itemRanges(p.match, { ...p.overrides, intensity: "moderate" })} />
+            <a href={`/guide/${p.slug}/`} class="flex items-center gap-3 bg-white rounded-2xl border border-border p-4 hover:border-text-light transition-colors">
+              <span class="flex items-center justify-center size-9 rounded-xl bg-coral/10 text-coral shrink-0"><Icon size={16} /></span>
+              <span class="font-head font-bold text-[14px] text-text">{p.label}</span>
             </a>
           );
         })}

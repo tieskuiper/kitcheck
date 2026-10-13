@@ -1,6 +1,4 @@
 ---
-/** Call to action as a finish line: checkered edge and the stage profile running into it */
-import RouteProfile from "../brand/RouteProfile.astro";
 interface Props { title?: string; text?: string; href?: string; label?: string }
 const {
   title = "Check the forecast for your ride",
@@ -12,12 +10,11 @@ const {
 
 <section class="bg-bg">
   <div class="container py-14 md:py-20">
-    <div class="relative overflow-hidden rounded-[10px] bg-bg-dark">
-      <span class="checkered absolute inset-y-0 right-0 w-6 md:w-9" aria-hidden="true"></span>
-      <RouteProfile variant="band" class="absolute inset-x-0 bottom-0 h-16 md:h-20 opacity-80" />
-      <div class="relative flex flex-col md:flex-row md:items-center justify-between gap-8 px-6 pt-10 pb-20 sm:px-10 md:pl-14 md:pr-24 md:pt-14 md:pb-24">
+    <div class="relative overflow-hidden rounded-3xl bg-bg-dark px-6 py-10 sm:px-10 md:px-14 md:py-14">
+      <div aria-hidden="true" class="pointer-events-none absolute -right-24 -top-24 size-[420px] rounded-full bg-coral/25 blur-3xl"></div>
+      <div class="relative flex flex-col md:flex-row md:items-center justify-between gap-8">
         <div class="max-w-xl">
-          <p class="font-head font-bold text-[1.75rem] md:text-[2.25rem] tracking-[-0.03em] leading-[1.08] text-white mb-3 text-balance">{title}</p>
+          <p class="font-head font-bold text-2xl md:text-3xl tracking-tight text-white mb-3 text-balance">{title}</p>
           <p class="text-white/65 leading-relaxed">{text}</p>
         </div>
         <a href={href} class="btn-primary py-3! px-5! text-[14px]! shrink-0">{label} <span aria-hidden="true">→</span></a>
@@ -25,15 +22,3 @@ const {
     </div>
   </div>
 </section>
-
-<style>
-  .checkered {
-    background-color: #fff;
-    background-image:
-      linear-gradient(45deg, #111110 25%, transparent 25%, transparent 75%, #111110 75%),
-      linear-gradient(45deg, #111110 25%, transparent 25%, transparent 75%, #111110 75%);
-    background-size: 12px 12px;
-    background-position: 0 0, 6px 6px;
-    opacity: 0.9;
-  }
-</style>
