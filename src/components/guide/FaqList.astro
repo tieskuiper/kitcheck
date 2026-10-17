@@ -4,8 +4,12 @@
  * too; pages add the same questions as FAQPage structured data.
  */
 import type { Faq } from "../../lib/guideContent";
-interface Props { faq: Faq[]; heading?: string }
-const { faq, heading = "Frequently asked questions" } = Astro.props;
+interface Props { faq: Faq[]; heading?: string; lead?: string }
+const {
+  faq,
+  heading = "Frequently asked questions",
+  lead = "Short answers to what riders ask most, based on the same logic as the calculator.",
+} = Astro.props;
 ---
 
 <section class="bg-bg border-t border-border">
@@ -14,6 +18,7 @@ const { faq, heading = "Frequently asked questions" } = Astro.props;
       <div class="lg:sticky lg:top-[96px] self-start">
         <p class="font-head text-[11px] font-semibold tracking-[0.08em] uppercase text-coral mb-3">FAQ</p>
         <h2 class="font-head font-bold text-2xl md:text-[2rem] tracking-tight leading-tight text-text text-balance">{heading}</h2>
+        <p class="text-text-mid leading-relaxed mt-3">{lead}</p>
       </div>
       <div class="flex flex-col gap-2.5">
         {faq.map((f, i) => (

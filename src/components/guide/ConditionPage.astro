@@ -105,7 +105,7 @@ const others = CONDITION_PAGES.filter((p) => p.slug !== page.slug);
     </div>
   </section>
 
-  <FaqList faq={page.faq} />
+  <FaqList faq={page.faq} lead={`What riders ask about cycling in ${page.label.toLowerCase() === "winter" ? "winter" : `the ${page.label.toLowerCase()}`}.`} />
 
   <section class="bg-bg border-t border-border">
     <div class="container py-16 md:py-20">

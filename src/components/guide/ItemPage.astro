@@ -103,7 +103,7 @@ const related = KIT_ITEM_PAGES.filter((p) => p.slug !== page.slug);
     </div>
   </section>
 
-  <FaqList faq={faq} />
+  <FaqList faq={faq} lead={`What riders ask about ${page.name}${page.extra ? ` and ${page.extra.name}` : ""}, answered with the same ranges as above.`} />
 
   {inRange.length > 0 && (
     <section class="bg-bg border-t border-border">
