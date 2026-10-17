@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.1] - 2026-10-17
+
+### Fixed
+- GPX upload no longer hangs on "Loading…" when Open-Meteo is slow: all weather and place-name requests have a timeout; if the full route forecast takes longer than 10 s, it's fetched for five key points (start, highest point, finish and two in between) instead, and only if that fails too does the advice fall back to the start point, with a note on the kit card
+- "My location" stops after 15 s with a clear message instead of staying on "Detecting…" when the browser's location prompt is left unanswered
+
 ## [1.3.0] - 2026-10-17
 
 ### Changed

@@ -3,7 +3,7 @@ import { preferredUnit, saveUnit } from '../../lib/units'
 import {
   fetchForecast, reverseGeocode, searchCity,
   getHourlyRange, getDayLabels,
-  fetchForecasts,
+  fetchForecasts, fetchForecastsEach,
   type HourlySlice, type CityResult,
 } from '../../lib/openmeteo'
 import {
@@ -12,7 +12,7 @@ import {
 } from '../../lib/kitLogic'
 import { parseGpx, type GpxRoute } from '../../lib/gpx'
 import {
-  sampleRoute, findDescents, routeWeather, hourlyFromRoute, routeHighlights,
+  sampleRoute, keyPoints, findDescents, routeWeather, hourlyFromRoute, routeHighlights,
   type RouteModel, type RouteHighlights, type RouteSample,
 } from '../../lib/routeForecast'
 import {
@@ -20,6 +20,10 @@ import {
 } from '../../lib/rideDuration'
 import { track } from '../../lib/consent'
 import type { Unit } from './format'
+
+// The full route request can be slow: past this, retry with a few key points, then the start only
+const ROUTE_FORECAST_TIMEOUT_MS = 10_000
+const KEY_POINTS_TIMEOUT_MS = 8_000
 
 // ── Calculator state + handlers ───────────────────────────────────────────────
 export function useKitCalculator() {
@@ -41,6 +45,8 @@ export function useKitCalculator() {
   const [kitHours, setKitHours] = useState<HourWeather[]>([])
   const [highlights, setHighlights] = useState<RouteHighlights | null>(null)
   const [routeSamples, setRouteSamples] = useState<RouteSample[]>([])
+  // GPX loaded, but weather along the route couldn't be fetched: advice uses the start point
+  const [routeFallback, setRouteFallback] = useState(false)
   const days = getDayLabels()
   const [selectedDay, setSelectedDay] = useState(0)
   // Stored as float with 0.5 precision (e.g. 8.5 = 08:30)
@@ -87,15 +93,30 @@ export function useKitCalculator() {
   }
 
   async function loadForecast(lat: number, lon: number, hour = selectedHour, duration = rideDuration, route?: GpxRoute) {
-    setLoading(true); setForecast(null); setKitResult(null); setLocationError('')
+    setLoading(true); setForecast(null); setKitResult(null); setLocationError(''); setRouteFallback(false)
     try {
       let fc
       if (route) {
         // One request for all route points; the first is the start
-        const points = sampleRoute(route)
-        const forecasts = await fetchForecasts(points)
-        routeRef.current = { points, forecasts, distanceKm: route.distanceKm, descents: findDescents(route) }
-        fc = forecasts[0]
+        let points = sampleRoute(route)
+        let forecasts
+        try {
+          forecasts = await fetchForecasts(points, ROUTE_FORECAST_TIMEOUT_MS)
+        } catch {
+          // Too slow or rate-limited: the decisive points (start, summit, finish…) one by one;
+          // points that fail are left out, as long as the start comes through
+          const got = await fetchForecastsEach(keyPoints(points), KEY_POINTS_TIMEOUT_MS).catch(() => undefined)
+          if (got) ({ points, forecasts } = got)
+        }
+        if (forecasts) {
+          routeRef.current = { points, forecasts, distanceKm: route.distanceKm, descents: findDescents(route) }
+          fc = forecasts[0]
+        } else {
+          // Last resort: the route still loads, with the start point's forecast and a note
+          routeRef.current = null
+          setRouteFallback(true)
+          fc = await fetchForecast(lat, lon)
+        }
       } else {
         routeRef.current = null
         fc = await fetchForecast(lat, lon)
@@ -155,10 +176,13 @@ export function useKitCalculator() {
       setLocationName(name); setCityQuery(name); setLocating(false)
       track('location_selected', { method: 'geolocation' })
       await loadForecast(lat, lon, currentHour)
-    }, () => {
-      setLocationError('Location denied. Please search manually.'); setLocating(false)
+    }, err => {
+      setLocationError(err.code === err.TIMEOUT
+        ? 'Could not detect your location. Please search manually.'
+        : 'Location denied. Please search manually.')
+      setLocating(false)
       track('geolocation_denied')
-    })
+    }, { timeout: 15_000, maximumAge: 10 * 60_000 })
   }
 
   async function handleGpxUpload(file: File) {
@@ -201,6 +225,7 @@ export function useKitCalculator() {
     setKitHours([])
     setHighlights(null)
     setRouteSamples([])
+    setRouteFallback(false)
     routeRef.current = null
     setWeatherLoaded(false)
     setKitResult(null)
@@ -307,6 +332,6 @@ export function useKitCalculator() {
     handleDayChange, handleHourChange, handleDurationChange, handleIntensityChange, handleWarmthChange,
     speedKmh, speedSource, handleSpeedChange, resetSpeed,
     // result
-    kitResult, score, highlights, routeSamples,
+    kitResult, score, highlights, routeSamples, routeFallback,
   }
 }
