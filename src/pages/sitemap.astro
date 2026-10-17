@@ -1,0 +1,90 @@
+---
+/**
+ * Human-readable sitemap: every page by section, generated from the same data as the pages,
+ * so it stays complete when pages are added or merged. Search engines use /sitemap-index.xml.
+ */
+import Base from "../layouts/Base.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import PageHero from "../components/ui/PageHero.astro";
+import { TEMP_PAGES, toF, pathFor } from "../lib/guideData";
+import { KIT_ITEM_PAGES, CONDITION_PAGES } from "../lib/guideContent";
+import { abs, breadcrumbNode } from "../lib/site";
+
+const sections = [
+  {
+    title: "Main pages",
+    links: [
+      { label: "Cycling kit calculator", href: "/" },
+      { label: "Kit guide overview", href: "/guide/" },
+      { label: "Cycling clothing temperature chart", href: "/guide/cycling-temperature-chart/" },
+      { label: "How it works", href: "/how-it-works/" },
+    ],
+  },
+  {
+    title: "What to wear by temperature",
+    links: TEMP_PAGES.map((p) => ({ label: `${p.tempC}°C (${toF(p.tempC)}°F)`, href: pathFor(p.tempC) })),
+  },
+  {
+    title: "When to wear what",
+    links: KIT_ITEM_PAGES.map((p) => ({ label: p.title, href: `/guide/${p.slug}/` })),
+  },
+  {
+    title: "Weather",
+    links: CONDITION_PAGES.map((p) => ({ label: p.title, href: `/guide/${p.slug}/` })),
+  },
+  {
+    title: "kitcheck.cc",
+    links: [
+      { label: "About", href: "/about/" },
+      { label: "Privacy policy", href: "/privacy/" },
+      { label: "Cookie policy", href: "/cookies/" },
+      { label: "Sitemap", href: "/sitemap/" },
+    ],
+  },
+];
+const total = sections.reduce((n, s) => n + s.links.length, 0);
+const canonical = abs("/sitemap/");
+---
+
+<Base
+  title="Sitemap | kitcheck.cc"
+  description="All pages on kitcheck.cc: the cycling kit calculator, the temperature chart and every guide by temperature, piece of kit and weather."
+  canonical={canonical}
+  schema={[breadcrumbNode([{ name: "kitcheck.cc", url: abs("/") }, { name: "Sitemap", url: canonical }])]}
+>
+  <SiteHeader>
+    <a href="/" class="btn-primary max-sm:hidden">Use the calculator</a>
+  </SiteHeader>
+
+  <PageHero
+    title="Sitemap"
+    lead={`All ${total} pages on kitcheck.cc, by section.`}
+    crumbs={[{ name: "kitcheck.cc", href: "/" }, { name: "Sitemap" }]}
+  />
+
+  <section class="bg-bg">
+    <div class="container pb-16 md:pb-24">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-10">
+        {sections.map((s) => (
+          <nav aria-label={s.title}>
+            <h2 class="flex items-baseline gap-2 font-head font-bold text-base text-text pb-2 mb-3 border-b border-border">
+              {s.title}
+              <span class="font-normal text-xs text-text-light">{s.links.length}</span>
+            </h2>
+            <ul class="space-y-2">
+              {s.links.map((l) => (
+                <li><a href={l.href} class="text-[15px] text-text-mid hover:text-coral transition-colors">{l.label}</a></li>
+              ))}
+            </ul>
+          </nav>
+        ))}
+      </div>
+      <p class="text-xs text-text-light mt-12">
+        For search engines and AI tools: <a href="/sitemap-index.xml" class="hover:text-text-mid">sitemap-index.xml</a> · <a href="/llms.txt" class="hover:text-text-mid">llms.txt</a> · <a href="/llms-full.txt" class="hover:text-text-mid">llms-full.txt</a>
+      </p>
+    </div>
+  </section>
+
+  <SiteFooter />
+</Base>

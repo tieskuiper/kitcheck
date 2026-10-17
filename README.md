@@ -119,6 +119,7 @@ The goal: rank in Google and Bing, and be the source AI answers (Gemini/AI Overv
 - **FAQs** are collapsed with the first one open: crawlers read collapsed answers too.
 - **How it works / About:** the method in plain text and who's behind it (trust signals for Google and AI tools).
 - **Every article** starts with a generated "Short answer", ends with FAQs, and has `Article` + `BreadcrumbList` + `FAQPage` structured data in one `@graph` with the site's `WebSite`/`Organization`/`Person` nodes (`src/lib/site.ts`). Bump `CONTENT_UPDATED` there when guide content changes.
+- **`/sitemap/`** is the human-readable overview of every page by section (linked in the footer), generated from the same data as the pages. Search engines use `/sitemap-index.xml`.
 - **`/llms.txt`** (summary, quick reference, links) and **`/llms-full.txt`** (every kit list, range and answer as plain text) are generated at build time.
 - **Positioning in copy and data:** brand-neutral (no products or affiliate links), adjusted for effort and the real forecast, no app or account. This is what sets kitcheck.cc apart from the brand blogs and apps that rank for these searches, so keep it visible.
 - **Freshness and trust:** articles show a byline and "Updated" date and carry `og:type=article` with modified time; the sitemap has `lastmod`. All three come from `CONTENT_UPDATED` in `src/lib/site.ts`: bump it when guide content changes. Legal pages are left out of the sitemap; the 404 is `noindex`.
