@@ -329,4 +329,59 @@ export const CONDITION_PAGES: ConditionPage[] = [
     ],
     related: ['bib-tights-or-bib-shorts', 'when-to-wear-winter-cycling-gloves', 'when-to-wear-overshoes-cycling', 'when-to-wear-a-base-layer-cycling'],
   },
+  {
+    slug: 'summer-cycling-clothing',
+    label: 'Summer',
+    icon: 'sun',
+    teaser: 'From fresh summer mornings to real heat: when the warmers stay home, plus drinking, sun and timing.',
+    facts: [
+      { value: '18°C', text: '64°F: summer jersey and bib shorts, the arm and knee warmers can stay home' },
+      { value: '27°C', text: '81°F feels-like: extra bottle and sunscreen' },
+      { value: 'Early', text: 'or late: ride outside the hottest hours' },
+    ],
+    title: 'Summer cycling clothing: what to wear in the heat',
+    metaTitle: 'Summer Cycling Clothing: What to Wear | kitcheck.cc',
+    description: 'What to wear for road cycling in summer, from fresh mornings to 30°C (86°F) heat: jerseys, warmers, sun protection, drinking and timing.',
+    intro: 'Summer kit is simple; the choices are at the edges. On a fresh morning, arm and knee warmers are still worth taking. Once it is properly warm, it is the lightest jersey you own and bib shorts, and what makes or breaks the ride is everything around the kit: when you ride, what you drink and how you deal with the sun.',
+    sections: [
+      {
+        heading: 'Fresh mornings and long descents',
+        body: [
+          'At the cool end of summer, a normal jersey with arm and knee warmers is the most flexible setup: they come off once you are warm and fit in a back pocket. On an Alpine descent or an early start, a gilet or packable jacket does the same job for your chest.',
+        ],
+      },
+      {
+        heading: 'Kit for the heat',
+        body: [
+          'The lightest, thinnest jersey you own, ideally light-coloured and with a full-length zip so you can open it on climbs. Bib shorts, summer socks, and fingerless gloves only if you like them for grip. A thin cycling cap under the helmet keeps sun off your head and sweat out of your eyes.',
+        ],
+      },
+      {
+        heading: 'Drink and plan',
+        body: [
+          "From a feels-like temperature of 27°C (81°F), kitcheck.cc adds a heat note: take an extra bottle and put on sunscreen. Put electrolytes in at least one bottle, plan a café or water stop on longer rides, and start early in the morning or ride late in the afternoon, when it's cooler.",
+          'Ride a notch easier than usual on the climbs. Your body has to work harder to cool down, and pushing your normal pace in the heat costs more than it gives.',
+        ],
+      },
+      {
+        heading: 'Sun and summer rain',
+        body: [
+          'Sunscreen on your arms, legs, neck and the backs of your knees, and reapply it on long rides. Sunglasses help against glare and keep insects out of your eyes.',
+          'A summer shower needs no more than a packable rain jacket, and once it is properly warm kitcheck.cc lists even that as optional: you warm up quickly and a wet summer jersey dries fast.',
+        ],
+      },
+    ],
+    table: {
+      heading: 'Summer kit by temperature',
+      caption: 'Moderate pace, light wind, no rain.',
+      temps: [15, 18, 20, 22, 25, 30],
+      overrides: {},
+    },
+    faq: [
+      { q: 'Do I need arm warmers in summer?', a: 'On fresh mornings and long descents, yes. At a moderate pace kitcheck.cc lists arm and knee warmers as optional up to about 18°C (64°F); above that, a summer jersey and bib shorts are enough.' },
+      { q: 'What is too hot for cycling?', a: 'There is no single limit, and it depends on humidity, how used you are to the heat and how hard you ride. Above about 30°C (86°F), ride early, shorten the route, plan water stops and stop if you feel dizzy or stop sweating.' },
+      { q: 'Should I wear a base layer in hot weather?', a: 'Some riders like a thin mesh base layer in the heat because it moves sweat away from the skin. It is a personal choice; kitcheck.cc does not list one when it is warm.' },
+    ],
+    related: ['when-to-wear-arm-and-knee-warmers'],
+  },
 ]

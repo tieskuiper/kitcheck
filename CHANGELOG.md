@@ -46,6 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Privacy policy and cookie policy rewritten to match exactly what the site does
 
 ### Added
+- Summer page (`/guide/summer-cycling-clothing/`): kit from fresh mornings to 30°C, heat, drinking, sun and summer rain; linked from the guide, the footer and the temperature pages from 20°C (cold pages up to 5°C link the winter page)
 - `docs/kit-logic.md`: the whole kit algorithm written out, with tables generated from the engine (`pnpm docs:kit`, checked with `pnpm docs:kit:check`); `CLAUDE.md` with project rules for AI agents
 - `/sitemap/`: every page by section with a page count, linked from the footer
 - SEO/GEO pass: homepage title on "what to wear cycling today", "no app" positioning and a homepage FAQ; byline with updated date on articles; `og:type=article` with modified time; `max-snippet`/`max-image-preview` robots directives; sitemap `lastmod` (legal pages excluded); `/llms-full.txt`; guide `CollectionPage` structured data; richer `WebApplication` data; temperature pages compare with neighbouring temperatures, answer the °F question and link to the matching kit guides; sources on How it works; shorter titles and descriptions

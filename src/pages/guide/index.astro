@@ -49,7 +49,7 @@ const faq = [
 
 <Base
   title="What to Wear Cycling by Temperature (°C and °F) | kitcheck.cc"
-  description="What to wear cycling at every temperature, from -5°C (23°F) to 25°C (77°F). Kit lists per temperature, an interactive chart, and kit for rain, wind and winter."
+  description="What to wear cycling at every temperature, from -5°C (23°F) to 25°C (77°F). Kit lists per temperature, an interactive chart, and kit for rain, wind, winter and summer."
   canonical="https://kitcheck.cc/guide/"
   schema={[
     {
@@ -82,7 +82,7 @@ const faq = [
   <PageHero
     eyebrow="Kit guide"
     title="What to wear cycling, <span class='text-coral'>at any temperature</span>"
-    lead="What to wear at each temperature, when each piece of kit comes in, and what changes with rain, wind and cold."
+    lead="What to wear at each temperature, when each piece of kit comes in, and what changes with rain, wind, cold and heat."
     crumbs={[{ name: "kitcheck.cc", href: "/" }, { name: "Kit guide" }]}
   >
     <a href="/guide/cycling-temperature-chart/" class="btn-primary py-3! px-5! text-[14px]!">Open the temperature chart</a>
@@ -137,8 +137,8 @@ const faq = [
   <!-- CONDITIONS -->
   <section class="bg-bg">
     <div class="container py-16 md:py-24">
-      <SectionHead eyebrow="By weather" title="Rain, wind and winter" lead="What changes when the weather does." />
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <SectionHead eyebrow="By weather" title="Rain, wind, winter and summer" lead="What changes when the weather does." />
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {CONDITION_PAGES.map((p) => {
           const Icon = CONDITION_ICONS[p.icon];
           return (

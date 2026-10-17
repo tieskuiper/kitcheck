@@ -15,7 +15,7 @@ import {
   toF, pathFor, kitSentence, kitSummary, listJoin, kitChanges,
 } from "../../lib/guideData";
 import { abs, articleNode, breadcrumbNode, faqNode, CONTENT_PUBLISHED, CONTENT_UPDATED } from "../../lib/site";
-import { KIT_ITEM_PAGES } from "../../lib/guideContent";
+import { KIT_ITEM_PAGES, CONDITION_PAGES } from "../../lib/guideContent";
 import { itemStatus } from "../../lib/kitRanges";
 
 interface Props { tempC: number; intro: string }
@@ -81,8 +81,12 @@ const neighbours = [
 ].filter((n) => n !== null).map((n) => ({ ...n, changes: kitChanges(kit, kitAt(n.tempC)) }));
 
 // Kit guides for the items in this kit list (contextual internal links)
-const relatedGuides = KIT_ITEM_PAGES.filter((p) =>
-  itemStatus(kit, p.match) || (p.extra && itemStatus(kit, p.extra.match)));
+// plus the season page that fits: winter up to 5°C, summer from 20°C
+const season = c <= 5 ? "winter-cycling-clothing" : c >= 20 ? "summer-cycling-clothing" : null;
+const relatedGuides = [
+  ...KIT_ITEM_PAGES.filter((p) => itemStatus(kit, p.match) || (p.extra && itemStatus(kit, p.extra.match))),
+  ...CONDITION_PAGES.filter((p) => p.slug === season),
+];
 
 const VARIATION_ICONS: Record<string, typeof IconWind> = { race: IconRacingFlag, easy: IconBlip, wind: IconWind, rain: IconRainy, cold: IconSnowFlakes, warm: IconSun };
 
@@ -126,7 +130,7 @@ const crumbs = [
         <p class="text-[13px] text-text-mid mt-3 px-1">
           More on:{" "}
           {relatedGuides.map((p, i) => (
-            <>{i > 0 && " · "}<a href={`/guide/${p.slug}/`} class="text-coral hover:opacity-75">{p.label.toLowerCase()}</a></>
+            <>{i > 0 && " · "}<a href={`/guide/${p.slug}/`} class="text-coral hover:opacity-75">{p.slug === season ? `${p.label.toLowerCase()} cycling clothing` : p.label.toLowerCase()}</a></>
           ))}
         </p>
       )}

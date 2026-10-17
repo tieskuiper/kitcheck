@@ -11,7 +11,7 @@ KitCheck is a free cycling kit calculator. Riders enter a location (or upload a 
 - **Rider profile** — intensity (easy → race) and warmth tendency (always cold → always warm)
 - **Recommendation** — comfort score, kit per zone (head, upper body, hands, lower body, feet), required vs optional items, and notes when conditions change during the ride
 - **Route map** — GPX route with start/end markers and wind direction
-- **Guide** — `/guide/` is the hub, with a page per temperature (-5 to 25°C, °F shown alongside), an interactive temperature chart, kit pages (arm & knee warmers, bib tights/leg warmers, base layer, overshoes, gloves) and condition pages (rain, wind, winter). Kit lists, ranges and quick answers are generated from `kitLogic.ts`, so the guide always matches the calculator
+- **Guide** — `/guide/` is the hub, with a page per temperature (-5 to 25°C, °F shown alongside), an interactive temperature chart, kit pages (arm & knee warmers, bib tights/leg warmers, base layer, overshoes, gloves) and condition pages (rain, wind, winter, summer). Kit lists, ranges and quick answers are generated from `kitLogic.ts`, so the guide always matches the calculator
 - **Units** — °C by default; °F when the device's timezone is in the US, or when the visitor picked °F before (`lib/units.ts`, stored as `kitcheck-unit`). Browser language is ignored: many Europeans browse in en-US
 
 ## How the kit advice is calculated
@@ -120,7 +120,7 @@ The goal: rank in Google and Bing, and be the source AI answers (Gemini/AI Overv
 - **Guide = the answers.** `/guide/` targets "what to wear cycling by temperature". Under it, one `[slug]` route with three templates:
   - temperature pages (`what-to-wear-cycling-10-degrees`), °F in the title and text, each with its own intro;
   - kit item pages (`when-to-wear-arm-and-knee-warmers`…): range per effort level from `kitRanges.ts`; a page can cover a second item (`extra`);
-  - condition pages (rain, wind, winter) with a generated kit table.
+  - condition pages (rain, wind, winter, summer) with a generated kit table.
 - **Chart** (`/guide/cycling-temperature-chart/`): interactive (temperature slider, effort, wind/rain, range bars per item), computed in the browser from `kitLogic`; the full table stays in the HTML (collapsed) for search engines. Meant to be linked to and quoted.
 - **FAQs** are collapsed with the first one open: crawlers read collapsed answers too.
 - **How it works / About:** the method in plain text and who's behind it (trust signals for Google and AI tools).
