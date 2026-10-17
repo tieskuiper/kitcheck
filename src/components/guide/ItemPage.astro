@@ -83,7 +83,7 @@ const related = KIT_ITEM_PAGES.filter((p) => p.slug !== page.slug);
   </PageHero>
 
   <!-- GOOD TO KNOW -->
-  <section class="bg-white border-y border-border">
+  <section class="bg-bg">
     <div class="container py-16 md:py-20">
       <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-8 lg:gap-14">
         <div>
@@ -93,7 +93,7 @@ const related = KIT_ITEM_PAGES.filter((p) => p.slug !== page.slug);
         </div>
         <ol class="grid grid-cols-1 sm:grid-cols-3 gap-3 self-start">
           {page.tips.map((t, i) => (
-            <li class="bg-bg rounded-2xl border border-border p-5">
+            <li class="bg-white rounded-2xl border border-border p-5">
               <span class="flex items-center justify-center size-8 rounded-full bg-coral text-white font-head text-sm font-bold mb-4">{i + 1}</span>
               <p class="text-sm text-text-mid leading-relaxed">{t}</p>
             </li>

@@ -82,7 +82,7 @@ const others = CONDITION_PAGES.filter((p) => p.slug !== page.slug);
   </PageHero>
 
   {page.table && rows && (
-    <section class="bg-white border-y border-border">
+    <section class="bg-bg">
       <div class="container py-16 md:py-20">
         <SectionHead id="kit-table" eyebrow="Kit table" title={page.table.heading} lead={`${page.table.caption} Generated from the same logic as the calculator.`} />
         <KitTable rows={rows} caption="Optional items in grey. Click a temperature for the full kit list." />

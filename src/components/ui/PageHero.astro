@@ -1,46 +1,46 @@
 ---
 /**
- * Page hero: breadcrumb, eyebrow, title, lead, actions (default slot) and an optional
- * aside (named slot "aside") that sits next to the text on desktop.
+ * Hero for every page except the homepage (which goes straight into the tool): a separate white
+ * band with a bottom border, left-aligned. Breadcrumb, eyebrow, title, lead, actions (default
+ * slot) and an optional aside (named slot "aside") next to the text on desktop.
+ * The section after it should use the page background (bg-bg) so the band stands apart.
  */
 import Breadcrumb from "../guide/Breadcrumb.astro";
-import { AUTHOR, CONTENT_UPDATED } from "../../lib/site";
+import { CONTENT_UPDATED } from "../../lib/site";
 
 interface Props {
   title: string;
   eyebrow?: string;
   lead?: string;
   crumbs?: { name: string; href?: string }[];
-  align?: "left" | "center";
-  /** Author and last-updated line, for articles (trust and freshness signals) */
+  /** Last-updated line, for articles (freshness signal for search engines and AI tools) */
   byline?: boolean;
 }
-const { title, eyebrow, lead, crumbs, align = "left", byline = false } = Astro.props;
-const updated = new Date(CONTENT_UPDATED).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+const { title, eyebrow, lead, crumbs, byline = false } = Astro.props;
 const hasAside = Astro.slots.has("aside");
-const center = align === "center";
+const updated = new Date(CONTENT_UPDATED).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 ---
 
-<section class="bg-bg">
+<section class="bg-white border-b border-border">
   <div class="container">
-    <div class={`pt-10 md:pt-14 lg:pt-16 pb-12 md:pb-16 ${hasAside ? "grid grid-cols-1 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] gap-10 lg:gap-14 items-center" : ""}`}>
-      <div class={center ? "max-w-3xl mx-auto text-center" : "max-w-2xl"}>
-        {crumbs && <div class={center ? "flex justify-center" : ""}><Breadcrumb items={crumbs} /></div>}
-        {eyebrow && <p class="font-head text-[12px] font-semibold tracking-[0.08em] uppercase text-coral mb-4">{eyebrow}</p>}
-        <h1 class="font-head text-[2rem] md:text-[2.75rem] lg:text-5xl font-bold tracking-tight leading-[1.08] text-text text-balance">
-          <Fragment set:html={title} />
-        </h1>
-        {lead && <p class={`text-lg text-text-mid leading-relaxed mt-5 ${center ? "max-w-xl mx-auto" : ""}`}>{lead}</p>}
-        {byline && (
-          <p class={`text-[13px] text-text-light mt-4 ${center ? "text-center" : ""}`}>
-            By <a href={AUTHOR.url} rel="author" class="text-text-mid hover:text-text">{AUTHOR.name}</a> · Updated <time datetime={CONTENT_UPDATED}>{updated}</time>
-          </p>
-        )}
-        {Astro.slots.has("default") && (
-          <div class={`flex flex-wrap gap-3 mt-7 ${center ? "justify-center" : ""}`}><slot /></div>
-        )}
+    <div class="pt-8 md:pt-10 pb-14 md:pb-20">
+      {crumbs && <Breadcrumb items={crumbs} />}
+      <div class={hasAside ? "grid grid-cols-1 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] gap-10 lg:gap-16 items-start mt-6 md:mt-10" : "mt-6 md:mt-10"}>
+        <div class="max-w-2xl">
+          {eyebrow && <p class="font-head text-[12px] font-semibold tracking-[0.08em] uppercase text-coral mb-4">{eyebrow}</p>}
+          <h1 class="font-head text-[2.125rem] md:text-5xl lg:text-[3.25rem] font-bold tracking-tight leading-[1.06] text-text text-balance">
+            <Fragment set:html={title} />
+          </h1>
+          {lead && <p class="text-lg text-text-mid leading-relaxed mt-5 max-w-xl">{lead}</p>}
+          {byline && (
+            <p class="text-[13px] text-text-light mt-4">
+              Updated <time datetime={CONTENT_UPDATED}>{updated}</time>
+            </p>
+          )}
+          {Astro.slots.has("default") && <div class="flex flex-wrap gap-3 mt-8"><slot /></div>}
+        </div>
+        {hasAside && <div class="min-w-0"><slot name="aside" /></div>}
       </div>
-      {hasAside && <div class="min-w-0"><slot name="aside" /></div>}
     </div>
   </div>
 </section>

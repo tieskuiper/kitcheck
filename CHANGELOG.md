@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- Articles no longer carry a personal byline: only the "Updated" date shows, and kitcheck.cc (the organisation) is the author in structured data; the About page still says who makes the tool
+- Hero on every page except the homepage is a separate white band with a bottom border, left-aligned; the section below sits on the page background
 - Pre-launch review fixes: copy corrected where it contradicted the kit logic (gilet range, wind "one step warmer", winter layers and freezing kit, rain/leg thresholds, effort 4–8°C, overshoes and rain overshoes); FAQ answers on temperature pages are full sentences that name the temperature; "no gloves" no longer listed as required; unchanged variations collapsed into one line; ranges read "below 8°C" and "-2 to 5°C"
 - Route "rain likely" note now uses the same 60% threshold as the rain kit (was 50%); strong-wind variation uses 35 km/h like the wind table
 - Light grey text darkened to #72716D for WCAG AA contrast (was 2.6:1)

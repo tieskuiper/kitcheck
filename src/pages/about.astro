@@ -30,7 +30,6 @@ const facts = [
       name: "About kitcheck.cc",
       description,
       about: { "@id": "https://kitcheck.cc/#organization" },
-      author: { "@id": "https://kitcheck.cc/#author" },
     },
     breadcrumbNode([{ name: "kitcheck.cc", url: abs("/") }, { name: "About", url: canonical }]),
   ]}
@@ -40,7 +39,6 @@ const facts = [
   </SiteHeader>
 
   <PageHero
-    align="center"
     eyebrow="About"
     title="About <span class='text-coral'>kitcheck.cc</span>"
     lead="kitcheck.cc is a free cycling kit calculator by Ties Kuiper, a road cyclist in the Netherlands. It answers the question every rider asks before a ride: what do I wear today?"
@@ -48,7 +46,7 @@ const facts = [
   />
 
   <section class="bg-bg">
-    <div class="container pb-16 md:pb-20">
+    <div class="container py-16 md:py-20">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
         {facts.map((f) => (
           <div class="bg-white rounded-2xl border border-border p-6">

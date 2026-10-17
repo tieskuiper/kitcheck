@@ -23,7 +23,7 @@ const ORG_ID = `${SITE_URL}/#organization`
 const SITE_ID = `${SITE_URL}/#website`
 const AUTHOR_ID = `${SITE_URL}/#author`
 
-/** WebSite + Organization + author on every page; page-specific nodes reference these by @id */
+/** WebSite + Organization + founder on every page; page-specific nodes reference these by @id */
 export function siteGraph(): object[] {
   return [
     {
@@ -68,7 +68,8 @@ export function articleNode(opts: { url: string; headline: string; description: 
     inLanguage: opts.lang,
     datePublished: opts.published ?? CONTENT_UPDATED,
     dateModified: CONTENT_UPDATED,
-    author: { '@id': AUTHOR_ID },
+    // The site, not a person, is the author: kitcheck.cc is a tool, not a blog
+    author: { '@id': ORG_ID },
     publisher: { '@id': ORG_ID },
     isPartOf: { '@id': SITE_ID },
     image: `${SITE_URL}/og.png`,

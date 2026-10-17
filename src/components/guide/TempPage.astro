@@ -134,7 +134,7 @@ const crumbs = [
   </PageHero>
 
   <!-- VARIATIONS -->
-  <section class="bg-white border-y border-border">
+  <section class="bg-bg">
     <div class="container py-16 md:py-20">
       <SectionHead
         eyebrow="Adjust"
@@ -145,7 +145,7 @@ const crumbs = [
         {variations.filter((v) => v.changes.length).map((v) => {
           const Icon = VARIATION_ICONS[v.key];
           return (
-            <div class="bg-bg rounded-2xl border border-border p-5">
+            <div class="bg-white rounded-2xl border border-border p-5">
               <div class="flex items-center gap-3 mb-4">
                 <span class="flex items-center justify-center size-9 rounded-xl bg-white border border-border text-coral shrink-0"><Icon size={17} /></span>
                 <div>

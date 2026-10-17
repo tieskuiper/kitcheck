@@ -6,7 +6,7 @@ import type { APIRoute } from 'astro'
 import { TEMP_PAGES, ZONES, ZONE_LABELS, kitAt, kitSentence, variationsAt, toF, pathFor } from '../lib/guideData'
 import { KIT_ITEM_PAGES, CONDITION_PAGES } from '../lib/guideContent'
 import { itemRanges, itemRangesByIntensity, itemSentence, rangePhrase } from '../lib/kitRanges'
-import { abs, AUTHOR, CONTENT_UPDATED } from '../lib/site'
+import { abs, CONTENT_UPDATED } from '../lib/site'
 import type { KitResult } from '../lib/kitLogic'
 
 const kitLines = (kit: KitResult) => ZONES.map(z => {
@@ -18,7 +18,7 @@ export const GET: APIRoute = () => {
   const out: string[] = [
     '# kitcheck.cc — what to wear cycling, full guide',
     '',
-    `> Free, brand-neutral cycling kit calculator for road cyclists (${abs('/')}). It turns the hourly forecast for a ride (feels-like temperature, wind, rain) into a kit list for head, upper body, hands, legs and feet, adjusted for effort and how warm the rider runs. No app or account. By ${AUTHOR.name}, updated ${CONTENT_UPDATED}.`,
+    `> Free, brand-neutral cycling kit calculator for road cyclists (${abs('/')}). It turns the hourly forecast for a ride (feels-like temperature, wind, rain) into a kit list for head, upper body, hands, legs and feet, adjusted for effort and how warm the rider runs. No app or account. Updated ${CONTENT_UPDATED}.`,
     '',
     'All kit lists below are for a moderate (endurance) pace, light wind and no rain unless stated otherwise. Temperatures are the feels-like temperature from the forecast. Riding harder makes it feel warmer on the bike; hands, feet and head benefit much less from effort than the body does.',
     '',
