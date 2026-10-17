@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-10-17
+
 ### Changed
 - Kit logic (owner decisions): near freezing (feels-like ≤ 2°C) a hard or race effort keeps the winter body kit, with a note on the kit card that you could go lighter but will feel cold; dry cold gets thermal instead of waterproof winter gloves and overshoes (waterproof only when rain is likely); for the whole ride a waterproof pair now outranks a thermal one of equal warmth, so a dry start that turns wet gets waterproof gloves and overshoes
 - docs/kit-logic.md updated: cold effort floor, glove/overshoe rules, decided quirks
@@ -144,7 +146,8 @@ Initial public launch.
 - Responsive header buttons and calculator padding
 - Mobile layout improvements across calculator
 
-[Unreleased]: https://github.com/tieskuiper/kitcheck/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/tieskuiper/kitcheck/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/tieskuiper/kitcheck/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/tieskuiper/kitcheck/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/tieskuiper/kitcheck/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/tieskuiper/kitcheck/releases/tag/v1.0.0
