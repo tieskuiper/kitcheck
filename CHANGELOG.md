@@ -44,7 +44,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Calculator and chart start in °F for visitors in a US timezone; a manual °C/°F choice is remembered (`kitcheck-unit`, listed in the cookie policy)
 - Interactive temperature chart: slider, effort, wind and rain toggles, and range bars per piece of kit
 - New page layout: hero, section headings, answer cards, CTA band, header navigation (with mobile menu) and a compact footer; guide hub, articles, how it works and about rebuilt on it. Homepage stays tool-first: calculator, team, quick reference
-- Contact address info@kitcheck.cc on the about page, FAQs and footer
 - Chance of showers (40–59%): packable rain jacket and light rain overshoes as options, with a "chance of showers" note
 - Heat note from 27°C: extra bottle and sunscreen
 - Note when the rain stops during the ride: the rain jacket can go in your pocket
