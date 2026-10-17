@@ -20,7 +20,9 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
     optimizeDeps: {
-      include: ['leaflet'],
+      // Pre-bundle at startup: when Vite discovers the icon package mid-session, its cache goes
+      // stale (504 "Outdated Optimize Dep") and React islands like the chart stop hydrating in dev
+      include: ['leaflet', '@central-icons-react/round-outlined-radius-3-stroke-2'],
     },
     build: {
       // MapLibre (~1 MB) is lazy-loaded only when a GPX route map is shown
