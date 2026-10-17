@@ -67,7 +67,7 @@ const crumbs = [
     faqNode(faq),
   ]}
 >
-  <SiteHeader>
+  <SiteHeader slot="header">
     <a href="/" class="btn-primary max-sm:hidden">Use the calculator</a>
   </SiteHeader>
 
@@ -114,7 +114,7 @@ const crumbs = [
     title="Your ride is never one temperature"
     text="The calculator reads the hourly forecast for your location and ride window, and tells you what to wear for the whole ride."
   />
-  <SiteFooter />
+  <SiteFooter slot="footer" />
 
   <style>
     .chart-unit { background: transparent; color: var(--color-text-mid); transition: background 0.15s, color 0.15s; }

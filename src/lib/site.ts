@@ -10,9 +10,12 @@ export const AUTHOR = {
   url: `${SITE_URL}/about/`,
 }
 
-/** Bump when guide content changes: used as dateModified in Article structured data */
+/** Bump when guide content changes: dateModified, the byline, sitemap lastmod; also the publish date of new pages */
 export const CONTENT_UPDATED = '2026-10-17'
+/** When the first guide pages (0–25°C) went live; pages added later use CONTENT_UPDATED */
 export const CONTENT_PUBLISHED = '2026-10-12'
+
+const DESCRIPTION = 'Free, brand-neutral cycling kit calculator for road cyclists: what to wear on the bike, based on the real forecast and how hard you ride.'
 
 export const abs = (path: string) => `${SITE_URL}${path}`
 
@@ -28,7 +31,8 @@ export function siteGraph(): object[] {
       '@id': SITE_ID,
       url: `${SITE_URL}/`,
       name: SITE_NAME,
-      description: 'Free cycling kit calculator: what to wear on the bike, based on the real forecast and how hard you ride.',
+      alternateName: ['KitCheck', 'kitcheck'],
+      description: DESCRIPTION,
       inLanguage: 'en',
       publisher: { '@id': ORG_ID },
     },
@@ -36,9 +40,12 @@ export function siteGraph(): object[] {
       '@type': 'Organization',
       '@id': ORG_ID,
       name: SITE_NAME,
+      alternateName: ['KitCheck', 'kitcheck'],
+      description: DESCRIPTION,
       url: `${SITE_URL}/`,
-      logo: `${SITE_URL}/favicon.svg`,
+      logo: { '@type': 'ImageObject', url: `${SITE_URL}/logo.png`, width: 512, height: 512 },
       founder: { '@id': AUTHOR_ID },
+      foundingLocation: { '@type': 'Country', name: 'Netherlands' },
     },
     {
       '@type': 'Person',
@@ -46,11 +53,12 @@ export function siteGraph(): object[] {
       name: AUTHOR.name,
       url: AUTHOR.url,
       knowsAbout: ['Road cycling', 'Cycling clothing', 'Weather'],
+      homeLocation: { '@type': 'Country', name: 'Netherlands' },
     },
   ]
 }
 
-export function articleNode(opts: { url: string; headline: string; description: string; lang: string }): object {
+export function articleNode(opts: { url: string; headline: string; description: string; lang: string; published?: string }): object {
   return {
     '@type': 'Article',
     '@id': `${opts.url}#article`,
@@ -58,7 +66,7 @@ export function articleNode(opts: { url: string; headline: string; description: 
     headline: opts.headline,
     description: opts.description,
     inLanguage: opts.lang,
-    datePublished: CONTENT_PUBLISHED,
+    datePublished: opts.published ?? CONTENT_UPDATED,
     dateModified: CONTENT_UPDATED,
     author: { '@id': AUTHOR_ID },
     publisher: { '@id': ORG_ID },

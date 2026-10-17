@@ -54,7 +54,7 @@ export const GET: APIRoute = () => {
   for (const p of CONDITION_PAGES) {
     out.push(`### ${p.title}`, `Source: ${abs(`/guide/${p.slug}/`)}`, '', p.intro, '')
     if (p.table) {
-      out.push(`${p.table.heading} (${p.table.caption})`, '')
+      out.push(`${p.table.heading}. ${p.table.caption}`, '')
       for (const c of p.table.temps) {
         const kit = kitAt(c, p.table.overrides)
         out.push(`- ${c}°C (${toF(c)}°F): ${ZONES.map(z => kit[z].items.filter(i => i.name !== 'Helmet').map(i => i.name + (i.optional ? ' (optional)' : '')).join(', ')).filter(Boolean).join('; ')}`)

@@ -9,7 +9,7 @@ import SiteFooter from "../components/SiteFooter.astro";
   description="Privacy policy for kitcheck.cc. Learn what data we collect, why, and how it is used."
   canonical="https://kitcheck.cc/privacy/"
 >
-  <SiteHeader>
+  <SiteHeader slot="header">
     <a href="/" class="btn-primary">Use the calculator</a>
   </SiteHeader>
 
@@ -73,9 +73,11 @@ import SiteFooter from "../components/SiteFooter.astro";
           <li>
             How you use the calculator: how you chose a location (search, suggestion,
             auto-detect or GPX), the intensity, warmth, unit, day, start time and duration you
-            pick, and the conditions of the recommendation you get. We never send location
-            names, coordinates or route files.
+            pick, the average speed you set and the distance of an uploaded route, and the
+            conditions of the recommendation you get. We never send location names,
+            coordinates or route files.
           </li>
+          <li>Errors (for example a failed forecast or an unreadable GPX file) and clicks on the Raas Racing Team links</li>
         </ul>
         <p>
           Google Analytics recognises a returning browser with a cookie (see the <a href="/cookies/">cookie policy</a>). Google signals and all advertising features are
@@ -138,7 +140,7 @@ import SiteFooter from "../components/SiteFooter.astro";
     </div>
   </section>
 
-  <SiteFooter />
+  <SiteFooter slot="footer" />
 </Base>
 
 <style>

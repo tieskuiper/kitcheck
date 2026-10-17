@@ -61,7 +61,7 @@ export interface HourWeather {
   precipProb:   number
 }
 
-const RAIN_LIKELY  = 60   // % — full rain kit (scaled to temperature)
+export const RAIN_LIKELY = 60   // % — full rain kit (scaled to temperature)
 const RAIN_SHOWERS = 40   // % — packable jacket as an option
 const HEAT_FROM_C  = 27   // forecast feels-like °C
 

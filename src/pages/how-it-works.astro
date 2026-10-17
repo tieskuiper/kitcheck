@@ -38,7 +38,7 @@ const barWidth = (c: number) => `${Math.max(6, Math.min(100, (c / 25) * 100))}%`
     breadcrumbNode([{ name: "kitcheck.cc", url: abs("/") }, { name: "How it works", url: canonical }]),
   ]}
 >
-  <SiteHeader>
+  <SiteHeader slot="header">
     <a href="/" class="btn-primary max-sm:hidden">Use the calculator</a>
   </SiteHeader>
 
@@ -66,7 +66,7 @@ const barWidth = (c: number) => `${Math.max(6, Math.min(100, (c / 25) * 100))}%`
               the chance of rain. A cold start or rain later in the ride shows up in the advice.
             </p>
             <p class="step-text">
-              With a GPX route, the forecast is taken at points along the route (about every 6 km, plus the highest
+              With a GPX route, the forecast is taken at points along the route (about every 6 km, or further apart on very long routes, plus the highest
               point) for the time you'll pass them. Wind is judged against your direction: a headwind counts fully, a
               tailwind barely.
             </p>
@@ -172,7 +172,7 @@ const barWidth = (c: number) => `${Math.max(6, Math.min(100, (c / 25) * 100))}%`
   </section>
 
   <CtaBand title="See it work on your ride" />
-  <SiteFooter />
+  <SiteFooter slot="footer" />
 
   <style>
     .step {

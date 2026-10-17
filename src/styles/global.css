@@ -13,7 +13,7 @@
   /* ── Text scale ─────────────────────────────────────────────────────── */
   --color-text: #111110;
   --color-text-mid: #6B6A67;
-  --color-text-light: #9E9D9A;
+  --color-text-light: #72716D;  /* 4.6:1 on bg, 4.9:1 on white (WCAG AA); was #9E9D9A at 2.6:1 */
 
   /* ── Brand accents ──────────────────────────────────────────────────── */
   --color-coral: #FF5130;

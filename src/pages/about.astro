@@ -35,15 +35,15 @@ const facts = [
     breadcrumbNode([{ name: "kitcheck.cc", url: abs("/") }, { name: "About", url: canonical }]),
   ]}
 >
-  <SiteHeader>
+  <SiteHeader slot="header">
     <a href="/" class="btn-primary max-sm:hidden">Use the calculator</a>
   </SiteHeader>
 
   <PageHero
     align="center"
     eyebrow="About"
-    title="What do I wear <span class='text-coral'>today?</span>"
-    lead="kitcheck.cc answers the question every road cyclist asks before a ride, based on the real forecast and how hard you're going."
+    title="About <span class='text-coral'>kitcheck.cc</span>"
+    lead="kitcheck.cc is a free cycling kit calculator by Ties Kuiper, a road cyclist in the Netherlands. It answers the question every rider asks before a ride: what do I wear today?"
     crumbs={[{ name: "kitcheck.cc", href: "/" }, { name: "About" }]}
   />
 
@@ -87,5 +87,5 @@ const facts = [
   </section>
 
   <CtaBand />
-  <SiteFooter />
+  <SiteFooter slot="footer" />
 </Base>

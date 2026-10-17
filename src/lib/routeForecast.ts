@@ -4,6 +4,7 @@
  * Also works out the wind relative to the riding direction and where the long descents are.
  */
 import { haversineKm, type GpxRoute } from './gpx'
+import { RAIN_LIKELY } from './kitLogic'
 import type { HourWeather } from './kitLogic'
 
 export interface RoutePoint {
@@ -203,8 +204,9 @@ export function routeHighlights(samples: RouteSample[], descents: Descent[], dis
     result.coldest = { km: coldest.km, offsetH: coldest.offsetH, apparentTemp: coldest.apparentTemp, ele: coldest.ele }
   }
 
-  if (start.precipProb < 50) {
-    const wet = samples.find(s => s.precipProb >= 50)
+  // Same threshold as the kit's rain gear, so "rain likely" on the route matches the kit list
+  if (start.precipProb < RAIN_LIKELY) {
+    const wet = samples.find(s => s.precipProb >= RAIN_LIKELY)
     if (wet) result.rain = { km: wet.km, offsetH: wet.offsetH, precipProb: wet.precipProb }
   }
 

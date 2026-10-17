@@ -49,12 +49,14 @@ export function itemRangesByIntensity(match: (name: string) => boolean, override
 
 const tc = (c: number) => `${c}°C (${Math.round(c * 9 / 5 + 32)}°F)`
 
-/** "11–14°C (52–57°F)", "8°C (46°F) or colder", "24°C (75°F) or warmer" */
+/** "11–14°C (52–57°F)", "below 8°C (46°F)", "24°C (75°F) and warmer", "-2 to 5°C (28 to 41°F)" */
 export function rangePhrase(r: TempRange): string {
   if (r.from === null && r.to === null) return 'at any temperature'
-  if (r.from === null) return `${tc(r.to!)} or colder`
-  if (r.to === null) return `${tc(r.from)} or warmer`
-  return `${r.from}–${r.to}°C (${Math.round(r.from * 9 / 5 + 32)}–${Math.round(r.to * 9 / 5 + 32)}°F)`
+  if (r.from === null) return `below ${tc(r.to!)}`
+  if (r.to === null) return `${tc(r.from)} and warmer`
+  // "-2 to 5°C" reads better than "-2–5°C" once a minus sign is involved
+  const dash = r.from < 0 ? ' to ' : '–'
+  return `${r.from}${dash}${r.to}°C (${Math.round(r.from * 9 / 5 + 32)}${dash}${Math.round(r.to * 9 / 5 + 32)}°F)`
 }
 
 /** The quotable one-liner for an item page, at a moderate pace */

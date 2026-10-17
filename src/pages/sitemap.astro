@@ -53,7 +53,7 @@ const canonical = abs("/sitemap/");
   canonical={canonical}
   schema={[breadcrumbNode([{ name: "kitcheck.cc", url: abs("/") }, { name: "Sitemap", url: canonical }])]}
 >
-  <SiteHeader>
+  <SiteHeader slot="header">
     <a href="/" class="btn-primary max-sm:hidden">Use the calculator</a>
   </SiteHeader>
 
@@ -86,5 +86,5 @@ const canonical = abs("/sitemap/");
     </div>
   </section>
 
-  <SiteFooter />
+  <SiteFooter slot="footer" />
 </Base>

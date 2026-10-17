@@ -12,8 +12,7 @@ export default defineConfig({
   integrations: [
     react(),
     sitemap({
-      // lastmod helps Bing and Google recrawl changed pages sooner; legal pages stay out
-      filter: (page) => !/\/(privacy|cookies)\/$/.test(page),
+      // lastmod helps Bing and Google recrawl changed pages sooner
       serialize: (item) => ({ ...item, lastmod: CONTENT_UPDATED }),
     }),
   ],

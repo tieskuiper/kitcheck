@@ -30,7 +30,7 @@ const CONDITION_ICONS = { rain: IconRainy, wind: IconWind, snow: IconSnowFlakes,
 const faq = [
   {
     q: "When do I need a cycling gilet?",
-    a: "A gilet is ideal between 10–16°C with wind, or on routes with long descents. It keeps your core warm without overheating on climbs, and packs into a jersey pocket easily. In rain, swap it for a waterproof jacket instead.",
+    a: "A gilet is worth it when the wind is strong (over about 25 km/h, 16 mph) and it is cool rather than cold, up to about 18°C (64°F), or on routes with long descents. It keeps your core warm without overheating on climbs, and packs into a jersey pocket easily. In rain, swap it for a waterproof jacket instead.",
   },
   {
     q: "What cycling kit do I need for riding in rain?",
@@ -38,11 +38,11 @@ const faq = [
   },
   {
     q: "Does ride intensity affect what cycling kit I need?",
-    a: "Yes — a hard effort can feel 5–8°C warmer than an easy ride, so you need fewer layers on your body. Your hands and feet don't warm up nearly as much, though: even when racing in the cold you still want proper gloves and overshoes. kitcheck.cc adjusts the body layers fully for your effort level and the gloves and overshoes only partly.",
+    a: "Yes — a hard effort can feel 4–8°C warmer than an easy ride, so you need fewer layers on your body. Your hands and feet don't warm up nearly as much, though: even when racing in the cold you still want proper gloves and overshoes. kitcheck.cc adjusts the body layers fully for your effort level and the gloves and overshoes only partly.",
   },
   {
     q: "Should I wear bib shorts or bib tights?",
-    a: "Bib tights below about 8°C, then bib shorts with leg warmers from 8–11°C, and bib shorts with knee warmers for the 11–14°C range. Above 14°C bib shorts alone are usually fine, with knee warmers optional if it feels fresh. Wind and rain both push those thresholds up. kitcheck.cc picks the right option based on your actual conditions.",
+    a: "Bib tights below about 8°C, then bib shorts with leg warmers from 8–11°C, and bib shorts with knee warmers for the 11–14°C range. Above 14°C bib shorts alone are usually fine, with knee warmers optional if it feels fresh. Strong wind pushes those thresholds up. kitcheck.cc picks the right option based on your actual conditions.",
   },
 ];
 ---
@@ -71,11 +71,11 @@ const faq = [
     faqNode(faq),
     breadcrumbNode([
       { name: "kitcheck.cc", url: abs("/") },
-      { name: "Cycling Kit Guide", url: abs("/guide/") },
+      { name: "Kit guide", url: abs("/guide/") },
     ]),
   ]}
 >
-  <SiteHeader>
+  <SiteHeader slot="header">
     <a href="/" class="btn-primary max-sm:hidden">Use the calculator</a>
   </SiteHeader>
 
@@ -157,5 +157,5 @@ const faq = [
 
   <FaqList faq={faq} />
   <CtaBand />
-  <SiteFooter />
+  <SiteFooter slot="footer" />
 </Base>

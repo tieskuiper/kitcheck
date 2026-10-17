@@ -12,9 +12,9 @@ import { IconArrowRight } from "@central-icons-react/round-outlined-radius-3-str
 import { IconRacingFlag, IconBlip, IconWind, IconRainy, IconSnowFlakes, IconSun } from "@central-icons-react/round-outlined-radius-3-stroke-2";
 import {
   TEMP_PAGES, ZONE_LABELS, kitAt, conditionsAt, variationsAt,
-  toF, pathFor, kitSentence, listJoin, kitChanges,
+  toF, pathFor, kitSentence, kitSummary, listJoin, kitChanges,
 } from "../../lib/guideData";
-import { abs, articleNode, breadcrumbNode, faqNode } from "../../lib/site";
+import { abs, articleNode, breadcrumbNode, faqNode, CONTENT_PUBLISHED, CONTENT_UPDATED } from "../../lib/site";
 import { KIT_ITEM_PAGES } from "../../lib/guideContent";
 import { itemStatus } from "../../lib/kitRanges";
 
@@ -27,6 +27,8 @@ const kit = kitAt(c);
 const score = conditionsAt(c);
 const variations = variationsAt(c);
 const canonical = abs(pathFor(c));
+// 0–25°C have been live since the first guide release; -5°C came later
+const published = [0, 5, 10, 15, 20, 25].includes(c) ? CONTENT_PUBLISHED : CONTENT_UPDATED;
 
 const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
 // One headline item per zone keeps descriptions distinct between neighbouring temperatures;
@@ -43,7 +45,15 @@ const description = describe(items);
 
 const h1 = `What to wear cycling at ${label}`;
 const answer = kitSentence(kit);
+const at = `At ${label} (${other})`;
+// Self-contained answers: each one names the temperature and reads as a full sentence on its own
+const wearSentence = (zones: Parameters<typeof kitSummary>[1], none: string) => {
+  const { required, optional } = kitSummary(kit, zones);
+  const opt = optional.length ? `${required.length ? ", plus" : ""} ${listJoin(optional, "or")} if you like` : "";
+  return required.length ? `${at} wear ${lower(listJoin(required))}${opt}.` : `${at} ${none}${opt ? `:${opt}` : ""}.`;
+};
 const rain = variations.find((v) => v.key === "rain");
+const unchanged = variations.filter((v) => !v.changes.length);
 const race = variations.find((v) => v.key === "race");
 const changeText = (v: typeof rain) =>
   v && v.changes.length
@@ -52,12 +62,12 @@ const changeText = (v: typeof rain) =>
 
 // Generated from the same logic as the kit card, so the answers can't drift from the calculator
 const faq = [
-  { q: `What should I wear cycling at ${label} (${other})?`, a: `At a moderate pace in light wind and no rain: ${answer}` },
+  { q: `What should I wear cycling at ${label} (${other})?`, a: `${at}, at a moderate pace in light wind and no rain, wear: ${lower(answer)}` },
   // US riders search in Fahrenheit: answer that question in their words too
-  { q: `What to wear cycling at ${toF(c)} degrees Fahrenheit?`, a: `${toF(c)}°F is ${c}°C. At a moderate pace in light wind (6 mph) and no rain: ${answer}` },
-  { q: `Do I need gloves cycling at ${label}?`, a: kitSentence(kit, ["hands"]) },
-  { q: `Shorts or tights at ${label}?`, a: kitSentence(kit, ["legs"]) },
-  ...(changeText(rain) ? [{ q: `What changes if it rains at ${label}?`, a: `With rain likely, change this: ${changeText(rain)}.` }] : []),
+  { q: `What to wear cycling at ${toF(c)} degrees Fahrenheit?`, a: `${toF(c)}°F is ${c}°C. At a moderate pace in light wind (6 mph) and no rain, wear: ${lower(answer)}` },
+  { q: `Do I need gloves cycling at ${label}?`, a: wearSentence(["hands"], "you don't need gloves") },
+  { q: `Shorts or tights at ${label}?`, a: wearSentence(["legs"], "bib shorts are enough") },
+  ...(changeText(rain) ? [{ q: `What changes if it rains at ${label}?`, a: `${at} with rain likely, change this: ${changeText(rain)}.` }] : []),
   ...(changeText(race) ? [{ q: `What if I ride hard at ${label}?`, a: `At race pace or on a fast group ride you warm up a lot more. Change this: ${changeText(race)}.` }] : []),
 ];
 
@@ -79,7 +89,7 @@ const VARIATION_ICONS: Record<string, typeof IconWind> = { race: IconRacingFlag,
 const crumbs = [
   { name: "kitcheck.cc", url: abs("/") },
   { name: "Kit guide", url: abs("/guide/") },
-  { name: label, url: canonical },
+  { name: `What to wear at ${label}`, url: canonical },
 ];
 ---
 
@@ -88,13 +98,14 @@ const crumbs = [
   description={description}
   canonical={canonical}
   article
+  published={published}
   schema={[
-    articleNode({ url: canonical, headline: h1, description, lang: "en" }),
+    articleNode({ url: canonical, headline: h1, description, lang: "en", published }),
     breadcrumbNode(crumbs),
     faqNode(faq),
   ]}
 >
-  <SiteHeader>
+  <SiteHeader slot="header">
     <a href="/" class="btn-primary max-sm:hidden">Use the calculator</a>
   </SiteHeader>
 
@@ -131,7 +142,7 @@ const crumbs = [
         lead="Effort, wind, rain and how warm you run all shift the recommendation. Only the parts that change are listed."
       />
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        {variations.map((v) => {
+        {variations.filter((v) => v.changes.length).map((v) => {
           const Icon = VARIATION_ICONS[v.key];
           return (
             <div class="bg-bg rounded-2xl border border-border p-5">
@@ -162,6 +173,11 @@ const crumbs = [
           );
         })}
       </div>
+      {unchanged.length > 0 && (
+        <p class="text-sm text-text-mid mt-5">
+          No change at {label} for: {listJoin(unchanged.map((v) => lower(v.title)))}.
+        </p>
+      )}
     </div>
   </section>
 
@@ -202,5 +218,5 @@ const crumbs = [
   </section>
 
   <CtaBand title={`It's never exactly ${label} for the whole ride`} />
-  <SiteFooter />
+  <SiteFooter slot="footer" />
 </Base>

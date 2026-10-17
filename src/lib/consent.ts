@@ -29,12 +29,13 @@ export function getConsent(): ConsentStatus | null {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return null
     const rec = JSON.parse(raw) as ConsentRecord
-    if (rec.v !== CONSENT_VERSION || Date.now() - rec.ts > MAX_AGE_MS) return null
-    return rec.status === 'accepted' || rec.status === 'declined' ? rec.status : null
-  } catch {
-    // Unreadable storage or a pre-v2 plain string value → ask again
-    return null
-  }
+    if (rec.v === CONSENT_VERSION && Date.now() - rec.ts <= MAX_AGE_MS
+      && (rec.status === 'accepted' || rec.status === 'declined')) return rec.status
+  } catch { /* unreadable storage or a pre-v2 plain string value: treat as expired */ }
+  // Expired or outdated choice: consent has ended, so the GA cookies go too, until asked again
+  try { localStorage.removeItem(STORAGE_KEY) } catch { /* storage blocked */ }
+  removeAnalyticsCookies()
+  return null
 }
 
 export function setConsent(status: ConsentStatus) {
@@ -81,7 +82,10 @@ export function loadAnalytics() {
 function disableAnalytics() {
   window[`ga-disable-${GA_ID}`] = true
   window.gtag?.('consent', 'update', { analytics_storage: 'denied' })
+  removeAnalyticsCookies()
+}
 
+function removeAnalyticsCookies() {
   // GA sets its cookies on the highest domain the browser allows (e.g. .kitcheck.cc, or
   // .kitcheck.pages.dev on previews), so try every parent domain; invalid ones are ignored
   const labels = location.hostname.split('.')

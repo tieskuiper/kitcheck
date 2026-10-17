@@ -77,7 +77,7 @@ export interface Variation {
 const VARIATIONS: { key: string; title: string; detail: string; overrides: Partial<RiderInput> }[] = [
   { key: 'race', title: 'Riding hard or racing', detail: 'Race pace or a fast group ride', overrides: { intensity: 'race' } },
   { key: 'easy', title: 'Easy or recovery pace', detail: 'Coffee ride, recovery spin', overrides: { intensity: 'easy' } },
-  { key: 'wind', title: 'Strong wind', detail: '30 km/h (19 mph) or more', overrides: { windspeed: 30 } },
+  { key: 'wind', title: 'Strong wind', detail: '35 km/h, 22 mph', overrides: { windspeed: 35 } },
   { key: 'rain', title: 'Rain likely', detail: '60% chance or higher', overrides: { precipProb: 80 } },
   { key: 'cold', title: 'You always run cold', detail: 'Warmth tendency: always cold', overrides: { warmthBias: -2 } },
   { key: 'warm', title: 'You always run warm', detail: 'Warmth tendency: always warm', overrides: { warmthBias: 2 } },
@@ -91,7 +91,7 @@ export function kitChanges(base: KitResult, kit: KitResult): Variation['changes'
     .filter(z => signature(kit[z].items) !== signature(base[z].items))
     .map(z => {
       const items = kit[z].items.filter(i => i.name !== 'Helmet')
-      return { zone: z, items: items.length ? items : [{ name: 'Just your helmet' }] }
+      return { zone: z, items: items.length ? items : [{ name: 'Helmet only' }] }
     })
 }
 
@@ -114,11 +114,13 @@ export function listJoin(parts: string[], and = 'and'): string {
 
 /** Required and optional items over all zones, without the helmet — for sentences and FAQ answers */
 export function kitSummary(kit: KitResult, zones: readonly Zone[] = ZONES) {
+  // "Fingerless gloves or no gloves" isn't something you have to wear: in sentences it's an optional pair
+  const noGloves = (name: string) => /no gloves/i.test(name)
   const all = zones.flatMap(z => kit[z].items).filter(i => i.name !== 'Helmet')
   return {
-    required: all.filter(i => !i.optional).map((i, n) => n === 0 ? i.name : lowerFirst(i.name)),
-    // "Fingerless gloves or no gloves" as an option just means fingerless gloves
-    optional: all.filter(i => i.optional).map(i => lowerFirst(i.name.replace(/ or no gloves$/, ''))),
+    required: all.filter(i => !i.optional && !noGloves(i.name)).map((i, n) => n === 0 ? i.name : lowerFirst(i.name)),
+    optional: all.filter(i => i.optional || noGloves(i.name))
+      .map(i => noGloves(i.name) ? 'fingerless gloves' : lowerFirst(i.name)),
   }
 }
 

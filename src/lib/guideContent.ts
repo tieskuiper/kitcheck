@@ -123,11 +123,11 @@ export const KIT_ITEM_PAGES: KitItemPage[] = [
     ],
     tips: [
       'Put overshoes on before you leave, and wear them all ride. Nobody wants to stop and pull them on halfway, and you only have one pair with you.',
-      'In the rain, light rain overshoes keep your shoes dry even when it is warm. That counts double on a multi-day trip.',
+      'In mild rain, light rain overshoes keep your shoes and socks dry. That counts double on a multi-day trip.',
       'Thermal socks inside the shoe plus overshoes outside is warmer than very thick socks in a tight shoe.',
     ],
     faq: [
-      { q: 'Toe covers or full overshoes?', a: 'Toe covers for cool, dry rides where only your toes get cold. Full overshoes when it is cold or wet. kitcheck.cc lists toe covers as optional on the warm edge of the range and full overshoes below it.' },
+      { q: 'Toe covers or full overshoes?', a: 'Toe covers for cool, dry rides where only your toes get cold; full thermal or waterproof overshoes when it is cold or wet. kitcheck.cc lists toe covers as optional on the warm edge of the range, light overshoes or toe covers below that, and thermal overshoes from about 6°C (43°F) down.' },
       { q: 'Do I need overshoes when I ride hard?', a: 'Usually yes. Effort warms your body, but your feet benefit only a little, so the overshoe range shifts much less with intensity than the range for jackets or arm warmers.' },
     ],
   },
@@ -227,7 +227,7 @@ export const CONDITION_PAGES: ConditionPage[] = [
     },
     faq: [
       { q: 'Do I need a waterproof jacket or is a packable one enough?', a: 'A waterproof jacket when it is cold, a packable rain jacket when it is mild, and optional when it is warm. The table on this page shows the switch points for a moderate pace.' },
-      { q: 'How do I keep my feet dry cycling in the rain?', a: 'Waterproof overshoes over your shoes, and mudguards on the bike. In warm rain, thin rain overshoes are enough. Nothing keeps feet dry for hours in heavy rain, so in the cold add thermal socks: warm and wet is better than cold and wet.' },
+      { q: 'How do I keep my feet dry cycling in the rain?', a: 'Waterproof overshoes over your shoes, and mudguards on the bike. In mild rain, thin rain overshoes are enough; in warm rain most riders accept wet feet. Nothing keeps feet dry for hours in heavy rain, so in the cold add thermal socks: warm and wet is better than cold and wet.' },
       { q: 'Should I ride in the rain at all?', a: 'In warm rain, there is little reason not to. In cold rain, keep the ride shorter and closer to home, and be careful on painted lines, metal covers and the first wet minutes after a dry spell, when roads are slippery.' },
     ],
     related: ['when-to-wear-overshoes-cycling', 'when-to-wear-winter-cycling-gloves'],
@@ -240,7 +240,7 @@ export const CONDITION_PAGES: ConditionPage[] = [
     facts: [
       { value: '25 km/h', text: '16 mph: from here a wind gilet is suggested' },
       { value: 'GPX', text: 'routes: wind is judged against your riding direction' },
-      { value: '1 step', text: 'warmer kit in strong wind, in the cool range' },
+      { value: '35 km/h', text: '22 mph wind feels a few degrees colder on the bike: kit near a switch point goes a step warmer' },
     ],
     title: 'What to wear cycling in the wind',
     metaTitle: 'What to Wear Cycling in Strong Wind | kitcheck.cc',
@@ -250,7 +250,7 @@ export const CONDITION_PAGES: ConditionPage[] = [
       {
         heading: 'What changes in the wind',
         body: [
-          "kitcheck.cc uses the forecast's feels-like temperature and then adds a small extra penalty for strong wind, for the airflow of riding into it. In practice that means one step warmer kit in the cool range, and a wind gilet as an option when the wind is strong.",
+          "kitcheck.cc uses the forecast's feels-like temperature and then adds a small extra penalty for strong wind, for the airflow of riding into it. In practice it feels a few degrees colder: kit close to a switch point goes a step warmer, and a wind gilet becomes an option when the wind is strong.",
           'With a GPX route, the calculator goes further: it compares the wind direction with your riding direction along the route. A headwind counts fully, a tailwind barely, and the longest headwind stretch shows up in the notes.',
         ],
       },
@@ -274,7 +274,7 @@ export const CONDITION_PAGES: ConditionPage[] = [
       overrides: { windspeed: 35 },
     },
     faq: [
-      { q: 'How much colder does wind make a bike ride feel?', a: "It depends on the temperature and wind speed, and the forecast's feels-like temperature already accounts for most of it. On the bike, riding into a strong headwind adds a few degrees on top. On a windy day, plan for kit one step warmer than the plain temperature suggests." },
+      { q: 'How much colder does wind make a bike ride feel?', a: "It depends on the temperature and wind speed, and the forecast's feels-like temperature already accounts for most of it. On the bike, riding into a strong headwind adds a few degrees on top. On a windy day, if you are between two kit choices, take the warmer one." },
       { q: 'Gilet or rain jacket?', a: 'A gilet for wind, a rain jacket for rain. A gilet is not waterproof and does nothing for your arms in the rain. If showers are possible, a packable rain jacket in your pocket does both jobs, just less breathably.' },
       { q: 'Should I ride into the wind first?', a: 'Yes, if you can. Start into the wind and finish with it behind you, so you are not fighting a headwind when you are tired and riding slower.' },
     ],
@@ -286,7 +286,7 @@ export const CONDITION_PAGES: ConditionPage[] = [
     icon: 'snow',
     teaser: 'Layering, gloves and overshoes from 8°C (46°F) down to freezing.',
     facts: [
-      { value: '3 layers', text: 'base layer, winter jersey, windproof or insulated jacket' },
+      { value: '3 layers', text: 'below freezing: base layer, winter jersey and an insulated jacket' },
       { value: '8°C', text: '46°F: below this, bib tights at a moderate pace' },
       { value: '1 pair', text: 'gloves and overshoes for the whole ride: start with the warmer pair' },
     ],
@@ -298,14 +298,14 @@ export const CONDITION_PAGES: ConditionPage[] = [
       {
         heading: 'Layering your upper body',
         body: [
-          'Three layers is the classic winter setup: a thermal base layer that moves sweat away from your skin, a winter jersey for insulation, and a windproof outer layer. In the coldest conditions that outer layer is an insulated jacket; when it is a bit milder, a softshell can replace both jersey and jacket.',
+          'Below freezing, three layers is the classic setup: a thermal base layer that moves sweat away from your skin, a winter jersey for insulation, and an insulated jacket on top. When it is a bit milder, two layers do it: a thermal base layer under a winter jersey or a softshell.',
           'Do not overdress. If you are warm when you walk out of the door, you will be sweating ten minutes into the ride, and wet layers get cold on the first descent.',
         ],
       },
       {
         heading: 'Hands, feet and head',
         body: [
-          'Effort warms your body, but your hands and feet barely benefit from it. That is why kitcheck.cc chooses gloves and overshoes a step warmer than the body layers, especially when you ride hard.',
+          'Effort warms your body, but your hands and feet barely benefit from it. That is why, when you ride hard or run warm, kitcheck.cc lightens your body layers but keeps the gloves and overshoes warm.',
           'A thermal skull cap or cycling cap under your helmet covers your ears and forehead. Gloves and overshoes go on before you leave and stay on: if the ride gets colder later, start with the warmer pair.',
         ],
       },
@@ -323,9 +323,9 @@ export const CONDITION_PAGES: ConditionPage[] = [
       overrides: {},
     },
     faq: [
-      { q: 'What should I wear cycling at freezing temperatures?', a: 'A thermal skull cap, thermal base layer, winter jersey and insulated or windproof jacket, waterproof or thermal winter gloves, thermal bib tights, and full overshoes over thermal socks. The table on this page shows the full kit per temperature.' },
+      { q: 'What should I wear cycling below freezing?', a: 'Below 0°C (32°F) at a moderate pace: a thermal skull cap, a thermal long-sleeve base layer, a winter jersey and an insulated jacket, waterproof winter gloves, thermal bib tights, and waterproof winter overshoes over thermal socks. At around 0°C a cycling cap, a thermal base layer under a winter jersey or softshell and thermal gloves and overshoes are enough. The table on this page shows the full kit per temperature.' },
       { q: 'How do I keep my hands and feet warm cycling in winter?', a: 'Choose gloves and overshoes for the coldest part of the ride and put them on before you leave. Thin liner gloves and thermal socks add warmth without making things tight; tight shoes and gloves cut off circulation and make it worse.' },
-      { q: 'How many layers should I wear cycling in winter?', a: 'Usually three on your upper body: a base layer, a winter jersey and a windproof or insulated jacket. In milder winter weather, two layers (a thermal base layer under a softshell or winter jersey) are enough.' },
+      { q: 'How many layers should I wear cycling in winter?', a: 'Below freezing, three on your upper body: a thermal base layer, a winter jersey and an insulated jacket. In milder winter weather, two layers (a thermal base layer under a winter jersey or softshell) are enough.' },
     ],
     related: ['bib-tights-or-bib-shorts', 'when-to-wear-winter-cycling-gloves', 'when-to-wear-overshoes-cycling', 'when-to-wear-a-base-layer-cycling'],
   },

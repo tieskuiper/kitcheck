@@ -26,7 +26,7 @@ const { rows, caption, zones = ZONES, firstColumn = "Feels like" } = Astro.props
       {rows.map((r, ri) => (
         <tr class="align-top">
           <th scope="row" class={`text-left font-head font-semibold text-text px-4 py-3 whitespace-nowrap ${ri < rows.length - 1 ? "border-b border-border" : ""}`}>
-            {r.href ? <a href={r.href} class="hover:text-coral transition-colors">{r.label}</a> : r.label}
+            {r.href ? <a href={r.href} aria-label={`What to wear cycling at ${r.label}`} class="hover:text-coral transition-colors">{r.label}</a> : r.label}
             {r.sublabel && <span class="block text-xs font-normal text-text-light">{r.sublabel}</span>}
           </th>
           {zones.map((z) => {

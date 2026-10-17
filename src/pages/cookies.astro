@@ -9,7 +9,7 @@ import SiteFooter from "../components/SiteFooter.astro";
   description="Cookie policy for kitcheck.cc. What cookies and storage we use, and why."
   canonical="https://kitcheck.cc/cookies/"
 >
-  <SiteHeader>
+  <SiteHeader slot="header">
     <a href="/" class="btn-primary">Use the calculator</a>
   </SiteHeader>
 
@@ -127,7 +127,7 @@ import SiteFooter from "../components/SiteFooter.astro";
     </div>
   </section>
 
-  <SiteFooter />
+  <SiteFooter slot="footer" />
 
   <script>
     import { getConsent } from '../lib/consent'

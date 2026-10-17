@@ -11,7 +11,7 @@ import FaqList from "../components/guide/FaqList.astro";
 import { faqNode } from "../lib/site";
 
 // Quick reference for the homepage: the answer people (and AI tools) look for, in plain text
-const QUICK_TEMPS = [0, 5, 10, 15, 20, 25];
+const QUICK_TEMPS = [-5, 0, 5, 10, 15, 20, 25];
 const lowerFirst = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
 
 // The questions people ask search engines and AI tools before a ride, answered in plain text
@@ -47,7 +47,7 @@ const faq = [
   schema={[faqNode(faq)]}
 >
   <!-- HEADER -->
-  <SiteHeader>
+  <SiteHeader slot="header">
     <div
       class="flex rounded-lg border border-border overflow-hidden"
       style="font-family:var(--font-head); font-size:13px; font-weight:600; line-height:1"
@@ -110,7 +110,7 @@ const faq = [
               <dt class="flex items-start gap-2">
                 <span class="mt-2 size-2 rounded-full shrink-0" style={`background:${TIER_ACCENT[conditionsAt(c).label]}`} aria-hidden="true"></span>
                 <span>
-                  <a href={pathFor(c)} class="font-head font-bold text-text hover:text-coral transition-colors">{c}°C</a>
+                  <a href={pathFor(c)} aria-label={`What to wear cycling at ${c}°C`} class="font-head font-bold text-text hover:text-coral transition-colors">{c}°C</a>
                   <span class="block text-xs text-text-light">{toF(c)}°F</span>
                 </span>
               </dt>
@@ -125,7 +125,7 @@ const faq = [
   <FaqList faq={faq} lead="What riders want to know before using kitcheck.cc, and before every ride." />
 
   <!-- FOOTER -->
-  <SiteFooter />
+  <SiteFooter slot="footer" />
 
   <script>
     import { preferredUnit } from "../lib/units";

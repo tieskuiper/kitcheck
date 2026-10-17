@@ -10,7 +10,7 @@ import SiteFooter from "../components/SiteFooter.astro";
   noindex
 >
 
-  <SiteHeader />
+  <SiteHeader slot="header" />
 
   <section class="bg-bg min-h-dvh flex items-center">
     <div class="container">
@@ -33,5 +33,5 @@ import SiteFooter from "../components/SiteFooter.astro";
     </div>
   </section>
 
-  <SiteFooter />
+  <SiteFooter slot="footer" />
 </Base>

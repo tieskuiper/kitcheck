@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- Pre-launch review fixes: copy corrected where it contradicted the kit logic (gilet range, wind "one step warmer", winter layers and freezing kit, rain/leg thresholds, effort 4–8°C, overshoes and rain overshoes); FAQ answers on temperature pages are full sentences that name the temperature; "no gloves" no longer listed as required; unchanged variations collapsed into one line; ranges read "below 8°C" and "-2 to 5°C"
+- Route "rain likely" note now uses the same 60% threshold as the rain kit (was 50%); strong-wind variation uses 35 km/h like the wind table
+- Light grey text darkened to #72716D for WCAG AA contrast (was 2.6:1)
+- Header and footer moved out of `<main>`; icon-only search/clear buttons got accessible names
+- MapLibre stylesheet loads only when a map is shown (was in every homepage `<head>`); headline font preloaded; share image resized to 1200×630; 512px PNG logo for structured data and apple-touch-icon
+- Structured data: brand description and alternate names, logo as ImageObject, per-page publish dates; About H1 names the brand; consistent breadcrumb names
+- Security/privacy: HSTS includeSubDomains, CSP frame-ancestors/form-action/upgrade-insecure-requests, stricter Permissions-Policy, UTF-8 for llms files; GA cookies removed when consent expires; privacy policy lists all analytics events; GPX points with invalid numbers rejected
 - Fix: the 404 page had both an index and a noindex robots tag and a canonical pointing at the homepage
 - Kit card shows "Feels like X°C on the bike" instead of a 0–110 score; condition labels now use the same bands as the kit
 - Gloves and overshoes are chosen for the whole ride (nobody carries a second pair): the warmest pair needed, with a note if that's because of later cold or rain

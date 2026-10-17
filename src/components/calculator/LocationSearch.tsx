@@ -21,7 +21,7 @@ function OptionTile({ icon: Icon, confirmed, busy, title, busyTitle, subtitle, c
           <div className="font-head text-[12px] font-bold text-green-700 leading-[1.2]">{confirmedTitle}</div>
           <div className="text-[11px] text-green-700/70 mt-[2px]">{confirmedSubtitle}</div>
         </div>
-        <button onClick={onReset} className="absolute top-1/2 -translate-y-1/2 right-2 sm:right-3 cursor-pointer text-text-light hover:text-text transition-colors flex items-center">
+        <button type="button" onClick={onReset} aria-label="Clear location" className="absolute top-1/2 -translate-y-1/2 right-2 sm:right-3 cursor-pointer text-text-light hover:text-text transition-colors flex items-center">
           <IconCrossLarge size={13} className="shrink-0" />
         </button>
       </div>
@@ -75,13 +75,13 @@ export default function LocationSearch({
             data-form-type="other"
           />
           {query && (
-            <button onClick={onReset} className="cursor-pointer text-text-light">
+            <button type="button" onClick={onReset} aria-label="Clear search" className="cursor-pointer text-text-light">
               <IconCrossLarge size={14} className="shrink-0" />
             </button>
           )}
         </div>
         {/* Search */}
-        <button onClick={onSearch} disabled={loading || !query.trim()}
+        <button type="button" onClick={onSearch} disabled={loading || !query.trim()} aria-label="Search location"
           className="shrink-0 px-3 sm:px-4 bg-coral text-white border-none rounded-[10px] font-head text-[14px] font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:opacity-90">
           {loading ? (
             <IconLoadingCircle size={16} className="text-white animate-spin-slow" />

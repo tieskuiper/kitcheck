@@ -50,7 +50,7 @@ const others = CONDITION_PAGES.filter((p) => p.slug !== page.slug);
     faqNode(page.faq),
   ]}
 >
-  <SiteHeader>
+  <SiteHeader slot="header">
     <a href="/" class="btn-primary max-sm:hidden">Use the calculator</a>
   </SiteHeader>
 
@@ -149,5 +149,5 @@ const others = CONDITION_PAGES.filter((p) => p.slug !== page.slug);
   </section>
 
   <CtaBand />
-  <SiteFooter />
+  <SiteFooter slot="footer" />
 </Base>

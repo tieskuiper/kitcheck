@@ -8,7 +8,9 @@ import "@fontsource/dm-sans/500.css";
 import "@fontsource/dm-sans/400-italic.css";
 import "../styles/global.css";
 import CookieBanner from "../components/CookieBanner.astro";
-import { SITE_URL, siteGraph, CONTENT_PUBLISHED, CONTENT_UPDATED } from "../lib/site";
+// The headline weight: preloaded so the H1 (the largest element on most pages) renders in the right font straight away
+import headingFont from "@fontsource/space-grotesk/files/space-grotesk-latin-700-normal.woff2?url";
+import { SITE_URL, siteGraph, CONTENT_UPDATED } from "../lib/site";
 
 interface Props {
   title?: string;
@@ -23,6 +25,8 @@ interface Props {
   alternates?: { lang: string; href: string }[];
   /** Guide articles: og:type article with publish/modify dates */
   article?: boolean;
+  /** Publish date for article:published_time (defaults to CONTENT_UPDATED, i.e. new pages) */
+  published?: string;
   /** Keep out of search results (404) */
   noindex?: boolean;
 }
@@ -35,6 +39,7 @@ const {
   lang = "en",
   alternates = [],
   article = false,
+  published = CONTENT_UPDATED,
   noindex = false,
 } = Astro.props;
 const appNode = {
@@ -74,7 +79,7 @@ const jsonLd = {
     <meta name="description" content={description} />
     {!noindex && <link rel="canonical" href={canonical} />}
     <meta property="og:type" content={article ? "article" : "website"} />
-    {article && <meta property="article:published_time" content={CONTENT_PUBLISHED} />}
+    {article && <meta property="article:published_time" content={published} />}
     {article && <meta property="article:modified_time" content={CONTENT_UPDATED} />}
     <meta property="og:url" content={canonical} />
     <meta property="og:title" content={title} />
@@ -92,6 +97,8 @@ const jsonLd = {
     <meta name="twitter:image" content="https://kitcheck.cc/og.png" />
     <meta name="robots" content={noindex ? "noindex, follow" : "index, follow, max-snippet:-1, max-image-preview:large"} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/logo.png" />
+    <link rel="preload" href={headingFont} as="font" type="font/woff2" crossorigin />
     {
       alternates.length > 0 && [
         ...alternates.map((a) => <link rel="alternate" hreflang={a.lang} href={a.href} />),
@@ -104,9 +111,11 @@ const jsonLd = {
     <!-- Google Analytics loads only after consent: see lib/consent.ts + CookieBanner -->
   </head>
   <body class="bg-bg text-text min-h-screen flex flex-col">
-    <main>
+    <slot name="header" />
+    <main class="flex-1">
       <slot />
     </main>
+    <slot name="footer" />
     <CookieBanner />
   </body>
 </html>
