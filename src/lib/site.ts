@@ -11,7 +11,7 @@ export const AUTHOR = {
 }
 
 /** Bump when guide content changes: used as dateModified in Article structured data */
-export const CONTENT_UPDATED = '2026-10-13'
+export const CONTENT_UPDATED = '2026-10-17'
 export const CONTENT_PUBLISHED = '2026-10-12'
 
 export const abs = (path: string) => `${SITE_URL}${path}`

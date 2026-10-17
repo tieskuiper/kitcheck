@@ -52,6 +52,22 @@ const faq = [
   description="What to wear cycling at every temperature, from -5°C (23°F) to 25°C (77°F). Kit lists per temperature, an interactive chart, and kit for rain, wind and winter."
   canonical="https://kitcheck.cc/guide/"
   schema={[
+    {
+      "@type": "CollectionPage",
+      "@id": `${abs("/guide/")}#page`,
+      url: abs("/guide/"),
+      name: "What to wear cycling at any temperature",
+      isPartOf: { "@id": `${abs("/")}#website` },
+      mainEntity: {
+        "@type": "ItemList",
+        itemListElement: [
+          { url: abs("/guide/cycling-temperature-chart/"), name: "Cycling clothing temperature chart" },
+          ...TEMP_PAGES.map((p) => ({ url: abs(pathFor(p.tempC)), name: `What to wear cycling at ${p.tempC}°C (${toF(p.tempC)}°F)` })),
+          ...KIT_ITEM_PAGES.map((p) => ({ url: abs(`/guide/${p.slug}/`), name: p.title })),
+          ...CONDITION_PAGES.map((p) => ({ url: abs(`/guide/${p.slug}/`), name: p.title })),
+        ].map((it, i) => ({ "@type": "ListItem", position: i + 1, ...it })),
+      },
+    },
     faqNode(faq),
     breadcrumbNode([
       { name: "kitcheck.cc", url: abs("/") },

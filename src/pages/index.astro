@@ -6,16 +6,44 @@ import SiteFooter from "../components/SiteFooter.astro";
 import TeamBanner from "../components/TeamBanner.astro";
 import { toF, pathFor, kitAt, kitSentence, conditionsAt } from "../lib/guideData";
 import { TIER_ACCENT } from "../components/calculator/constants";
+import FaqList from "../components/guide/FaqList.astro";
+import { faqNode } from "../lib/site";
 
 // Quick reference for the homepage: the answer people (and AI tools) look for, in plain text
 const QUICK_TEMPS = [0, 5, 10, 15, 20, 25];
+const lowerFirst = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
+
+// The questions people ask search engines and AI tools before a ride, answered in plain text
+const faq = [
+  {
+    q: "What should I wear cycling today?",
+    a: `It depends on the feels-like temperature, wind, rain and how hard you ride. Enter your location above and kitcheck.cc reads the hourly forecast for your ride and gives you a kit list for head, upper body, hands, legs and feet. At a moderate pace in dry weather, as a rule of thumb: at 5°C (41°F): ${lowerFirst(kitSentence(kitAt(5)))} At 15°C (59°F): ${lowerFirst(kitSentence(kitAt(15)))}`,
+  },
+  {
+    q: "Is there an app that tells me what to wear cycling?",
+    a: "kitcheck.cc works in the browser on your phone or computer: free, with no app to install, no account and no ads. It uses the live forecast for your location or GPX route, and the advice is brand-neutral: it never recommends products.",
+  },
+  {
+    q: "Does it work in Fahrenheit?",
+    a: "Yes. Switch between °C and °F at the top of the page; wind and distances follow (mph and miles). Visitors in the US start in °F automatically.",
+  },
+  {
+    q: "Can I use my route?",
+    a: "Yes. Upload a GPX file and kitcheck.cc takes the forecast at points along the route for the time you will pass them, at the right altitude. It judges the wind against your direction and flags long descents and the coldest point of the ride. The file never leaves your browser.",
+  },
+  {
+    q: "How accurate is the kit advice?",
+    a: "It is a well-informed starting point based on the forecast's feels-like temperature, your effort and how warm you run. Forecasts can be wrong and people differ, so set your warmth tendency once if the advice runs too warm or too cold for you. How it works explains every step.",
+  },
+];
 ---
 
 <Base
-  title="Cycling Kit Calculator: What to Wear for Your Ride Today | kitcheck.cc"
-  description="Free cycling kit calculator. Get a kit list for your ride based on the real forecast (temperature, wind and rain) and how hard you're riding."
+  title="What to Wear Cycling Today: Free Kit Calculator | kitcheck.cc"
+  description="What should you wear on the bike today? Free cycling kit calculator: a kit list from the real forecast, adjusted for your effort. No app needed."
   canonical="https://kitcheck.cc/"
   appSchema
+  schema={[faqNode(faq)]}
 >
   <!-- HEADER -->
   <SiteHeader>
@@ -47,6 +75,7 @@ const QUICK_TEMPS = [0, 5, 10, 15, 20, 25];
         </h1>
         <p class="text-text-mid leading-[1.75] max-w-sm mx-auto">
           Search your city, set your effort level and get a full kit list in seconds.
+          Free, no app, no account.
         </p>
       </div>
     </div>
@@ -95,6 +124,8 @@ const QUICK_TEMPS = [0, 5, 10, 15, 20, 25];
       </div>
     </div>
   </section>
+
+  <FaqList faq={faq} />
 
   <!-- FOOTER -->
   <SiteFooter />

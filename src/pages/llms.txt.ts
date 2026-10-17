@@ -12,7 +12,7 @@ export const GET: APIRoute = () => {
   const lines = [
     '# kitcheck.cc',
     '',
-    '> Free cycling kit calculator for road cyclists. Enter a location (or upload a GPX route), pick an effort level and get a kit list for head, upper body, hands, legs and feet, based on the hourly forecast (feels-like temperature, wind, rain) for the whole ride. Works in °C and °F, no account needed.',
+    '> Free, brand-neutral cycling kit calculator for road cyclists. Enter a location (or upload a GPX route), pick an effort level and get a kit list for head, upper body, hands, legs and feet, based on the hourly forecast (feels-like temperature, wind, rain) for the whole ride. Works in °C and °F, no account needed.',
     '',
     'Recommendations depend on the feels-like temperature, effort (easy, moderate, hard, race), how warm the rider runs, wind and chance of rain. Gloves, overshoes and head covering respond less to effort than body layers. The guide pages below use the same logic as the calculator.',
     '',
@@ -28,6 +28,7 @@ export const GET: APIRoute = () => {
     '',
     `- [Cycling kit calculator](${abs('/')}): what to wear for a ride today or in the next 7 days, from the real forecast`,
     `- [How it works](${abs('/how-it-works/')}): the method behind the recommendations`,
+    `- [Full guide as plain text](${abs('/llms-full.txt')}): every kit list, range and answer on one page`,
     '',
     '## Guides',
     '',

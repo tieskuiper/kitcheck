@@ -4,6 +4,7 @@
  * aside (named slot "aside") that sits next to the text on desktop.
  */
 import Breadcrumb from "../guide/Breadcrumb.astro";
+import { AUTHOR, CONTENT_UPDATED } from "../../lib/site";
 
 interface Props {
   title: string;
@@ -11,8 +12,11 @@ interface Props {
   lead?: string;
   crumbs?: { name: string; href?: string }[];
   align?: "left" | "center";
+  /** Author and last-updated line, for articles (trust and freshness signals) */
+  byline?: boolean;
 }
-const { title, eyebrow, lead, crumbs, align = "left" } = Astro.props;
+const { title, eyebrow, lead, crumbs, align = "left", byline = false } = Astro.props;
+const updated = new Date(CONTENT_UPDATED).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 const hasAside = Astro.slots.has("aside");
 const center = align === "center";
 ---
@@ -27,6 +31,11 @@ const center = align === "center";
           <Fragment set:html={title} />
         </h1>
         {lead && <p class={`text-lg text-text-mid leading-relaxed mt-5 ${center ? "max-w-xl mx-auto" : ""}`}>{lead}</p>}
+        {byline && (
+          <p class={`text-[13px] text-text-light mt-4 ${center ? "text-center" : ""}`}>
+            By <a href={AUTHOR.url} rel="author" class="text-text-mid hover:text-text">{AUTHOR.name}</a> · Updated <time datetime={CONTENT_UPDATED}>{updated}</time>
+          </p>
+        )}
         {Astro.slots.has("default") && (
           <div class={`flex flex-wrap gap-3 mt-7 ${center ? "justify-center" : ""}`}><slot /></div>
         )}

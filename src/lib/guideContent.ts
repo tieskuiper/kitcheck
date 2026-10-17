@@ -66,7 +66,7 @@ export const KIT_ITEM_PAGES: KitItemPage[] = [
     match: n => n.toLowerCase().includes('bib tights'),
     extra: { label: 'Leg warmers', name: 'leg warmers', plural: true, match: n => n === 'Leg warmers' },
     title: 'Bib tights, leg warmers or bib shorts?',
-    metaTitle: 'Bib Tights or Bib Shorts? The Temperature to Switch | kitcheck.cc',
+    metaTitle: 'Bib Tights or Bib Shorts? When to Switch | kitcheck.cc',
     description: 'At what temperature should you wear bib tights, bib shorts with leg warmers, or just bib shorts? Switch points in °C and °F per effort level.',
     intro: [
       "Your legs go through three steps as it gets colder: bib shorts, then bib shorts with leg warmers, then bib tights. Leg warmers are the flexible middle step: full coverage on a cool morning, and you can take them off if it warms up, as long as you can get them over your shoes.",
@@ -91,7 +91,7 @@ export const KIT_ITEM_PAGES: KitItemPage[] = [
     plural: false,
     match: n => n.toLowerCase().includes('base layer'),
     title: 'When to wear a base layer cycling',
-    metaTitle: 'When to Wear a Base Layer Cycling (Temperature Guide) | kitcheck.cc',
+    metaTitle: 'When to Wear a Base Layer Cycling | kitcheck.cc',
     description: 'At what temperature do you need a base layer on the bike? Ranges in °C and °F per effort level, and when a thermal base layer makes sense.',
     intro: [
       "A base layer does two jobs: it keeps a thin layer of warm air against your skin, and it moves sweat away from you so you don't get cold when you slow down. That second job is why many riders wear a thin base layer all year, even under a summer jersey.",
@@ -115,7 +115,7 @@ export const KIT_ITEM_PAGES: KitItemPage[] = [
     plural: true,
     match: n => /overshoes|toe covers/i.test(n),
     title: 'When to wear overshoes cycling',
-    metaTitle: 'When to Wear Overshoes Cycling (Temperature Guide) | kitcheck.cc',
+    metaTitle: 'When to Wear Overshoes Cycling | kitcheck.cc',
     description: 'At what temperature do you need overshoes or toe covers on the bike? Ranges in °C and °F, and which kind of overshoe for which conditions.',
     intro: [
       'Cycling shoes are built to let air through, which is great in summer and terrible in the cold. Your feet barely move, sit right in the wind and warm up much less from effort than your body does. That makes overshoes one of the most important pieces of cold-weather kit.',
@@ -139,7 +139,7 @@ export const KIT_ITEM_PAGES: KitItemPage[] = [
     plural: true,
     match: n => /winter gloves/i.test(n),
     title: 'When to wear winter cycling gloves',
-    metaTitle: 'When to Wear Winter Cycling Gloves (Temperature Guide) | kitcheck.cc',
+    metaTitle: 'When to Wear Winter Cycling Gloves | kitcheck.cc',
     description: 'At what temperature do you need thermal or waterproof winter gloves on the bike? Ranges in °C and °F per effort level.',
     intro: [
       "Hands are the first thing to go numb on a cold ride. They're in the wind the whole time, you barely move them, and riding hard barely warms them. Cold fingers also make braking and shifting harder, which is a safety problem, not just a comfort one.",
@@ -189,7 +189,7 @@ export const CONDITION_PAGES: ConditionPage[] = [
       { value: '15°C', text: '59°F: below this at a moderate pace, a proper waterproof jacket' },
     ],
     title: 'What to wear cycling in the rain',
-    metaTitle: 'What to Wear Cycling in the Rain (by Temperature) | kitcheck.cc',
+    metaTitle: 'What to Wear Cycling in the Rain | kitcheck.cc',
     description: 'Rain kit for road cycling, scaled to the temperature: when you need a waterproof jacket, gloves and overshoes, and when a packable jacket is enough.',
     intro: "How much rain kit you need depends mostly on the temperature. Cold rain is the most dangerous weather for a road cyclist: wet hands and feet go numb fast, and a soaked jersey keeps cooling you down. Warm rain is mostly a nuisance. So the question isn't just \"will it rain?\" but \"how cold will it be when I'm wet?\"",
     sections: [
@@ -291,7 +291,7 @@ export const CONDITION_PAGES: ConditionPage[] = [
       { value: '1 pair', text: 'gloves and overshoes for the whole ride: start with the warmer pair' },
     ],
     title: 'Winter cycling clothing: what to wear in the cold',
-    metaTitle: 'Winter Cycling Clothing: What to Wear in the Cold | kitcheck.cc',
+    metaTitle: 'Winter Cycling Clothing: What to Wear | kitcheck.cc',
     description: 'What to wear for road cycling in winter, from 8°C (46°F) down to freezing and below: layers, gloves, overshoes and what changes with effort.',
     intro: 'Winter riding is all about layers and extremities. Your body stays warm if you dress it right and keep moving; your hands, feet and ears are what decide how long you can stay out. Here is what to wear from the cool end of winter down to freezing.',
     sections: [

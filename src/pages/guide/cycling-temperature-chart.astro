@@ -60,6 +60,7 @@ const crumbs = [
   title="Cycling Clothing Temperature Chart (°C and °F) | kitcheck.cc"
   description={description}
   canonical={canonical}
+  article
   schema={[
     articleNode({ url: canonical, headline: title, description, lang: "en" }),
     breadcrumbNode(crumbs),
@@ -71,6 +72,7 @@ const crumbs = [
   </SiteHeader>
 
   <PageHero
+    byline
     align="center"
     eyebrow="Interactive chart"
     title="Cycling clothing <span class='text-coral'>temperature chart</span>"

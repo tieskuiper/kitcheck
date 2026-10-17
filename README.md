@@ -119,7 +119,10 @@ The goal: rank in Google and Bing, and be the source AI answers (Gemini/AI Overv
 - **FAQs** are collapsed with the first one open: crawlers read collapsed answers too.
 - **How it works / About:** the method in plain text and who's behind it (trust signals for Google and AI tools).
 - **Every article** starts with a generated "Short answer", ends with FAQs, and has `Article` + `BreadcrumbList` + `FAQPage` structured data in one `@graph` with the site's `WebSite`/`Organization`/`Person` nodes (`src/lib/site.ts`). Bump `CONTENT_UPDATED` there when guide content changes.
-- **`/llms.txt`** is generated at build time: summary, quick reference and links.
+- **`/llms.txt`** (summary, quick reference, links) and **`/llms-full.txt`** (every kit list, range and answer as plain text) are generated at build time.
+- **Positioning in copy and data:** brand-neutral (no products or affiliate links), adjusted for effort and the real forecast, no app or account. This is what sets kitcheck.cc apart from the brand blogs and apps that rank for these searches, so keep it visible.
+- **Freshness and trust:** articles show a byline and "Updated" date and carry `og:type=article` with modified time; the sitemap has `lastmod`. All three come from `CONTENT_UPDATED` in `src/lib/site.ts`: bump it when guide content changes. Legal pages are left out of the sitemap; the 404 is `noindex`.
+- **Temperature pages** also answer the °F question ("…at 50 degrees Fahrenheit?"), compare with the neighbouring temperatures and link to the kit guides for the items in the list.
 - **Adding pages:** temperature → `TEMP_PAGES` in `guideData.ts`; item or condition → `guideContent.ts`. Only add pages where the advice actually differs: near-duplicates (50°F = 10°C, 25 vs 30°C, arm vs knee warmers) were merged on purpose, because thin look-alike pages hurt more than they help.
 - **Changing `kitLogic.ts` thresholds:** generated lists, ranges and answers update automatically, but re-read the hand-written intros (`guideData.ts`), the copy in `guideContent.ts` and the FAQ in `src/pages/guide/index.astro`.
 

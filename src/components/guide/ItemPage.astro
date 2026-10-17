@@ -50,6 +50,7 @@ const related = KIT_ITEM_PAGES.filter((p) => p.slug !== page.slug);
   title={page.metaTitle}
   description={page.description}
   canonical={canonical}
+  article
   schema={[
     articleNode({ url: canonical, headline: page.title, description: page.description, lang: "en" }),
     breadcrumbNode(crumbs),
@@ -61,6 +62,7 @@ const related = KIT_ITEM_PAGES.filter((p) => p.slug !== page.slug);
   </SiteHeader>
 
   <PageHero
+    byline
     eyebrow={`Kit guide · ${CAT_LABELS[page.zone]}`}
     title={page.title}
     lead={page.intro[0]}

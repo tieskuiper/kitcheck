@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- Fix: the 404 page had both an index and a noindex robots tag and a canonical pointing at the homepage
 - Kit card shows "Feels like X°C on the bike" instead of a 0–110 score; condition labels now use the same bands as the kit
 - Gloves and overshoes are chosen for the whole ride (nobody carries a second pair): the warmest pair needed, with a note if that's because of later cold or rain
 - Default GPX speeds raised to road-cycling values: easy 22, moderate 26, hard 30, race 35 km/h on the flat (was 18/23/28/33)
@@ -34,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Privacy policy and cookie policy rewritten to match exactly what the site does
 
 ### Added
+- SEO/GEO pass: homepage title on "what to wear cycling today", "no app" positioning and a homepage FAQ; byline with updated date on articles; `og:type=article` with modified time; `max-snippet`/`max-image-preview` robots directives; sitemap `lastmod` (legal pages excluded); `/llms-full.txt`; guide `CollectionPage` structured data; richer `WebApplication` data; temperature pages compare with neighbouring temperatures, answer the °F question and link to the matching kit guides; sources on How it works; shorter titles and descriptions
 - SEO/GEO: interactive temperature chart page, a -5°C page, kit pages (arm & knee warmers, bib tights/leg warmers, base layer, overshoes, winter gloves) with ranges per effort level, and condition pages (rain, wind, winter)
 - "How it works" and "About" pages; generated `/llms.txt`
 - Generated "Short answer" and FAQs on every guide article; `Article`, `FAQPage`, `BreadcrumbList`, `WebSite`, `Organization` and `Person` structured data in one graph per page; hreflang support in the layout

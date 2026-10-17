@@ -12,9 +12,11 @@ import { TIER_ACCENT } from "../calculator/constants";
 import { IconRacingFlag, IconBlip, IconWind, IconRainy, IconSnowFlakes, IconSun } from "@central-icons-react/round-outlined-radius-3-stroke-2";
 import {
   TEMP_PAGES, ZONE_LABELS, kitAt, conditionsAt, variationsAt,
-  toF, pathFor, kitSentence, listJoin,
+  toF, pathFor, kitSentence, listJoin, kitChanges,
 } from "../../lib/guideData";
 import { abs, articleNode, breadcrumbNode, faqNode } from "../../lib/site";
+import { KIT_ITEM_PAGES } from "../../lib/guideContent";
+import { itemStatus } from "../../lib/kitRanges";
 
 interface Props { tempC: number; intro: string }
 const { tempC: c, intro } = Astro.props;
@@ -51,6 +53,8 @@ const changeText = (v: typeof rain) =>
 // Generated from the same logic as the kit card, so the answers can't drift from the calculator
 const faq = [
   { q: `What should I wear cycling at ${label} (${other})?`, a: `At a moderate pace in light wind and no rain: ${answer}` },
+  // US riders search in Fahrenheit: answer that question in their words too
+  { q: `What to wear cycling at ${toF(c)} degrees Fahrenheit?`, a: `${toF(c)}°F is ${c}°C. At a moderate pace in light wind (6 mph) and no rain: ${answer}` },
   { q: `Do I need gloves cycling at ${label}?`, a: kitSentence(kit, ["hands"]) },
   { q: `Shorts or tights at ${label}?`, a: kitSentence(kit, ["legs"]) },
   ...(changeText(rain) ? [{ q: `What changes if it rains at ${label}?`, a: `With rain likely, change this: ${changeText(rain)}.` }] : []),
@@ -58,6 +62,17 @@ const faq = [
 ];
 
 const siblings = TEMP_PAGES.map((p) => ({ label: `${p.tempC}°C`, sub: `${toF(p.tempC)}°F`, href: pathFor(p.tempC), current: p.tempC === c, tier: conditionsAt(p.tempC).label }));
+
+// Neighbouring temperature pages and what changes towards them: unique, useful content per page
+const idx = TEMP_PAGES.findIndex((p) => p.tempC === c);
+const neighbours = [
+  idx > 0 ? { dir: "Colder", tempC: TEMP_PAGES[idx - 1].tempC } : null,
+  idx < TEMP_PAGES.length - 1 ? { dir: "Warmer", tempC: TEMP_PAGES[idx + 1].tempC } : null,
+].filter((n) => n !== null).map((n) => ({ ...n, changes: kitChanges(kit, kitAt(n.tempC)) }));
+
+// Kit guides for the items in this kit list (contextual internal links)
+const relatedGuides = KIT_ITEM_PAGES.filter((p) =>
+  itemStatus(kit, p.match) || (p.extra && itemStatus(kit, p.extra.match)));
 
 const VARIATION_ICONS: Record<string, typeof IconWind> = { race: IconRacingFlag, easy: IconBlip, wind: IconWind, rain: IconRainy, cold: IconSnowFlakes, warm: IconSun };
 
@@ -69,9 +84,10 @@ const crumbs = [
 ---
 
 <Base
-  title={`What to Wear Cycling at ${label} (${other}) | kitcheck.cc`}
+  title={`What to Wear Cycling at ${label} (${other}): Kit List | kitcheck.cc`}
   description={description}
   canonical={canonical}
+  article
   schema={[
     articleNode({ url: canonical, headline: h1, description, lang: "en" }),
     breadcrumbNode(crumbs),
@@ -83,6 +99,7 @@ const crumbs = [
   </SiteHeader>
 
   <PageHero
+    byline
     eyebrow={`${score.label} conditions`}
     title={`${h1} <span class="text-text-light">(${other})</span>`}
     lead={intro}
@@ -94,6 +111,14 @@ const crumbs = [
       <p class="text-xs text-text-light mt-3 px-1">
         Feels like {label}, moderate pace, light wind (10 km/h, 6 mph), no rain. Same logic as the calculator.
       </p>
+      {relatedGuides.length > 0 && (
+        <p class="text-[13px] text-text-mid mt-3 px-1">
+          More on:{" "}
+          {relatedGuides.map((p, i) => (
+            <>{i > 0 && " · "}<a href={`/guide/${p.slug}/`} class="text-coral hover:opacity-75">{p.label.toLowerCase()}</a></>
+          ))}
+        </p>
+      )}
     </Fragment>
   </PageHero>
 
@@ -145,8 +170,25 @@ const crumbs = [
   <!-- OTHER TEMPERATURES -->
   <section class="bg-bg border-t border-border">
     <div class="container py-16 md:py-20">
-      <SectionHead eyebrow="Other temperatures" title="Colder or warmer?" />
-      <nav class="grid grid-cols-4 sm:grid-cols-8 gap-2" aria-label="Other temperatures">
+      <SectionHead eyebrow="Other temperatures" title="Colder or warmer?" lead={`What changes compared with ${label}, at the same moderate pace.`} />
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">
+        {neighbours.map((n) => (
+          <a href={pathFor(n.tempC)} class="group bg-white rounded-2xl border border-border p-5 hover:border-text-light transition-colors">
+            <p class="font-head text-[11px] font-semibold tracking-[0.08em] uppercase text-text-light">{n.dir}</p>
+            <h3 class="font-head font-bold text-lg text-text mt-1 mb-3">What to wear at {n.tempC}°C <span class="text-text-light font-semibold">({toF(n.tempC)}°F)</span></h3>
+            <dl class="space-y-1.5 text-sm">
+              {n.changes.map((ch) => (
+                <div class="flex gap-2">
+                  <dt class="text-text-light shrink-0 w-24">{ZONE_LABELS[ch.zone]}</dt>
+                  <dd class="text-text-mid">{listJoin(ch.items.map((i, n) => (n ? lower(i.name) : i.name) + (i.optional ? " (optional)" : "")))}</dd>
+                </div>
+              ))}
+            </dl>
+            <span class="inline-block font-head text-[13px] font-semibold text-coral mt-4 group-hover:opacity-75">Full kit list →</span>
+          </a>
+        ))}
+      </div>
+      <nav class="grid grid-cols-4 sm:grid-cols-7 gap-2" aria-label="Other temperatures">
         {siblings.map((s) => (
           <a href={s.href} aria-current={s.current ? "page" : undefined}
             class={`flex flex-col items-center rounded-xl border overflow-hidden transition-colors ${s.current ? "border-coral bg-coral/6" : "border-border bg-white hover:border-text-light"}`}>

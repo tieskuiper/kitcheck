@@ -16,7 +16,7 @@ import { IconCloudySun, IconGauge, IconHand5Finger, IconRainy, IconChecklist } f
 
 const canonical = abs("/how-it-works/");
 const title = "How kitcheck.cc decides what you should wear";
-const description = "The method behind the kitcheck.cc cycling kit calculator: forecast data, effort, warmth tendency, wind, rain and why gloves and overshoes are chosen differently.";
+const description = "How the kitcheck.cc cycling kit calculator works: forecast data, effort, warmth tendency, wind and rain, and why gloves and overshoes are chosen differently.";
 
 const at10 = (o: Partial<Parameters<typeof getKitRecommendation>[0]>) =>
   getKitRecommendation({ apparentTemp: 10, windspeed: 10, precipProb: 0, warmthBias: 0, intensity: "moderate", ...o }).feelsLikeC;
@@ -32,6 +32,7 @@ const barWidth = (c: number) => `${Math.max(6, Math.min(100, (c / 25) * 100))}%`
   title="How the Cycling Kit Calculator Works | kitcheck.cc"
   description={description}
   canonical={canonical}
+  article
   schema={[
     articleNode({ url: canonical, headline: title, description, lang: "en" }),
     breadcrumbNode([{ name: "kitcheck.cc", url: abs("/") }, { name: "How it works", url: canonical }]),
@@ -42,6 +43,7 @@ const barWidth = (c: number) => `${Math.max(6, Math.min(100, (c / 25) * 100))}%`
   </SiteHeader>
 
   <PageHero
+    byline
     align="center"
     eyebrow="How it works"
     title="From forecast to <span class='text-coral'>kit list</span>"
@@ -155,6 +157,16 @@ const barWidth = (c: number) => `${Math.max(6, Math.min(100, (c / 25) * 100))}%`
           too warm or too cold for you. The logic is built for road cycling. The <a href="/guide/" class="text-coral">kit guide</a>
           and the <a href="/guide/cycling-temperature-chart/" class="text-coral">temperature chart</a> use the same logic.
         </p>
+      </div>
+
+      <div class="max-w-4xl mx-auto mt-4 rounded-2xl border border-border bg-white p-6 sm:p-7">
+        <h2 class="font-head font-bold text-lg text-text mb-2">Sources and independence</h2>
+        <ul class="text-[15px] text-text-mid leading-relaxed list-disc pl-5 space-y-1">
+          <li>Forecast data, including the feels-like (apparent) temperature: <a href="https://open-meteo.com/en/docs" rel="noopener" class="text-coral">Open-Meteo forecast API</a></li>
+          <li>Place search and names: <a href="https://open-meteo.com/en/docs/geocoding-api" rel="noopener" class="text-coral">Open-Meteo geocoding</a> and <a href="https://nominatim.org" rel="noopener" class="text-coral">Nominatim</a> (OpenStreetMap)</li>
+          <li>The kit rules are kitcheck.cc's own, tuned on real rides with <a href="/about/" class="text-coral">Raas Racing Team</a>.</li>
+          <li>Brand-neutral: no sponsored products, affiliate links or ads in the advice.</li>
+        </ul>
       </div>
     </div>
   </section>

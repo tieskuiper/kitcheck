@@ -85,21 +85,23 @@ const VARIATIONS: { key: string; title: string; detail: string; overrides: Parti
 
 const signature = (items: ZoneItem[]) => items.map(i => `${i.name}${i.optional ? '?' : ''}`).join('|')
 
+/** The zones where `kit` differs from `base`, with what `kit` wears there */
+export function kitChanges(base: KitResult, kit: KitResult): Variation['changes'] {
+  return ZONES
+    .filter(z => signature(kit[z].items) !== signature(base[z].items))
+    .map(z => {
+      const items = kit[z].items.filter(i => i.name !== 'Helmet')
+      return { zone: z, items: items.length ? items : [{ name: 'Just your helmet' }] }
+    })
+}
+
 /** What to wear instead, per condition — zone by zone, only where it differs */
 export function variationsAt(tempC: number): Variation[] {
   const base = kitAt(tempC)
-  return VARIATIONS.map(v => {
-    const kit = kitAt(tempC, v.overrides)
-    return {
-      key: v.key, title: v.title, detail: v.detail,
-      changes: ZONES
-        .filter(z => signature(kit[z].items) !== signature(base[z].items))
-        .map(z => {
-          const items = kit[z].items.filter(i => i.name !== 'Helmet')
-          return { zone: z, items: items.length ? items : [{ name: 'Just your helmet' }] }
-        }),
-    }
-  })
+  return VARIATIONS.map(v => ({
+    key: v.key, title: v.title, detail: v.detail,
+    changes: kitChanges(base, kitAt(tempC, v.overrides)),
+  }))
 }
 
 const lowerFirst = (s: string) => s.charAt(0).toLowerCase() + s.slice(1)
