@@ -6,6 +6,7 @@ import PageHero from "../ui/PageHero.astro";
 import AnswerCard from "../ui/AnswerCard.astro";
 import SectionHead from "../ui/SectionHead.astro";
 import CtaBand from "../ui/CtaBand.astro";
+import { IconArrowRight } from "@central-icons-react/round-outlined-radius-3-stroke-2";
 import FaqList from "./FaqList.astro";
 import EffortRanges from "./EffortRanges.astro";
 import { KIT_ITEM_PAGES, type KitItemPage } from "../../lib/guideContent";
@@ -119,7 +120,7 @@ const related = KIT_ITEM_PAGES.filter((p) => p.slug !== page.slug);
               </a>
             );
           })}
-          <a href="/guide/cycling-temperature-chart/" class="flex items-center font-head text-sm font-semibold text-coral px-3 hover:opacity-75">Temperature chart →</a>
+          <a href="/guide/cycling-temperature-chart/" class="flex items-center gap-1 font-head text-sm font-semibold text-coral px-3 hover:opacity-75">Temperature chart <IconArrowRight size={15} /></a>
         </div>
       </div>
     </section>

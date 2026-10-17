@@ -102,7 +102,7 @@ const faq = [
               <span class="text-xs text-text-light mt-1">{toF(t.tempC)}°F</span>
               <span class="inline-flex w-fit font-head text-[10px] font-bold tracking-[0.07em] uppercase rounded-full px-2 py-0.5 mt-3" style={`color:${TIER_ACCENT[t.label]};background:${TIER_BG[t.label]}`}>{t.label}</span>
               <span class="text-[13px] text-text-mid leading-snug mt-3 flex-1">{t.headline}</span>
-              <span class="font-head text-[12px] font-semibold text-coral mt-3 group-hover:translate-x-0.5 transition-transform">Full kit →</span>
+              <span class="inline-flex items-center gap-1 font-head text-[12px] font-semibold text-coral mt-3 group-hover:translate-x-0.5 transition-transform">Full kit <IconArrowRight size={13} /></span>
             </span>
           </a>
         ))}

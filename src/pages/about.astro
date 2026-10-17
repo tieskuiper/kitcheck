@@ -5,7 +5,7 @@ import SiteFooter from "../components/SiteFooter.astro";
 import PageHero from "../components/ui/PageHero.astro";
 import CtaBand from "../components/ui/CtaBand.astro";
 import { abs, breadcrumbNode, AUTHOR } from "../lib/site";
-import { IconBike, IconShieldCheck, IconCloudySun } from "@central-icons-react/round-outlined-radius-3-stroke-2";
+import { IconBike, IconShieldCheck, IconCloudySun, IconArrowRight } from "@central-icons-react/round-outlined-radius-3-stroke-2";
 
 const canonical = abs("/about/");
 const description = "kitcheck.cc is a free, brand-neutral cycling kit calculator, made by a road cyclist in the Netherlands and tested by Raas Racing Team.";
@@ -72,7 +72,7 @@ const facts = [
             An amateur road team that races for fun. The logic is shaped by real rides, like the rule that gloves and
             overshoes are chosen for the whole ride, because nobody carries a second pair.
           </p>
-          <a href="https://www.instagram.com/raasracingteam/" target="_blank" rel="noopener" class="inline-flex mt-6 font-head text-sm font-semibold text-team-mint hover:opacity-80">Follow @raasracingteam →</a>
+          <a href="https://www.instagram.com/raasracingteam/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 mt-6 font-head text-sm font-semibold text-team-mint hover:opacity-80">Follow @raasracingteam <IconArrowRight size={15} /></a>
         </div>
       </div>
     </div>

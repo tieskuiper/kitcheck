@@ -1,4 +1,5 @@
 ---
+import { IconArrowRight } from "@central-icons-react/round-outlined-radius-3-stroke-2";
 interface Props { title?: string; text?: string; href?: string; label?: string }
 const {
   title = "Check the forecast for your ride",
@@ -16,7 +17,7 @@ const {
           <p class="font-head font-bold text-xl md:text-2xl tracking-tight text-white mb-2 text-balance">{title}</p>
           <p class="text-white/65 leading-relaxed">{text}</p>
         </div>
-        <a href={href} class="btn-primary py-3! px-5! text-[14px]! shrink-0">{label} <span aria-hidden="true">→</span></a>
+        <a href={href} class="btn-primary py-3! px-5! text-[14px]! shrink-0">{label} <IconArrowRight size={16} /></a>
       </div>
     </div>
   </div>

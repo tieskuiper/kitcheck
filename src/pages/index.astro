@@ -4,6 +4,7 @@ import Calculator from "../components/calculator/Calculator";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import TeamBanner from "../components/TeamBanner.astro";
+import { IconArrowRight } from "@central-icons-react/round-outlined-radius-3-stroke-2";
 import { toF, pathFor, kitAt, kitSentence, conditionsAt } from "../lib/guideData";
 import { TIER_ACCENT } from "../components/calculator/constants";
 import FaqList from "../components/guide/FaqList.astro";
@@ -102,9 +103,9 @@ const faq = [
             exactly one temperature, which is what the calculator above is for.
           </p>
           <div class="flex flex-wrap gap-x-5 gap-y-2 font-head text-sm font-semibold">
-            <a href="/guide/cycling-temperature-chart/" class="text-coral hover:opacity-75">Temperature chart →</a>
-            <a href="/guide/" class="text-text-mid hover:text-text">Kit guide →</a>
-            <a href="/how-it-works/" class="text-text-mid hover:text-text">How it works →</a>
+            <a href="/guide/cycling-temperature-chart/" class="inline-flex items-center gap-1 text-coral hover:opacity-75">Temperature chart <IconArrowRight size={15} /></a>
+            <a href="/guide/" class="inline-flex items-center gap-1 text-text-mid hover:text-text">Kit guide <IconArrowRight size={15} /></a>
+            <a href="/how-it-works/" class="inline-flex items-center gap-1 text-text-mid hover:text-text">How it works <IconArrowRight size={15} /></a>
           </div>
         </div>
         <dl class="bg-white rounded-2xl border border-border divide-y divide-border overflow-hidden">

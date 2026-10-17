@@ -8,6 +8,7 @@ import PageHero from "../ui/PageHero.astro";
 import AnswerCard from "../ui/AnswerCard.astro";
 import SectionHead from "../ui/SectionHead.astro";
 import CtaBand from "../ui/CtaBand.astro";
+import { IconArrowRight } from "@central-icons-react/round-outlined-radius-3-stroke-2";
 import { IconRacingFlag, IconBlip, IconWind, IconRainy, IconSnowFlakes, IconSun } from "@central-icons-react/round-outlined-radius-3-stroke-2";
 import {
   TEMP_PAGES, ZONE_LABELS, kitAt, conditionsAt, variationsAt,
@@ -183,7 +184,7 @@ const crumbs = [
                 </div>
               ))}
             </dl>
-            <span class="inline-block font-head text-[13px] font-semibold text-coral mt-4 group-hover:opacity-75">Full kit list →</span>
+            <span class="inline-flex items-center gap-1 font-head text-[13px] font-semibold text-coral mt-4 group-hover:opacity-75">Full kit list <IconArrowRight size={14} /></span>
           </a>
         ))}
       </div>
@@ -196,7 +197,7 @@ const crumbs = [
           </a>
         ))}
       </nav>
-      <a href="/guide/cycling-temperature-chart/" class="inline-flex mt-5 font-head text-sm font-semibold text-coral hover:opacity-75">Every temperature in the interactive chart →</a>
+      <a href="/guide/cycling-temperature-chart/" class="inline-flex items-center gap-1 mt-5 font-head text-sm font-semibold text-coral hover:opacity-75">Every temperature in the interactive chart <IconArrowRight size={15} /></a>
     </div>
   </section>
 
