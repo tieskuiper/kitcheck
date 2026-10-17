@@ -97,7 +97,6 @@ const faq = [
       <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5">
         {temps.map((t) => (
           <a href={pathFor(t.tempC)} class="group relative flex flex-col bg-white rounded-2xl border border-border overflow-hidden hover:-translate-y-0.5 hover:shadow-[0_12px_28px_-12px_rgba(0,0,0,0.18)] transition-all">
-            <span class="h-1.5" style={`background:${TIER_ACCENT[t.label]}`} aria-hidden="true"></span>
             <span class="flex flex-col flex-1 p-4">
               <span class="font-head font-bold text-[1.75rem] tracking-tight text-text leading-none">{t.tempC}°C</span>
               <span class="text-xs text-text-light mt-1">{toF(t.tempC)}°F</span>

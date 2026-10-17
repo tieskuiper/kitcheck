@@ -8,7 +8,6 @@ import PageHero from "../ui/PageHero.astro";
 import AnswerCard from "../ui/AnswerCard.astro";
 import SectionHead from "../ui/SectionHead.astro";
 import CtaBand from "../ui/CtaBand.astro";
-import { TIER_ACCENT } from "../calculator/constants";
 import { IconRacingFlag, IconBlip, IconWind, IconRainy, IconSnowFlakes, IconSun } from "@central-icons-react/round-outlined-radius-3-stroke-2";
 import {
   TEMP_PAGES, ZONE_LABELS, kitAt, conditionsAt, variationsAt,
@@ -192,7 +191,6 @@ const crumbs = [
         {siblings.map((s) => (
           <a href={s.href} aria-current={s.current ? "page" : undefined}
             class={`flex flex-col items-center rounded-xl border overflow-hidden transition-colors ${s.current ? "border-coral bg-coral/6" : "border-border bg-white hover:border-text-light"}`}>
-            <span class="h-1 w-full" style={`background:${TIER_ACCENT[s.tier]}`}></span>
             <span class={`font-head font-bold text-base sm:text-lg pt-2.5 ${s.current ? "text-coral" : "text-text"}`}>{s.label}</span>
             <span class="text-[11px] text-text-light pb-2.5">{s.sub}</span>
           </a>
