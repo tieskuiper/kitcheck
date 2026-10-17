@@ -109,6 +109,14 @@ export default function KitCard({ kitResult, score, unit, highlights, startHour 
           </span>
         </div>
       )}
+      {kitResult.lighterOption && (
+        <div className="mt-2 bg-white rounded-xl py-[11px] px-[14px] border border-black/[8%] flex gap-2 items-center">
+          <IconCircleInfo size={16} className="text-text-mid shrink-0" />
+          <span className="text-[12px] text-text-mid leading-[1.5]">
+            <strong className="text-text">Riding hard in the cold?</strong> You could go lighter ({kitResult.lighterOption}), but expect to feel cold at the start and on descents.
+          </span>
+        </div>
+      )}
       {kitResult.heat && (
         <div className="mt-2 bg-[#F5A623]/[10%] rounded-xl py-[11px] px-[14px] border border-[#F5A623]/30 flex gap-2 items-center">
           <IconSun size={16} className="text-[#B7791F] shrink-0" />

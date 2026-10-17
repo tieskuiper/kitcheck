@@ -52,6 +52,12 @@ extremity score = clamp(0, 110, tempToScore(feelsLike) + INTENSITY_BONUS[intensi
   partly there, because riding hard warms your body far more than your fingers, toes and ears.
 - The forecast feels-like already includes wind chill; the wind penalty only adds the extra
   airflow of riding into it, so it is deliberately small.
+- **Cold effort floor:** at or below `COLD_EFFORT_FLOOR_C` forecast feels-like, a hard or race
+  effort no longer lightens the body kit (owner decision, Oct 2026): upper body and legs use
+  the moderate-pace score instead (`bodyScore = min(score, moderate score)`). You start cold and
+  every stop or descent is cold. When that makes the kit warmer, `lighterOption` lists the
+  lighter body items and the kit card says "You could go lighter (…), but expect to feel cold".
+  The label and "feels like on the bike" still use the real score.
 
 `tempToScore` is piecewise linear:
 
@@ -73,6 +79,7 @@ extremity score = clamp(0, 110, tempToScore(feelsLike) + INTENSITY_BONUS[intensi
 | `RAIN_LIKELY` | 60% | rain is "likely": full rain kit, scaled to the temperature; also the route "rain from km X" note |
 | `HEAT_FROM_C` | 27°C | forecast feels-like from which the heat note (extra bottle, sunscreen) shows |
 | `WINDY_KMH` | > 25 km/h | windy: optional wind gilet (score < 74, no rain) and a windproof note |
+| `COLD_EFFORT_FLOOR_C` | 2°C | at or below this forecast feels-like, hard/race effort no longer lightens the body kit (the lighter kit is shown as an option) |
 | `WARMTH_STEP` | 7.5 points | per step of warmth tendency (-2 always cold … +2 always warm) |
 | `EXTREMITY_EFFORT` | 0.35 | share of the effort bonus that counts for head, hands and feet |
 | `EXTREMITY_WARMTH` | 0.75 | share of the warmth tendency that counts for head, hands and feet |
@@ -125,7 +132,7 @@ The rules as written in `kitLogic.ts`, in score points. `wet` means rain likely
 | < 62 | Helmet, light cap optional |
 | else | Helmet |
 
-**Upper body** (core score)
+**Upper body** (body score: the core score, or the moderate-pace score under the cold effort floor)
 
 | Score | Kit |
 | --- | --- |
@@ -145,15 +152,15 @@ otherwise `windy` and score < 74 → wind gilet optional.
 
 | Score | Kit |
 | --- | --- |
-| < 20, or `wet` and < 47 | Waterproof winter gloves |
-| < 35 | Thermal winter gloves |
+| `wet` and < 47 | Waterproof winter gloves |
+| < 35 | Thermal winter gloves (below 20 too: in dry cold the warmest thermal pair, not waterproof) |
 | < 50 | Light cycling gloves |
 | `wet` and < 74 | Fingerless or no gloves, light full-finger gloves optional |
 | < 62 | Fingerless or no gloves, thin full-finger gloves optional |
 | < 74 | Fingerless or no gloves, optional |
 | else | No gloves or fingerless gloves |
 
-**Legs** (core score)
+**Legs** (body score, as for the upper body)
 
 | Score | Kit |
 | --- | --- |
@@ -170,8 +177,8 @@ Rain and wind never change the leg kit directly; strong wind only lowers the sco
 
 | Score | Kit |
 | --- | --- |
-| < 20, or `wet` and < 35 | Waterproof winter overshoes, thermal socks |
-| < 35 | Thermal overshoes, thermal socks |
+| `wet` and < 35 | Waterproof winter overshoes, thermal socks |
+| < 35 | Thermal overshoes, thermal socks (also in dry cold below 20) |
 | `wet` and < 50 | Waterproof overshoes |
 | < 50 | Light overshoes or toe covers |
 | `wet` and < 90 | Regular socks, light rain overshoes optional |
@@ -207,8 +214,7 @@ Rain and wind never change the leg kit directly; strong wind only lowers the sco
 
 | Feels-like (moderate, light wind, dry) | Kit |
 | --- | --- |
-| below 0°C (32°F) | Waterproof winter gloves |
-| 0 to 6°C (32 to 43°F) | Thermal winter gloves |
+| below 6°C (43°F) | Thermal winter gloves |
 | 6 to 11°C (43 to 52°F) | Light cycling gloves |
 | 11 to 14°C (52 to 57°F) | Fingerless gloves or no gloves, Thin full-finger gloves *(opt)* |
 | 14 to 18°C (57 to 64°F) | Fingerless gloves or no gloves *(opt)* |
@@ -229,8 +235,7 @@ Rain and wind never change the leg kit directly; strong wind only lowers the sco
 
 | Feels-like (moderate, light wind, dry) | Kit |
 | --- | --- |
-| below 0°C (32°F) | Waterproof winter overshoes, Thermal socks |
-| 0 to 6°C (32 to 43°F) | Thermal overshoes, Thermal socks |
+| below 6°C (43°F) | Thermal overshoes, Thermal socks |
 | 6 to 11°C (43 to 52°F) | Light overshoes or toe covers |
 | 11 to 14°C (52 to 57°F) | Regular cycling socks, Toe covers *(opt)* |
 | 14°C (57°F) and warmer | Regular cycling socks |
@@ -303,8 +308,9 @@ shows a note: extra bottle and sunscreen. The kit itself doesn't change.
   - otherwise a drop of 20+ score points → "Gets colder from hour X — take a … with you";
   - leg or knee warmers needed at the start, not later as it warms → "Remove … after hour X".
 - **Gloves and overshoes are chosen for the whole ride** (owner rule: one pair per ride, never
-  swap mid-ride). The engine picks the warmest pair any hour needs and says why when it is
-  because of later cold or rain. A light pair at the start gets "Warm enough to pocket your
+  swap mid-ride). The engine picks the warmest pair any hour needs; at equal warmth a waterproof
+  pair wins (`pairRank`), so a dry, cold start that turns wet gets waterproof gloves and
+  overshoes from the start. It says why when it is because of later cold or rain. A light pair at the start gets "Warm enough to pocket your
   gloves after hour X" when a later hour needs none.
 - **Heat** shows when any hour is hot.
 
@@ -347,10 +353,10 @@ are feels-like, from (inclusive) to (exclusive): "11–14°C" ends where "14–1
 | Item | easy: wear | moderate: wear | hard: wear | race: wear | moderate: optional |
 | --- | --- | --- | --- | --- | --- |
 | Cap under helmet | below 9°C (48°F) | below 8°C (46°F) | below 6°C (43°F) | below 6°C (43°F) | 8–14°C (46–57°F) |
-| Insulated jacket | below 2°C (36°F) | below 0°C (32°F) | below -5°C (23°F) | – | – |
-| Winter jersey | below 8°C (46°F) | below 6°C (43°F) | below 1°C (34°F) | below -2°C (28°F) | – |
-| Base layer | below 8°C (46°F) | below 6°C (43°F) | below 1°C (34°F) | below -2°C (28°F) | 6–11°C (43–52°F) |
-| Long-sleeve jersey | 8–12°C (46–54°F) | 6–11°C (43–52°F) | 1–7°C (34–45°F) | -2 to 5°C (28 to 41°F) | – |
+| Insulated jacket | below 2°C (36°F) | below 0°C (32°F) | below 0°C (32°F) | below 0°C (32°F) | – |
+| Winter jersey | below 8°C (46°F) | below 6°C (43°F) | below 2°C (36°F) | below 2°C (36°F) | – |
+| Base layer | below 8°C (46°F) | below 6°C (43°F) | below 2°C (36°F) | below 2°C (36°F) | 6–11°C (43–52°F) |
+| Long-sleeve jersey | 8–12°C (46–54°F) | 6–11°C (43–52°F) | 2–7°C (36–45°F) | 2–5°C (36–41°F) | – |
 | Short-sleeve jersey | 12°C (54°F) and warmer | 11°C (52°F) and warmer | 7°C (45°F) and warmer | 5°C (41°F) and warmer | – |
 | Arm warmers | 12–16°C (54–61°F) | 11–14°C (52–57°F) | 7–11°C (45–52°F) | 5–9°C (41–48°F) | 14–18°C (57–64°F) |
 | Gilet | – | – | – | – | – |
@@ -358,11 +364,11 @@ are feels-like, from (inclusive) to (exclusive): "11–14°C" ends where "14–1
 | Winter gloves | below 7°C (45°F) | below 6°C (43°F) | below 4°C (39°F) | below 4°C (39°F) | – |
 | Light full-finger gloves | 7–11°C (45–52°F) | 6–11°C (43–52°F) | 4–10°C (39–50°F) | 4–9°C (39–48°F) | 11–14°C (52–57°F) |
 | Fingerless or none | 11°C (52°F) and warmer | 11°C (52°F) and warmer | 10°C (50°F) and warmer | 9°C (48°F) and warmer | 14–18°C (57–64°F) |
-| Thermal bib tights | below 3°C (37°F) | below 1°C (34°F) | below -5°C (23°F) | – | – |
-| Bib tights | 3–10°C (37–50°F) | 1–8°C (34–46°F) | -5 to 3°C (23 to 37°F) | below 1°C (34°F) | – |
-| Leg warmers | 10–13°C (50–55°F) | 8–11°C (46–52°F) | 3–8°C (37–46°F) | 1–6°C (34–43°F) | – |
+| Thermal bib tights | below 3°C (37°F) | below 1°C (34°F) | below 1°C (34°F) | below 1°C (34°F) | – |
+| Bib tights | 3–10°C (37–50°F) | 1–8°C (34–46°F) | 1–3°C (34–37°F) | 1–2°C (34–36°F) | – |
+| Leg warmers | 10–13°C (50–55°F) | 8–11°C (46–52°F) | 3–8°C (37–46°F) | 2–6°C (36–43°F) | – |
 | Knee warmers | 13–16°C (55–61°F) | 11–14°C (52–57°F) | 8–11°C (46–52°F) | 6–9°C (43–48°F) | 14–18°C (57–64°F) |
-| Bib shorts | 10°C (50°F) and warmer | 8°C (46°F) and warmer | 3°C (37°F) and warmer | 1°C (34°F) and warmer | – |
+| Bib shorts | 10°C (50°F) and warmer | 8°C (46°F) and warmer | 3°C (37°F) and warmer | 2°C (36°F) and warmer | – |
 | Winter overshoes | below 7°C (45°F) | below 6°C (43°F) | below 4°C (39°F) | below 4°C (39°F) | – |
 | Light overshoes / toe covers | 7–11°C (45–52°F) | 6–11°C (43–52°F) | 4–10°C (39–50°F) | 4–9°C (39–48°F) | 11–14°C (52–57°F) |
 <!-- /gen:items -->
@@ -370,7 +376,7 @@ are feels-like, from (inclusive) to (exclusive): "11–14°C" ends where "14–1
 **The guide temperatures** (what the temperature pages and llms.txt say):
 
 <!-- gen:temps -->
-- **-5°C (23°F)**: Thermal skull cap, thermal long-sleeve base layer, winter jersey, insulated jacket, waterproof winter gloves, thermal bib tights, waterproof winter overshoes and thermal socks.
+- **-5°C (23°F)**: Thermal skull cap, thermal long-sleeve base layer, winter jersey, insulated jacket, thermal winter gloves, thermal bib tights, thermal overshoes and thermal socks.
 - **0°C (32°F)**: Cycling cap, thermal base layer, winter jersey or softshell, thermal winter gloves, thermal bib tights, thermal overshoes and thermal socks.
 - **5°C (41°F)**: Cycling cap, thermal base layer, winter jersey or softshell, thermal winter gloves, bib tights, thermal overshoes and thermal socks.
 - **10°C (50°F)**: Long-sleeve jersey, light cycling gloves, bib shorts, leg warmers and light overshoes or toe covers. Optional: light cap and base layer.
@@ -383,15 +389,20 @@ are feels-like, from (inclusive) to (exclusive): "11–14°C" ends where "14–1
 
 Behaviour that is deliberate or still to be decided. Check here before "fixing" one.
 
+Decided in Oct 2026 (owner): race pace near freezing keeps winter kit with a lighter option
+(cold effort floor, section 2); dry cold below score 20 gets thermal, not waterproof, gloves and
+overshoes (section 3); the wind gilet below freezing stays (below).
+
+
 - **Step at -5°C:** `tempToScore` is 5 at -5°C and below, but 10 just above it. Harmless in
   practice (both are full winter kit).
-- **Wind gilet below freezing:** in strong, dry wind the optional gilet also appears on top of an
-  insulated jacket. Open question: limit it to score ≥ 35.
-- **Race pace at 0°C:** no jacket and regular (not thermal) bib tights, because effort adds 18
-  points to the core score. Hands and feet stay warm (extremity score). Open question whether
-  this is too light.
-- **Dry -5°C:** waterproof winter gloves and overshoes, because score < 20 means "maximum
-  insulation". Correct for warmth, reads oddly when it's dry.
+- **Wind gilet below freezing (deliberate):** in strong, dry wind the optional gilet also appears
+  on top of an insulated jacket. Kept on purpose (owner, Oct 2026): wind around freezing makes
+  it feel very cold, so an extra windproof layer is a sensible option.
+- **Step at the cold effort floor:** at a hard or race effort the body kit jumps from winter kit
+  at 2°C (floor applies) to the lighter effort kit at 3°C, e.g. race pace: winter jersey and bib
+  tights at 2°C, long-sleeve jersey and leg warmers at 3°C. Tune `COLD_EFFORT_FLOOR_C` if that
+  edge feels wrong.
 - **"Fingerless gloves or no gloves"** is a required item in the engine; guide sentences show it as
   optional fingerless gloves (`kitSummary` in `guideData.ts`).
 - **"Hot" from about 21°C:** the condition label turns "Hot" at score 86, which a moderate pace

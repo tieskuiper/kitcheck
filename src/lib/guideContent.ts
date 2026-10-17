@@ -143,7 +143,7 @@ export const KIT_ITEM_PAGES: KitItemPage[] = [
     description: 'At what temperature do you need thermal or waterproof winter gloves on the bike? Ranges in °C and °F per effort level.',
     intro: [
       "Hands are the first thing to go numb on a cold ride. They're in the wind the whole time, you barely move them, and riding hard barely warms them. Cold fingers also make braking and shifting harder, which is a safety problem, not just a comfort one.",
-      "kitcheck.cc uses three steps for full-finger gloves: light cycling gloves for the cool range, thermal winter gloves when it's cold, and waterproof winter gloves when it's freezing or cold and wet.",
+      "kitcheck.cc uses three steps for full-finger gloves: light cycling gloves for the cool range, thermal winter gloves when it's cold (even well below freezing, if it's dry), and waterproof winter gloves when it's cold and wet.",
     ],
     tips: [
       'Gloves stay on all ride. If the ride gets colder later on, start in the warmer pair: you only have one pair with you.',
@@ -152,7 +152,7 @@ export const KIT_ITEM_PAGES: KitItemPage[] = [
     ],
     faq: [
       { q: 'At what temperature do I need full-finger gloves?', a: 'Light full-finger gloves come in a few degrees above the winter glove range, in the cool band where fingerless gloves let too much wind through. The calculator shows the right pair for your ride.' },
-      { q: 'Waterproof or thermal winter gloves?', a: 'Waterproof winter gloves when it is freezing or when rain is likely in the cold: wet hands lose heat very fast. Thermal gloves for cold, dry rides.' },
+      { q: 'Waterproof or thermal winter gloves?', a: 'Waterproof winter gloves when rain is likely in the cold: wet hands lose heat very fast. Thermal gloves for cold, dry rides, even below freezing.' },
     ],
   },
 ]
@@ -323,7 +323,7 @@ export const CONDITION_PAGES: ConditionPage[] = [
       overrides: {},
     },
     faq: [
-      { q: 'What should I wear cycling below freezing?', a: 'Below 0°C (32°F) at a moderate pace: a thermal skull cap, a thermal long-sleeve base layer, a winter jersey and an insulated jacket, waterproof winter gloves, thermal bib tights, and waterproof winter overshoes over thermal socks. At around 0°C a cycling cap, a thermal base layer under a winter jersey or softshell and thermal gloves and overshoes are enough. The table on this page shows the full kit per temperature.' },
+      { q: 'What should I wear cycling below freezing?', a: 'Below 0°C (32°F) at a moderate pace: a thermal skull cap, a thermal long-sleeve base layer, a winter jersey and an insulated jacket, thermal winter gloves, thermal bib tights, and thermal overshoes over thermal socks (waterproof gloves and overshoes if rain is likely). At around 0°C a cycling cap, a thermal base layer under a winter jersey or softshell and thermal gloves and overshoes are enough. The table on this page shows the full kit per temperature.' },
       { q: 'How do I keep my hands and feet warm cycling in winter?', a: 'Choose gloves and overshoes for the coldest part of the ride and put them on before you leave. Thin liner gloves and thermal socks add warmth without making things tight; tight shoes and gloves cut off circulation and make it worse.' },
       { q: 'How many layers should I wear cycling in winter?', a: 'Below freezing, three on your upper body: a thermal base layer, a winter jersey and an insulated jacket. In milder winter weather, two layers (a thermal base layer under a winter jersey or softshell) are enough.' },
     ],

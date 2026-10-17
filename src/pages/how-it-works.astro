@@ -8,7 +8,7 @@ import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import PageHero from "../components/ui/PageHero.astro";
 import CtaBand from "../components/ui/CtaBand.astro";
-import { getKitRecommendation } from "../lib/kitLogic";
+import { getKitRecommendation, KIT_CONSTANTS } from "../lib/kitLogic";
 import { INTENSITY_OPTIONS, WARMTH_LABELS } from "../components/calculator/constants";
 import { toF } from "../lib/guideData";
 import { abs, articleNode, breadcrumbNode } from "../lib/site";
@@ -107,8 +107,12 @@ const barWidth = (c: number) => `${Math.max(6, Math.min(100, (c / 25) * 100))}%`
             <h2 class="step-title">Hands, feet and head are different</h2>
             <p class="step-text">
               Effort warms your body, but your fingers, toes and ears barely benefit. For gloves, overshoes and head
-              covering, effort counts for only about a third and warmth tendency for three quarters. That's why you can
-              race in a lighter jacket and still need winter gloves.
+              covering, effort counts for only about a third and warmth tendency for three quarters. That's why riding
+              hard lightens your layers but not your gloves.
+            </p>
+            <p class="step-text">
+              Near freezing (a feels-like of {KIT_CONSTANTS.COLD_EFFORT_FLOOR_C}°C or lower), effort doesn't lighten the body kit either: you start cold,
+              and every stop or descent is cold. The kit card mentions the lighter option instead.
             </p>
             <p class="step-text">
               Gloves and overshoes are chosen for the whole ride, because nobody carries a second pair. If it gets colder

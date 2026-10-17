@@ -21,7 +21,7 @@ export type TempUnit = 'C' | 'F'
 export const TEMP_PAGES: { tempC: number; intro: string }[] = [
   {
     tempC: -5,
-    intro: "Minus five is full winter kit with nothing left out: thermal skull cap, a thermal base layer, winter jersey and an insulated jacket, waterproof winter gloves and full overshoes. The bigger risk at this temperature isn't the cold but the road: black ice on shaded corners, bridges and wet patches. Ride a route you know, keep it shorter, and stay closer to home than you would in spring.",
+    intro: "Minus five is full winter kit with nothing left out: thermal skull cap, a thermal base layer, winter jersey and an insulated jacket, the warmest thermal gloves and thermal overshoes. If it's wet as well, switch to waterproof gloves and overshoes. The bigger risk at this temperature isn't the cold but the road: black ice on shaded corners, bridges and wet patches. Ride a route you know, keep it shorter, and stay closer to home than you would in spring.",
   },
   {
     tempC: 0,

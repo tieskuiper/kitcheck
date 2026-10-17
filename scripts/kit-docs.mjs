@@ -50,6 +50,7 @@ const sections = {
     ['`RAIN_LIKELY`', `${KIT_CONSTANTS.RAIN_LIKELY}%`, 'rain is "likely": full rain kit, scaled to the temperature; also the route "rain from km X" note'],
     ['`HEAT_FROM_C`', `${KIT_CONSTANTS.HEAT_FROM_C}°C`, 'forecast feels-like from which the heat note (extra bottle, sunscreen) shows'],
     ['`WINDY_KMH`', `> ${KIT_CONSTANTS.WINDY_KMH} km/h`, 'windy: optional wind gilet (score < 74, no rain) and a windproof note'],
+    ['`COLD_EFFORT_FLOOR_C`', `${KIT_CONSTANTS.COLD_EFFORT_FLOOR_C}°C`, 'at or below this forecast feels-like, hard/race effort no longer lightens the body kit (the lighter kit is shown as an option)'],
     ['`WARMTH_STEP`', `${KIT_CONSTANTS.WARMTH_STEP} points`, 'per step of warmth tendency (-2 always cold … +2 always warm)'],
     ['`EXTREMITY_EFFORT`', `${KIT_CONSTANTS.EXTREMITY_EFFORT}`, 'share of the effort bonus that counts for head, hands and feet'],
     ['`EXTREMITY_WARMTH`', `${KIT_CONSTANTS.EXTREMITY_WARMTH}`, 'share of the warmth tendency that counts for head, hands and feet'],

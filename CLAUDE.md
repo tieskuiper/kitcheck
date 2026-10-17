@@ -28,6 +28,11 @@ pnpm docs:kit | pnpm docs:kit:check
 ## Owner decisions (don't re-propose the alternatives)
 
 - **Kit rule:** one pair of gloves and overshoes per ride. Never suggest swapping mid-ride.
+- **Cold effort floor:** near freezing (≤ `COLD_EFFORT_FLOOR_C`), hard/race effort keeps the
+  winter body kit and only mentions the lighter option.
+- **Dry cold:** thermal gloves and overshoes, also well below freezing; waterproof only when
+  rain is likely. The optional wind gilet below freezing in strong wind is deliberate.
+- **Brand colour:** keep coral `#FF5130` as is (contrast of white-on-coral was reviewed and accepted).
 - **Scope:** road cycling only (no gravel, MTB or commuting content).
 - **Units:** °C by default; °F only for a US timezone or when the visitor chose it.
 - **Privacy:** Google Analytics 4 only after explicit consent, with no consent-mode pings before
