@@ -11,7 +11,12 @@ KitCheck is a free cycling kit calculator. Riders enter a location (or upload a 
 - **Rider profile** — intensity (easy → race) and warmth tendency (always cold → always warm)
 - **Recommendation** — comfort score, kit per zone (head, upper body, hands, lower body, feet), required vs optional items, and notes when conditions change during the ride
 - **Route map** — GPX route with start/end markers and wind direction
-- **Guide** — `/guide/` is the hub, with a page per temperature (`/guide/what-to-wear-cycling-10-degrees/` etc.). Kit lists and "what changes" are generated from `kitLogic.ts`, so the guide always matches the calculator
+- **Guide** — `/guide/` is the hub, with a page per temperature (-5 to 25°C, °F shown alongside), an interactive temperature chart, kit pages (arm & knee warmers, bib tights/leg warmers, base layer, overshoes, gloves) and condition pages (rain, wind, winter, summer). Kit lists, ranges and quick answers are generated from `kitLogic.ts`, so the guide always matches the calculator
+- **Units** — °C by default; °F when the device's timezone is in the US, or when the visitor picked °F before (`lib/units.ts`, stored as `kitcheck-unit`). Browser language is ignored: many Europeans browse in en-US
+
+## How the kit advice is calculated
+
+The full algorithm (comfort score, thresholds per body zone, rain, wind, heat, multi-hour and GPX rules) is written out in **[docs/kit-logic.md](docs/kit-logic.md)**, with tables generated from the engine itself. Start there before changing `src/lib/kitLogic.ts`. AI agents get their project rules from [CLAUDE.md](CLAUDE.md).
 
 ## Tech stack
 
@@ -46,6 +51,8 @@ pnpm dev                        # http://localhost:4321
 | `pnpm build` | Build the production site to `./dist/` |
 | `pnpm preview` | Serve the build locally |
 | `pnpm check` | Type-check `.astro` and `.ts(x)` files |
+| `pnpm docs:kit` | Regenerate the tables in `docs/kit-logic.md` from the engine |
+| `pnpm docs:kit:check` | Fail if `docs/kit-logic.md` is out of date with the engine |
 
 ### pnpm settings (`pnpm-workspace.yaml`)
 
@@ -78,18 +85,25 @@ src/
 │   │   ├── DayTabs.tsx, WeatherChips.tsx, ui.tsx
 │   │   ├── constants.tsx        # tier colours, intensity options, zone icons
 │   │   └── format.ts            # unit + time formatting (°C/°F, km/mi)
+│   ├── guide/                   # guide templates (Temp/Item/ConditionPage), ChartExplorer (React island),
+│   │                            # EffortRanges, KitTable, FaqList
+│   ├── ui/                      # PageHero, SectionHead, AnswerCard, CtaBand: the page building blocks
 │   ├── SiteHeader.astro, SiteFooter.astro, CookieBanner.astro
-├── layouts/Base.astro           # <head>, SEO meta, GA consent
+├── layouts/Base.astro           # <head>, SEO meta, hreflang, one JSON-LD @graph per page
 ├── lib/
 │   ├── kitLogic.ts              # comfort score + kit rules (the core logic)
-│   ├── guideData.ts             # guide temperatures, intros and variations (derived from kitLogic)
+│   ├── guideData.ts             # guide temperatures (°C + °F), intros, variations, quick-answer sentences
+│   ├── guideContent.ts          # copy for kit item and condition pages
+│   ├── kitRanges.ts             # temperature range per kit item, read off kitLogic
+│   ├── site.ts                  # site facts + structured data builders (Organization, Article, FAQ…)
 │   ├── openmeteo.ts             # forecast, geocoding, hourly slices
 │   ├── gpx.ts                   # GPX parsing (distance, elevation, start point)
 │   ├── rideDuration.ts          # GPX duration from average speed (estimate, recorded or your own)
 │   ├── routeForecast.ts         # GPX: forecast along the route at the time you pass, headwind and descents
 │   ├── consent.ts               # consent storage, GA4 loading, track() for events
 │   └── mapTiles.ts              # map tile providers (primary + fallback)
-├── pages/                       # index, guide/ (hub + [slug] temperature pages), privacy, cookies, 404
+├── pages/                       # index, guide/ (hub, chart, [slug] = temp/item/condition pages), how-it-works,
+│                                # about, llms.txt (generated), privacy, cookies, 404
 └── styles/global.css            # Tailwind theme tokens
 public/
 ├── _headers                     # security headers incl. CSP (Cloudflare Pages)
@@ -98,12 +112,26 @@ public/
 
 The page header (unit toggle, "use my location") lives outside the React island and talks to the calculator through window events: `kitcheck:unit` and `kitcheck:geolocate`.
 
-## SEO structure
+## SEO and GEO structure
 
-- **Homepage = the tool.** Targets tool searches ("cycling kit calculator"); only page with `WebApplication` structured data (`appSchema` prop on `Base.astro`).
-- **Guide = the answers.** `/guide/` targets "what to wear cycling by temperature"; each temperature page targets "what to wear cycling at X°C / X°F", with `BreadcrumbList` structured data.
-- **Adding a temperature:** add an entry with a hand-written intro to `TEMP_PAGES` in `src/lib/guideData.ts`. Only add temperatures where the advice actually differs — near-duplicate pages hurt more than they help.
-- **Changing `kitLogic.ts` thresholds:** the generated kit lists update automatically, but re-read the intros in `guideData.ts` and the general FAQ answers in `src/pages/guide/index.astro`.
+The goal: rank in Google and Bing, and be the source AI answers (Gemini/AI Overviews, ChatGPT, Perplexity, Claude) quote. AI tools can't run the calculator, so the knowledge inside `kitLogic.ts` is also published as plain, quotable text.
+
+- **Homepage = the tool.** Targets tool searches ("cycling kit calculator"); only page with `WebApplication` structured data (`appSchema` prop). Also carries a generated quick reference by temperature.
+- **Guide = the answers.** `/guide/` targets "what to wear cycling by temperature". Under it, one `[slug]` route with three templates:
+  - temperature pages (`what-to-wear-cycling-10-degrees`), °F in the title and text, each with its own intro;
+  - kit item pages (`when-to-wear-arm-and-knee-warmers`…): range per effort level from `kitRanges.ts`; a page can cover a second item (`extra`);
+  - condition pages (rain, wind, winter, summer) with a generated kit table.
+- **Chart** (`/guide/cycling-temperature-chart/`): interactive (temperature slider, effort, wind/rain, range bars per item), computed in the browser from `kitLogic`; the full table stays in the HTML (collapsed) for search engines. Meant to be linked to and quoted.
+- **FAQs** are collapsed with the first one open: crawlers read collapsed answers too.
+- **How it works / About:** the method in plain text and who's behind it (trust signals for Google and AI tools).
+- **Every article** starts with a generated "Short answer", ends with FAQs, and has `Article` + `BreadcrumbList` + `FAQPage` structured data in one `@graph` with the site's `WebSite`/`Organization`/`Person` nodes (`src/lib/site.ts`). Bump `CONTENT_UPDATED` there when guide content changes.
+- **`/sitemap/`** is the human-readable overview of every page by section (linked in the footer), generated from the same data as the pages. Search engines use `/sitemap-index.xml`.
+- **`/llms.txt`** (summary, quick reference, links) and **`/llms-full.txt`** (every kit list, range and answer as plain text) are generated at build time.
+- **Positioning in copy and data:** brand-neutral (no products or affiliate links), adjusted for effort and the real forecast, no app or account. This is what sets kitcheck.cc apart from the brand blogs and apps that rank for these searches, so keep it visible.
+- **Freshness:** articles show an "Updated" date (no personal byline: kitcheck.cc, the organisation, is the author in structured data) and carry `og:type=article` with modified time; the sitemap has `lastmod`. All three come from `CONTENT_UPDATED` in `src/lib/site.ts`: bump it when guide content changes. The 404 is `noindex` and not in the sitemap.
+- **Temperature pages** also answer the °F question ("…at 50 degrees Fahrenheit?"), compare with the neighbouring temperatures and link to the kit guides for the items in the list.
+- **Adding pages:** temperature → `TEMP_PAGES` in `guideData.ts`; item or condition → `guideContent.ts`. Only add pages where the advice actually differs: near-duplicates (50°F = 10°C, 25 vs 30°C, arm vs knee warmers) were merged on purpose, because thin look-alike pages hurt more than they help.
+- **Changing `kitLogic.ts` thresholds:** generated lists, ranges and answers update automatically, but re-read the hand-written intros (`guideData.ts`), the copy in `guideContent.ts` and the FAQ in `src/pages/guide/index.astro`.
 
 ## Raas Racing Team banner
 

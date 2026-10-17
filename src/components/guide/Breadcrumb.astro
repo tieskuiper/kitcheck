@@ -1,0 +1,16 @@
+---
+/** Visible breadcrumb; pages add the matching BreadcrumbList to their structured data */
+interface Props { items: { name: string; href?: string }[] }
+const { items } = Astro.props;
+---
+
+<nav class="flex flex-wrap items-center gap-2 text-xs text-text-light mb-5" aria-label="Breadcrumb">
+  {items.map((it, i) => (
+    <>
+      {i > 0 && <span aria-hidden="true">›</span>}
+      {it.href
+        ? <a href={it.href} class="hover:text-text-mid transition-colors">{it.name}</a>
+        : <span class="text-text-mid" aria-current="page">{it.name}</span>}
+    </>
+  ))}
+</nav>

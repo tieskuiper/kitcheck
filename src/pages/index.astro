@@ -4,17 +4,50 @@ import Calculator from "../components/calculator/Calculator";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import TeamBanner from "../components/TeamBanner.astro";
-import { TEMP_PAGES, toF, pathFor } from "../lib/guideData";
+import { IconArrowRight } from "@central-icons-react/round-outlined-radius-3-stroke-2";
+import { toF, pathFor, kitAt, kitSentence, conditionsAt } from "../lib/guideData";
+import { TIER_ACCENT } from "../components/calculator/constants";
+import FaqList from "../components/guide/FaqList.astro";
+import { faqNode } from "../lib/site";
+
+// Quick reference for the homepage: the answer people (and AI tools) look for, in plain text
+const QUICK_TEMPS = [-5, 0, 5, 10, 15, 20, 25];
+const lowerFirst = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
+
+// The questions people ask search engines and AI tools before a ride, answered in plain text
+const faq = [
+  {
+    q: "What should I wear cycling today?",
+    a: `It depends on the feels-like temperature, wind, rain and how hard you ride. Enter your location above and kitcheck.cc reads the hourly forecast for your ride and gives you a kit list for head, upper body, hands, legs and feet. At a moderate pace in dry weather, as a rule of thumb: at 5°C (41°F): ${lowerFirst(kitSentence(kitAt(5)))} At 15°C (59°F): ${lowerFirst(kitSentence(kitAt(15)))}`,
+  },
+  {
+    q: "Is there an app that tells me what to wear cycling?",
+    a: "kitcheck.cc works in the browser on your phone or computer: free, with no app to install, no account and no ads. It uses the live forecast for your location or GPX route, and the advice is brand-neutral: it never recommends products.",
+  },
+  {
+    q: "Does it work in Fahrenheit?",
+    a: "Yes. Switch between °C and °F at the top of the page; wind and distances follow (mph and miles). Visitors in the US start in °F automatically.",
+  },
+  {
+    q: "Can I use my route?",
+    a: "Yes. Upload a GPX file and kitcheck.cc takes the forecast at points along the route for the time you will pass them, at the right altitude. It judges the wind against your direction and flags long descents and the coldest point of the ride. The file never leaves your browser.",
+  },
+  {
+    q: "How accurate is the kit advice?",
+    a: "It is a well-informed starting point based on the forecast's feels-like temperature, your effort and how warm you run. Forecasts can be wrong and people differ, so set your warmth tendency once if the advice runs too warm or too cold for you. How it works explains every step.",
+  },
+];
 ---
 
 <Base
-  title="Cycling Kit Calculator: What to Wear for Your Ride Today | kitcheck.cc"
-  description="Free cycling kit calculator. Get a kit list for your ride based on the real forecast (temperature, wind and rain) and how hard you're riding."
+  title="What to Wear Cycling Today: Free Kit Calculator | kitcheck.cc"
+  description="What should you wear on the bike today? Free cycling kit calculator: a kit list from the real forecast, adjusted for your effort. No app needed."
   canonical="https://kitcheck.cc/"
   appSchema
+  schema={[faqNode(faq)]}
 >
   <!-- HEADER -->
-  <SiteHeader>
+  <SiteHeader slot="header">
     <div
       class="flex rounded-lg border border-border overflow-hidden"
       style="font-family:var(--font-head); font-size:13px; font-weight:600; line-height:1"
@@ -37,17 +70,13 @@ import { TEMP_PAGES, toF, pathFor } from "../lib/guideData";
   <!-- INTRO -->
   <section class="bg-bg">
     <div class="container">
-      <div
-        class="max-w-2xl mx-auto text-center pt-16 md:pt-18 lg:pt-20 pb-10 md:pb-12"
-      >
-        <h1
-          class="font-head text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1] text-text mb-4"
-        >
+      <div class="max-w-2xl mx-auto text-center pt-14 md:pt-18 lg:pt-20 pb-8 md:pb-10">
+        <h1 class="font-head text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1] text-text mb-4">
           <span class="text-coral">What to wear cycling</span>, sorted before you ride.
         </h1>
-        <p class="text-text-mid leading-[1.75] max-w-sm mx-auto font-light">
-          Search your city, set your effort level and get a full kit list in
-          seconds.
+        <p class="text-text-mid leading-[1.75] max-w-sm mx-auto">
+          Search your city, set your effort level and get a full kit list in seconds.
+          Free, no app, no account.
         </p>
       </div>
     </div>
@@ -61,102 +90,64 @@ import { TEMP_PAGES, toF, pathFor } from "../lib/guideData";
   <!-- TEAM -->
   <TeamBanner />
 
-  <!-- HOW IT WORKS -->
+  <!-- QUICK REFERENCE: the answer in plain text, for riders without a location and for search -->
   <section class="border-t border-border bg-bg">
-    <div class="container py-14 md:py-16">
-      <div class="max-w-2xl mb-10">
-        <h2
-          class="font-head font-bold text-2xl md:text-3xl tracking-tight text-text mb-3"
-        >
-          How the cycling kit calculator works
-        </h2>
-        <p class="text-text-mid leading-relaxed">
-          Most cyclists either overdress or underdress. kitcheck.cc is a free
-          cycling clothing calculator that tells you exactly what to wear based
-          on the actual temperature, wind and rain forecast for your ride,
-          adjusted for how hard you plan to push.
-        </p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <div class="bg-white rounded-2xl border border-border p-[22px]">
-          <h3 class="font-head font-bold text-[14px] text-text mb-2">
-            Live weather data
-          </h3>
-          <p class="text-sm text-text-mid leading-relaxed">
-            Search any city worldwide and get today's real conditions:
-            temperature, wind speed and rain probability, pulled directly from
-            the forecast.
+    <div class="container py-14 md:py-18">
+      <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] gap-8 lg:gap-14 items-start">
+        <div>
+          <h2 class="font-head font-bold text-2xl md:text-[1.75rem] tracking-tight leading-tight text-text mb-3">
+            What to wear cycling by temperature
+          </h2>
+          <p class="text-text-mid leading-relaxed mb-6">
+            The short version, at a moderate pace in light wind and no rain. Your ride is never
+            exactly one temperature, which is what the calculator above is for.
           </p>
+          <a href="/guide/cycling-temperature-chart/" class="btn-secondary-outline">Open the temperature chart <IconArrowRight size={16} /></a>
         </div>
-        <div class="bg-white rounded-2xl border border-border p-[22px]">
-          <h3 class="font-head font-bold text-[14px] text-text mb-2">
-            Adjusts for ride intensity
-          </h3>
-          <p class="text-sm text-text-mid leading-relaxed">
-            Riding hard generates real warmth, roughly equivalent to a 5–8°C
-            shift. Set your effort level (easy through to race pace) and the
-            cycling kit recommendation shifts accordingly.
-          </p>
-        </div>
-        <div class="bg-white rounded-2xl border border-border p-[22px]">
-          <h3 class="font-head font-bold text-[14px] text-text mb-2">
-            Complete kit list
-          </h3>
-          <p class="text-sm text-text-mid leading-relaxed">
-            From base layers and thermal tights in cold weather to a
-            short-sleeve jersey and bib shorts in summer. Every layer covered,
-            including gloves and overshoes.
-          </p>
-        </div>
+        <dl class="bg-white rounded-2xl border border-border divide-y divide-border overflow-hidden">
+          {QUICK_TEMPS.map((c) => (
+            <div class="grid grid-cols-[84px_1fr] sm:grid-cols-[110px_1fr] gap-3 px-4 sm:px-5 py-3.5">
+              <dt class="flex items-start gap-2">
+                <span class="mt-2 size-2 rounded-full shrink-0" style={`background:${TIER_ACCENT[conditionsAt(c).label]}`} aria-hidden="true"></span>
+                <span>
+                  <a href={pathFor(c)} aria-label={`What to wear cycling at ${c}°C`} class="font-head font-bold text-text hover:text-coral transition-colors">{c}°C</a>
+                  <span class="block text-xs text-text-light">{toF(c)}°F</span>
+                </span>
+              </dt>
+              <dd class="text-sm text-text-mid leading-relaxed">{kitSentence(kitAt(c))}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
     </div>
   </section>
 
-  <!-- GUIDE TEASER -->
-  <section class="bg-bg-dark">
-    <div class="container py-12 md:py-14">
-      <div
-        class="flex flex-col sm:flex-row sm:items-center justify-between gap-6"
-      >
-        <div>
-          <p class="font-head font-bold text-xl text-white mb-1">
-            Not sure what kit you need?
-          </p>
-          <p class="text-sm text-white/60">
-            The guide covers every temperature from a winter freeze to a hot
-            summer day, with notes on rain, wind and ride intensity.
-          </p>
-          <nav class="flex flex-wrap gap-x-4 gap-y-2 mt-4" aria-label="Kit by temperature">
-            {
-              TEMP_PAGES.map(({ tempC }) => (
-                <a href={pathFor(tempC)} class="font-head text-[13px] font-semibold text-white/80 hover:text-white underline underline-offset-4 decoration-white/30 transition-colors">
-                  {tempC}°C <span class="text-white/50">({toF(tempC)}°F)</span>
-                </a>
-              ))
-            }
-          </nav>
-        </div>
-        <a href="/guide/" class="btn-primary">Read the kit guide</a>
-      </div>
-    </div>
-  </section>
+  <FaqList faq={faq} lead="What riders want to know before using kitcheck.cc, and before every ride." />
 
   <!-- FOOTER -->
-  <SiteFooter />
+  <SiteFooter slot="footer" />
 
   <script>
+    import { preferredUnit } from "../lib/units";
     const btnC = document.getElementById("unit-c") as HTMLButtonElement;
     const btnF = document.getElementById("unit-f") as HTMLButtonElement;
 
-    function setUnit(unit: "C" | "F") {
+    function paint(unit: "C" | "F") {
       btnC.style.background = unit === "C" ? "#FF5130" : "transparent";
       btnC.style.color = unit === "C" ? "#ffffff" : "#6B6A67";
       btnF.style.background = unit === "F" ? "#FF5130" : "transparent";
       btnF.style.color = unit === "F" ? "#ffffff" : "#6B6A67";
+    }
+
+    function setUnit(unit: "C" | "F") {
+      paint(unit);
       window.dispatchEvent(
         new CustomEvent("kitcheck:unit", { detail: { unit } }),
       );
     }
+
+    // Same starting unit as the calculator: saved choice, else °F only in a US timezone
+    paint(preferredUnit());
 
     btnC.addEventListener("click", () => setUnit("C"));
     btnF.addEventListener("click", () => setUnit("F"));

@@ -31,11 +31,12 @@ export default function KitCard({ kitResult, score, unit, highlights, startHour 
           {score.label} conditions
         </div>
         {/* Feels like on the bike — what the whole kit list is based on */}
-        <div className="flex items-center gap-1.5">
+        {/* relative on the row, not the icon: the tooltip then lines up with the card edge on phones */}
+        <div className="relative flex items-center gap-1.5">
           <span className="text-[13px] opacity-85">
             Feels like <strong className="opacity-100">{unit === 'F' ? `${toF(kitResult.feelsLikeC)}°F` : `${kitResult.feelsLikeC}°C`}</strong> on the bike
           </span>
-          <div className="relative group">
+          <div className="group">
             <button aria-label="What 'feels like on the bike' means" className="flex items-center">
               <IconCircleInfo size={15} className="text-white/60 hover:text-white/90 transition-colors" />
             </button>
@@ -105,6 +106,14 @@ export default function KitCard({ kitResult, score, unit, highlights, startHour 
             {kitResult.rain === 'likely'
               ? <><strong>Rain is likely</strong> — rain gear included above.</>
               : <><strong>Chance of showers</strong> — a packable jacket is listed as optional.</>}
+          </span>
+        </div>
+      )}
+      {kitResult.lighterOption && (
+        <div className="mt-2 bg-white rounded-xl py-[11px] px-[14px] border border-black/[8%] flex gap-2 items-center">
+          <IconCircleInfo size={16} className="text-text-mid shrink-0" />
+          <span className="text-[12px] text-text-mid leading-[1.5]">
+            <strong className="text-text">Riding hard in the cold?</strong> You could go lighter ({kitResult.lighterOption}), but expect to feel cold at the start and on descents.
           </span>
         </div>
       )}

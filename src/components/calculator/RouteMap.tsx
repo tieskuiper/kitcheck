@@ -57,6 +57,17 @@ function WindBadge({ weather, unit }: { weather: HourlySlice; unit: Unit }) {
 }
 
 // ── Route map ─────────────────────────────────────────────────────────────────
+/** Add a stylesheet once and wait for it, so the map never renders unstyled */
+function loadStylesheet(href: string): Promise<void> {
+  const existing = document.querySelector<HTMLLinkElement>(`link[href="${href}"]`)
+  if (existing) return Promise.resolve()
+  return new Promise(resolve => {
+    const link = Object.assign(document.createElement('link'), { rel: 'stylesheet', href })
+    link.onload = link.onerror = () => resolve()
+    document.head.appendChild(link)
+  })
+}
+
 export default function RouteMap({ route, unit, weather, samples = [], highlights, startHour }: {
   route: GpxRoute; unit: Unit; weather: HourlySlice | null
   /** Forecast along the route — colours the line by how it feels */
@@ -79,7 +90,8 @@ export default function RouteMap({ route, unit, weather, samples = [], highlight
       import('maplibre-gl'),
       // MapLibre 6 runs its worker as a separate module; let Vite bundle it and hand over the URL
       import('maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'),
-      import('maplibre-gl/dist/maplibre-gl.css'),
+      // ?url keeps the 83 KB stylesheet out of the page <head>: it only loads once a map is shown
+      import('maplibre-gl/dist/maplibre-gl.css?url').then(({ default: href }) => loadStylesheet(href)),
     ]).then(([L, { maplibreGL }, { setWorkerUrl }, { default: workerUrl }]) => {
       if (cancelled || !mapRef.current) return
       setWorkerUrl(workerUrl)

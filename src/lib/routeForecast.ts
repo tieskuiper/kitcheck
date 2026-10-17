@@ -4,6 +4,7 @@
  * Also works out the wind relative to the riding direction and where the long descents are.
  */
 import { haversineKm, type GpxRoute } from './gpx'
+import { RAIN_LIKELY } from './kitLogic'
 import type { HourWeather } from './kitLogic'
 
 export interface RoutePoint {
@@ -49,6 +50,9 @@ const HEADWIND_KMH = 12        // from here a headwind is worth mentioning
 const DESCENT_MIN_DROP_M = 150
 const DESCENT_MIN_KM = 2
 const DESCENT_COOL_BELOW = 20  // feels-like °C below which a descent gets a note
+
+/** For docs/kit-logic.md */
+export const ROUTE_CONSTANTS = { STEP_KM, MAX_POINTS, HEADWIND_KMH, DESCENT_MIN_DROP_M, DESCENT_MIN_KM, DESCENT_COOL_BELOW } as const
 
 /** Cumulative distance (km) at every GPX point, scaled to the route's reported distance */
 export function cumulativeKm(route: GpxRoute): number[] {
@@ -203,8 +207,9 @@ export function routeHighlights(samples: RouteSample[], descents: Descent[], dis
     result.coldest = { km: coldest.km, offsetH: coldest.offsetH, apparentTemp: coldest.apparentTemp, ele: coldest.ele }
   }
 
-  if (start.precipProb < 50) {
-    const wet = samples.find(s => s.precipProb >= 50)
+  // Same threshold as the kit's rain gear, so "rain likely" on the route matches the kit list
+  if (start.precipProb < RAIN_LIKELY) {
+    const wet = samples.find(s => s.precipProb >= RAIN_LIKELY)
     if (wet) result.rain = { km: wet.km, offsetH: wet.offsetH, precipProb: wet.precipProb }
   }
 

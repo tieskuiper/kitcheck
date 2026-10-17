@@ -1,26 +1,55 @@
 ---
 const { pathname } = Astro.url;
+
+const NAV = [
+  { href: "/guide/", label: "Kit guide" },
+  { href: "/guide/cycling-temperature-chart/", label: "Temperature chart" },
+];
+// The guide link stays active on every guide article, except the chart (its own item)
+const isActive = (href: string) =>
+  href === "/guide/"
+    ? pathname.startsWith("/guide/") && !pathname.startsWith("/guide/cycling-temperature-chart/")
+    : pathname.startsWith(href);
 ---
 
-<header class="bg-bg border-b border-border sticky top-0 z-40">
+<header class="bg-bg/90 backdrop-blur-md border-b border-border sticky top-0 z-40">
   <div class="container">
-    <div class="flex items-center justify-between h-16">
+    <div class="flex items-center justify-between gap-4 h-16">
       <a
         href="/"
-        class="font-head font-bold text-xl text-text tracking-tight hover:opacity-80 transition-opacity"
+        class="font-head font-bold text-xl text-text tracking-tight hover:opacity-80 transition-opacity shrink-0"
       >
         kitcheck<span class="text-coral">.cc</span>
       </a>
 
-      <nav class="flex items-center gap-5">
-        <a
-          href="/guide/"
-          class={`font-head text-sm font-semibold transition-colors ${pathname === "/guide/" ? "text-text" : "text-text-mid hover:text-text"}`}
-        >
-          Kit guide
-        </a>
-        <slot />
+      <nav class="hidden md:flex items-center gap-1" aria-label="Main">
+        {NAV.map((n) => (
+          <a
+            href={n.href}
+            aria-current={isActive(n.href) ? "page" : undefined}
+            class={`font-head text-sm font-semibold px-3 py-2 rounded-lg transition-colors ${isActive(n.href) ? "text-text bg-black/4" : "text-text-mid hover:text-text"}`}
+          >
+            {n.label}
+          </a>
+        ))}
       </nav>
+
+      <div class="flex items-center gap-2">
+        <slot />
+        <!-- Mobile menu: <details> needs no JavaScript -->
+        <details class="md:hidden relative group">
+          <summary class="list-none [&::-webkit-details-marker]:hidden flex items-center justify-center size-9 rounded-lg border border-border cursor-pointer" aria-label="Menu">
+            <svg class="size-4 group-open:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+            <svg class="size-4 hidden group-open:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+          </summary>
+          <nav class="absolute right-0 top-[calc(100%+8px)] w-56 bg-white rounded-xl border border-border shadow-[0_12px_32px_rgba(0,0,0,0.12)] p-1.5" aria-label="Main">
+            <a href="/" class="block font-head text-sm font-semibold px-3 py-2.5 rounded-lg text-text-mid hover:bg-black/4">Calculator</a>
+            {NAV.map((n) => (
+              <a href={n.href} class={`block font-head text-sm font-semibold px-3 py-2.5 rounded-lg hover:bg-black/4 ${isActive(n.href) ? "text-text" : "text-text-mid"}`}>{n.label}</a>
+            ))}
+          </nav>
+        </details>
+      </div>
     </div>
   </div>
 </header>

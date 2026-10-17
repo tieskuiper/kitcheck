@@ -1,0 +1,203 @@
+---
+/**
+ * The method behind the recommendations, in plain text. AI tools and search engines can't run
+ * the calculator, but they can quote this. Numbers come from kitLogic where possible.
+ */
+import Base from "../layouts/Base.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import PageHero from "../components/ui/PageHero.astro";
+import CtaBand from "../components/ui/CtaBand.astro";
+import { getKitRecommendation, KIT_CONSTANTS } from "../lib/kitLogic";
+import { INTENSITY_OPTIONS, WARMTH_LABELS } from "../components/calculator/constants";
+import { toF } from "../lib/guideData";
+import { abs, articleNode, breadcrumbNode } from "../lib/site";
+import { IconCloudySun, IconGauge, IconHand5Finger, IconRainy, IconChecklist } from "@central-icons-react/round-outlined-radius-3-stroke-2";
+
+const canonical = abs("/how-it-works/");
+const title = "How kitcheck.cc decides what you should wear";
+const description = "How the kitcheck.cc cycling kit calculator works: forecast data, effort, warmth tendency, wind and rain, and why gloves and overshoes are chosen differently.";
+
+const at10 = (o: Partial<Parameters<typeof getKitRecommendation>[0]>) =>
+  getKitRecommendation({ apparentTemp: 10, windspeed: 10, precipProb: 0, warmthBias: 0, intensity: "moderate", ...o }).feelsLikeC;
+const effort = INTENSITY_OPTIONS.map((o) => ({ label: o.label, desc: o.desc, c: at10({ intensity: o.value }) }));
+const warmth = WARMTH_LABELS.map((label, i) => ({ label, c: at10({ warmthBias: i - 2 }) }));
+const t = (c: number) => `${c}°C (${toF(c)}°F)`;
+
+// Bar length on a 0–25°C scale, for the "feels like" blocks
+const barWidth = (c: number) => `${Math.max(6, Math.min(100, (c / 25) * 100))}%`;
+---
+
+<Base
+  title="How the Cycling Kit Calculator Works | kitcheck.cc"
+  description={description}
+  canonical={canonical}
+  article
+  schema={[
+    articleNode({ url: canonical, headline: title, description, lang: "en" }),
+    breadcrumbNode([{ name: "kitcheck.cc", url: abs("/") }, { name: "How it works", url: canonical }]),
+  ]}
+>
+  <SiteHeader slot="header">
+    <a href="/" class="btn-primary max-sm:hidden">Use the calculator</a>
+  </SiteHeader>
+
+  <PageHero
+    byline
+    eyebrow="How it works"
+    title="From forecast to <span class='text-coral'>kit list</span>"
+    lead="kitcheck.cc turns the weather for your ride into a kit list for head, upper body, hands, legs and feet. Here's how, in five steps."
+    crumbs={[{ name: "kitcheck.cc", href: "/" }, { name: "How it works" }]}
+  />
+
+  <section class="bg-bg">
+    <div class="container py-16 md:py-20">
+      <ol class="max-w-4xl mx-auto flex flex-col gap-4">
+
+        <li class="step">
+          <div class="step-num"><IconCloudySun size={20} /></div>
+          <div>
+            <p class="step-eyebrow">Step 1</p>
+            <h2 class="step-title">The forecast for your whole ride</h2>
+            <p class="step-text">
+              The hourly forecast from <a href="https://open-meteo.com" rel="noopener" class="text-coral">Open-Meteo</a> for every
+              hour of your ride window: the feels-like temperature (wind chill and humidity included), wind speed and
+              the chance of rain. A cold start or rain later in the ride shows up in the advice.
+            </p>
+            <p class="step-text">
+              With a GPX route, the forecast is taken at points along the route (about every 6 km, or further apart on very long routes, plus the highest
+              point) for the time you'll pass them. Wind is judged against your direction: a headwind counts fully, a
+              tailwind barely.
+            </p>
+          </div>
+        </li>
+
+        <li class="step">
+          <div class="step-num"><IconGauge size={20} /></div>
+          <div class="min-w-0">
+            <p class="step-eyebrow">Step 2</p>
+            <h2 class="step-title">How it feels on the bike</h2>
+            <p class="step-text">Riding hard feels much warmer than an easy spin. With a forecast of {t(10)}, it feels like:</p>
+            <ul class="grid gap-2 mt-4">
+              {effort.map((e) => (
+                <li class="grid grid-cols-[110px_1fr_auto] sm:grid-cols-[150px_1fr_auto] items-center gap-3 text-sm">
+                  <span><strong class="font-head text-text">{e.label}</strong><span class="block text-xs text-text-light">{e.desc}</span></span>
+                  <span class="h-2.5 rounded-full bg-bg-card overflow-hidden"><span class="block h-full rounded-full bg-coral" style={`width:${barWidth(e.c)}`}></span></span>
+                  <span class="font-head font-semibold text-text tabular-nums">{e.c}°C <span class="text-text-light font-normal">{toF(e.c)}°F</span></span>
+                </li>
+              ))}
+            </ul>
+            <p class="step-text mt-5">How warm you naturally run counts too. At a moderate pace and {t(10)}:</p>
+            <div class="flex flex-wrap gap-1.5 mt-3">
+              {warmth.map((w) => (
+                <span class="font-head text-[12px] font-semibold text-text-mid bg-bg rounded-lg border border-border px-2.5 py-1.5">{w.label}: <span class="text-text">{w.c}°C</span></span>
+              ))}
+            </div>
+            <p class="step-text mt-4">
+              Strong wind adds a small extra penalty for riding into it. From about 25 km/h (16 mph) a wind gilet is
+              suggested as an option.
+            </p>
+          </div>
+        </li>
+
+        <li class="step">
+          <div class="step-num"><IconHand5Finger size={20} /></div>
+          <div>
+            <p class="step-eyebrow">Step 3</p>
+            <h2 class="step-title">Hands, feet and head are different</h2>
+            <p class="step-text">
+              Effort warms your body, but your fingers, toes and ears barely benefit. For gloves, overshoes and head
+              covering, effort counts for only about a third and warmth tendency for three quarters. That's why riding
+              hard lightens your layers but not your gloves.
+            </p>
+            <p class="step-text">
+              Near freezing (a feels-like of {KIT_CONSTANTS.COLD_EFFORT_FLOOR_C}°C or lower), effort doesn't lighten the body kit either: you start cold,
+              and every stop or descent is cold. The kit card mentions the lighter option instead.
+            </p>
+            <p class="step-text">
+              Gloves and overshoes are chosen for the whole ride, because nobody carries a second pair. If it gets colder
+              or wet later, you get the warmer pair from the start, with a note saying why.
+            </p>
+          </div>
+        </li>
+
+        <li class="step">
+          <div class="step-num"><IconRainy size={20} /></div>
+          <div>
+            <p class="step-eyebrow">Step 4</p>
+            <h2 class="step-title">Rain and heat</h2>
+            <div class="grid sm:grid-cols-3 gap-2 mt-4">
+              <div class="fact"><span class="fact-value">40%</span><span class="fact-text">chance of rain: packable rain jacket as an option</span></div>
+              <div class="fact"><span class="fact-value">60%</span><span class="fact-text">rain likely: rain kit scaled to the temperature</span></div>
+              <div class="fact"><span class="fact-value">27°C</span><span class="fact-text">from {t(27)} feels-like: extra bottle and sunscreen</span></div>
+            </div>
+            <p class="step-text mt-4">
+              Cold rain gets a waterproof jacket, gloves and overshoes; mild rain a packable jacket and thin rain
+              overshoes; warm rain makes the jacket optional.
+            </p>
+          </div>
+        </li>
+
+        <li class="step">
+          <div class="step-num"><IconChecklist size={20} /></div>
+          <div>
+            <p class="step-eyebrow">Step 5</p>
+            <h2 class="step-title">Required and optional</h2>
+            <p class="step-text">
+              Every zone gets required items and, where it's a judgement call, optional ones: arm warmers on a fresh
+              spring morning, toe covers on a long descent. When conditions change during the ride, notes tell you when
+              to take something off or put it on.
+            </p>
+          </div>
+        </li>
+      </ol>
+
+      <div class="max-w-4xl mx-auto mt-10 rounded-2xl border border-dashed border-black/15 p-6 sm:p-7">
+        <h2 class="font-head font-bold text-lg text-text mb-2">Limits</h2>
+        <p class="text-[15px] text-text-mid leading-relaxed">
+          The recommendation is a well-informed starting point, not a guarantee. Forecasts can be wrong, especially for
+          rain more than a day ahead, and people differ: use the warmth tendency setting if the advice is consistently
+          too warm or too cold for you. The logic is built for road cycling. The <a href="/guide/" class="text-coral">kit guide</a> and
+          the <a href="/guide/cycling-temperature-chart/" class="text-coral">temperature chart</a> use the same logic.
+        </p>
+      </div>
+
+      <div class="max-w-4xl mx-auto mt-4 rounded-2xl border border-border bg-white p-6 sm:p-7">
+        <h2 class="font-head font-bold text-lg text-text mb-2">Sources and independence</h2>
+        <ul class="text-[15px] text-text-mid leading-relaxed list-disc pl-5 space-y-1">
+          <li>Forecast data, including the feels-like (apparent) temperature: <a href="https://open-meteo.com/en/docs" rel="noopener" class="text-coral">Open-Meteo forecast API</a></li>
+          <li>Place search and names: <a href="https://open-meteo.com/en/docs/geocoding-api" rel="noopener" class="text-coral">Open-Meteo geocoding</a> and <a href="https://nominatim.org" rel="noopener" class="text-coral">Nominatim</a> (OpenStreetMap)</li>
+          <li>The kit rules are kitcheck.cc's own, tuned on real rides with <a href="/about/" class="text-coral">Raas Racing Team</a>.</li>
+          <li>Brand-neutral: no sponsored products, affiliate links or ads in the advice.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand title="See it work on your ride" />
+  <SiteFooter slot="footer" />
+
+  <style>
+    .step {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 1rem 1.25rem;
+      background: #fff;
+      border: 1px solid var(--color-border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+    }
+    @media (min-width: 640px) { .step { padding: 2rem; gap: 1rem 1.75rem; } }
+    .step-num {
+      display: flex; align-items: center; justify-content: center;
+      width: 2.75rem; height: 2.75rem; border-radius: 0.75rem;
+      background: rgb(255 81 48 / 0.1); color: var(--color-coral);
+    }
+    .step-eyebrow { font-family: var(--font-head); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-coral); }
+    .step-title { font-family: var(--font-head); font-weight: 700; font-size: 1.25rem; color: var(--color-text); margin: 0.25rem 0 0.5rem; }
+    .step-text { font-size: 0.9375rem; line-height: 1.75; color: var(--color-text-mid); margin-top: 0.5rem; }
+    .fact { display: flex; flex-direction: column; gap: 0.25rem; background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 0.75rem; padding: 0.875rem 1rem; }
+    .fact-value { font-family: var(--font-head); font-weight: 700; font-size: 1.375rem; color: var(--color-text); }
+    .fact-text { font-size: 0.8125rem; line-height: 1.5; color: var(--color-text-mid); }
+  </style>
+</Base>

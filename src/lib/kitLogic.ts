@@ -40,6 +40,8 @@ export interface KitResult {
   rain:  RainLevel
   /** Hot enough to mention water and sunscreen */
   heat:  boolean
+  /** Near freezing at a hard effort: the lighter body kit the rider could get away with */
+  lighterOption?: string
   head:  ZoneRecommendation
   torso: ZoneRecommendation
   hands: ZoneRecommendation
@@ -61,9 +63,14 @@ export interface HourWeather {
   precipProb:   number
 }
 
-const RAIN_LIKELY  = 60   // % — full rain kit (scaled to temperature)
+export const RAIN_LIKELY = 60   // % — full rain kit (scaled to temperature)
 const RAIN_SHOWERS = 40   // % — packable jacket as an option
 const HEAT_FROM_C  = 27   // forecast feels-like °C
+const WINDY_KMH    = 25   // above this: windproof note and an optional wind gilet
+const WARMTH_STEP  = 7.5  // score points per step of warmth tendency (-2 … +2)
+// At or below this forecast feels-like (°C), effort no longer lightens the body kit: you start
+// cold and every stop or descent is cold. The lighter kit is shown as an option instead.
+const COLD_EFFORT_FLOOR_C = 2
 
 // Effort and warmth tendency reach the hands, feet and head only partly
 const EXTREMITY_EFFORT = 0.35
@@ -92,11 +99,14 @@ const INTENSITY_BONUS: Record<Intensity, number> = { easy: -5, moderate: 0, hard
 
 // The forecast feels-like already includes wind chill; this only adds the extra airflow
 // of riding into it, so it's deliberately small
+const WIND_PENALTY: { overKmh: number; points: number }[] = [
+  { overKmh: 30, points: 6 },
+  { overKmh: 20, points: 4 },
+  { overKmh: 12, points: 2 },
+]
+
 function windPenalty(kmh: number): number {
-  if (kmh > 30) return 6
-  if (kmh > 20) return 4
-  if (kmh > 12) return 2
-  return 0
+  return WIND_PENALTY.find(w => kmh > w.overKmh)?.points ?? 0
 }
 
 const clampScore = (s: number) => Math.round(Math.max(0, Math.min(110, s)))
@@ -104,33 +114,60 @@ const clampScore = (s: number) => Math.round(Math.max(0, Math.min(110, s)))
 export function calcComfortScore(input: RiderInput): number {
   return clampScore(
     tempToScore(input.apparentTemp) + INTENSITY_BONUS[input.intensity]
-    + input.warmthBias * 7.5 - windPenalty(input.windspeed),
+    + input.warmthBias * WARMTH_STEP - windPenalty(input.windspeed),
   )
 }
 
 function calcExtremityScore(input: RiderInput): number {
   return clampScore(
     tempToScore(input.apparentTemp) + INTENSITY_BONUS[input.intensity] * EXTREMITY_EFFORT
-    + input.warmthBias * 7.5 * EXTREMITY_WARMTH - windPenalty(input.windspeed),
+    + input.warmthBias * WARMTH_STEP * EXTREMITY_WARMTH - windPenalty(input.windspeed),
   )
 }
+
+/** The tuning numbers in one place: docs/kit-logic.md reads these, so the doc can't drift */
+export const KIT_CONSTANTS = {
+  RAIN_LIKELY, RAIN_SHOWERS, HEAT_FROM_C, WINDY_KMH, WARMTH_STEP, COLD_EFFORT_FLOOR_C,
+  EXTREMITY_EFFORT, EXTREMITY_WARMTH, INTENSITY_BONUS, WIND_PENALTY,
+} as const
 
 export function getKitRecommendation(input: RiderInput): KitResult {
   const score  = calcComfortScore(input)
   const ext    = calcExtremityScore(input)
   const rain: RainLevel = input.precipProb >= RAIN_LIKELY ? 'likely' : input.precipProb >= RAIN_SHOWERS ? 'showers' : null
-  const isWindy = input.windspeed > 25
+  const isWindy = input.windspeed > WINDY_KMH
+
+  // Near freezing, a hard effort doesn't lighten the body kit (owner decision): dress as for a
+  // moderate pace and mention the lighter option
+  const coldFloor = input.apparentTemp <= COLD_EFFORT_FLOOR_C && INTENSITY_BONUS[input.intensity] > 0
+  const bodyScore = coldFloor ? Math.min(score, calcComfortScore({ ...input, intensity: 'moderate' })) : score
+  const torso = getTorso(bodyScore, rain, isWindy)
+  const legs  = getLegs(bodyScore)
+
   return {
     score,
     feelsLikeC: Math.round(scoreToTemp(score)),
     rain,
     heat:  input.apparentTemp >= HEAT_FROM_C,
+    lighterOption: bodyScore < score ? lighterBodyKit(torso, legs, getTorso(score, rain, isWindy), getLegs(score)) : undefined,
     head:  getHead(ext),
-    torso: getTorso(score, rain, isWindy),
+    torso,
     hands: getHands(ext, rain),
-    legs:  getLegs(score),
+    legs,
     feet:  getFeet(ext, rain),
   }
+}
+
+/** "long-sleeve jersey and bib tights": the required body items that differ in the lighter kit */
+function lighterBodyKit(torso: ZoneRecommendation, legs: ZoneRecommendation, lightTorso: ZoneRecommendation, lightLegs: ZoneRecommendation): string | undefined {
+  const names = (z: ZoneRecommendation) => z.items.filter(i => !i.optional).map(i => i.name)
+  const differ = (a: ZoneRecommendation, b: ZoneRecommendation) => names(a).join('|') !== names(b).join('|')
+  const parts = [
+    ...(differ(torso, lightTorso) ? names(lightTorso) : []),
+    ...(differ(legs, lightLegs) ? names(lightLegs) : []),
+  ].map(n => n.charAt(0).toLowerCase() + n.slice(1))
+  if (!parts.length) return undefined
+  return parts.length === 1 ? parts[0] : `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}`
 }
 
 // Score → approx temp: 20≈0°C  35≈6°C  47≈10°C  50≈11°C  62≈14°C  74≈17°C  86≈20°C  90≈22°C
@@ -182,8 +219,9 @@ function getTorso(score: number, rain: RainLevel, isWindy: boolean): ZoneRecomme
 
 function getHands(score: number, rain: RainLevel): ZoneRecommendation {
   const wet = rain === 'likely'
-  if (score < 20 || (wet && score < 47)) return { item: 'Waterproof winter gloves', items: [{ name: 'Waterproof winter gloves' }], detail: wet ? 'Cold and wet hands are the quickest way to ruin a ride.' : 'Maximum insulation needed.', level: 'heavy', icon: '🧤' }
-  if (score < 35)            return { item: 'Thermal winter gloves',    items: [{ name: 'Thermal winter gloves' }],                                                  detail: 'Insulated gloves. Hands lose heat fast at pace.',                               level: 'heavy',  icon: '🧤' }
+  // Waterproof only when it's wet; in dry cold, the warmest thermal pair (owner decision)
+  if (wet && score < 47)     return { item: 'Waterproof winter gloves', items: [{ name: 'Waterproof winter gloves' }], detail: 'Cold and wet hands are the quickest way to ruin a ride.', level: 'heavy', icon: '🧤' }
+  if (score < 35)            return { item: 'Thermal winter gloves',    items: [{ name: 'Thermal winter gloves' }],                                                  detail: score < 20 ? 'Maximum insulation needed.' : 'Insulated gloves. Hands lose heat fast at pace.', level: 'heavy',  icon: '🧤' }
   if (score < 50)            return { item: 'Light cycling gloves',     items: [{ name: 'Light cycling gloves' }],                                                   detail: 'Wind protection needed. Fingerless gloves won\'t cut it.',                      level: 'medium', icon: '🧤' }
   if (wet && score < 74)     return { item: 'Fingerless gloves',        items: [{ name: 'Fingerless gloves or no gloves' }, { name: 'Light full-finger gloves', optional: true }], detail: 'Light full-finger gloves keep wet hands from going numb.', level: 'light', icon: '🧤' }
   if (score < 62)            return { item: 'Fingerless gloves',        items: [{ name: 'Fingerless gloves or no gloves' }, { name: 'Thin full-finger gloves', optional: true }], detail: 'Fingerless work well — full-finger if you run cold, bare hands if you prefer.',  level: 'light',  icon: '🧤' }
@@ -204,8 +242,9 @@ function getLegs(score: number): ZoneRecommendation {
 function getFeet(score: number, rain: RainLevel): ZoneRecommendation {
   const wet = rain === 'likely'
   // Overshoes range from warm neoprene to thin rain covers: the cold decides which kind
-  if (score < 20 || (wet && score < 35)) return { item: 'Waterproof overshoes', items: [{ name: 'Waterproof winter overshoes' }, { name: 'Thermal socks' }], detail: wet ? 'Wet feet ruin rides. Full neoprene overshoes.' : 'Maximum insulation needed.', level: 'heavy', icon: '👟' }
-  if (score < 35)            return { item: 'Thermal overshoes',    items: [{ name: 'Thermal overshoes' }, { name: 'Thermal socks' }],    detail: 'Wind and cold protection essential. Fleece-lined overshoes.',                               level: 'heavy',  icon: '👟' }
+  // Waterproof only when it's wet; in dry cold, thermal overshoes (owner decision)
+  if (wet && score < 35)     return { item: 'Waterproof overshoes', items: [{ name: 'Waterproof winter overshoes' }, { name: 'Thermal socks' }], detail: 'Wet feet ruin rides. Full neoprene overshoes.', level: 'heavy', icon: '👟' }
+  if (score < 35)            return { item: 'Thermal overshoes',    items: [{ name: 'Thermal overshoes' }, { name: 'Thermal socks' }],    detail: score < 20 ? 'Maximum insulation needed.' : 'Wind and cold protection essential. Fleece-lined overshoes.', level: 'heavy',  icon: '👟' }
   if (wet && score < 50)     return { item: 'Waterproof overshoes', items: [{ name: 'Waterproof overshoes' }],                            detail: 'Keeps your feet dry and takes the edge off the cold.',                                      level: 'medium', icon: '👟' }
   if (score < 50)            return { item: 'Light overshoes',      items: [{ name: 'Light overshoes or toe covers' }],                   detail: 'Feet cool fast at speed — wind protection makes a noticeable difference.',                   level: 'medium', icon: '👟' }
   if (wet && score < 90)     return { item: 'Regular socks',        items: [{ name: 'Regular cycling socks' }, { name: 'Light rain overshoes', optional: true }], detail: 'Thin rain covers keep your shoes and socks dry.', level: 'light', icon: '👟' }
@@ -228,6 +267,11 @@ export function scoreLabel(score: number): { label: string; color: string } {
 
 function levelNum(level: Level): number {
   return { none: 0, light: 1, medium: 2, heavy: 3 }[level]
+}
+
+/** Warmth first; at equal warmth a waterproof pair wins, so rain later in the ride isn't missed */
+function pairRank(z: ZoneRecommendation): number {
+  return levelNum(z.level) * 2 + (z.items.some(i => /waterproof/i.test(i.name)) ? 1 : 0)
 }
 
 function getTorsoNotes(results: KitResult[], hours: HourWeather[]): PhaseNote[] {
@@ -312,7 +356,7 @@ function getTorsoNotes(results: KitResult[], hours: HourWeather[]): PhaseNote[] 
 function forWholeRide(zone: 'hands' | 'feet', results: KitResult[]): ZoneRecommendation {
   let pick = 0
   for (let h = 1; h < results.length; h++) {
-    if (levelNum(results[h][zone].level) > levelNum(results[pick][zone].level)) pick = h
+    if (pairRank(results[h][zone]) > pairRank(results[pick][zone])) pick = h
   }
   const chosen = results[pick][zone]
   const notes: PhaseNote[] = []

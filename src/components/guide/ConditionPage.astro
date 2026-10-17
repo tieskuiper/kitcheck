@@ -1,0 +1,153 @@
+---
+import Base from "../../layouts/Base.astro";
+import SiteHeader from "../SiteHeader.astro";
+import SiteFooter from "../SiteFooter.astro";
+import PageHero from "../ui/PageHero.astro";
+import SectionHead from "../ui/SectionHead.astro";
+import CtaBand from "../ui/CtaBand.astro";
+import FaqList from "./FaqList.astro";
+import KitTable from "./KitTable.astro";
+import { CONDITION_PAGES, KIT_ITEM_PAGES, type ConditionPage } from "../../lib/guideContent";
+import { kitAt, toF, pathFor, TEMP_PAGES } from "../../lib/guideData";
+import { CAT_ICONS } from "../calculator/constants";
+import { abs, articleNode, breadcrumbNode, faqNode } from "../../lib/site";
+import { IconRainy, IconWind, IconSnowFlakes, IconSun } from "@central-icons-react/round-outlined-radius-3-stroke-2";
+
+interface Props { page: ConditionPage }
+const { page } = Astro.props;
+const canonical = abs(`/guide/${page.slug}/`);
+
+const ICONS = { rain: IconRainy, wind: IconWind, snow: IconSnowFlakes, sun: IconSun };
+const Icon = ICONS[page.icon];
+
+const rows = page.table?.temps.map((c) => ({
+  label: `${c}°C`,
+  sublabel: `${toF(c)}°F`,
+  // Link the row to its temperature page when there is one
+  href: TEMP_PAGES.some((p) => p.tempC === c) ? pathFor(c) : undefined,
+  kit: kitAt(c, page.table!.overrides),
+}));
+
+const crumbs = [
+  { name: "kitcheck.cc", url: abs("/") },
+  { name: "Kit guide", url: abs("/guide/") },
+  { name: page.label, url: canonical },
+];
+const related = page.related
+  .map((slug) => KIT_ITEM_PAGES.find((p) => p.slug === slug))
+  .filter((p) => !!p);
+const others = CONDITION_PAGES.filter((p) => p.slug !== page.slug);
+---
+
+<Base
+  title={page.metaTitle}
+  description={page.description}
+  canonical={canonical}
+  article
+  schema={[
+    articleNode({ url: canonical, headline: page.title, description: page.description, lang: "en" }),
+    breadcrumbNode(crumbs),
+    faqNode(page.faq),
+  ]}
+>
+  <SiteHeader slot="header">
+    <a href="/" class="btn-primary max-sm:hidden">Use the calculator</a>
+  </SiteHeader>
+
+  <PageHero
+    byline
+    eyebrow={`Kit guide · ${page.label}`}
+    title={page.title}
+    lead={page.intro}
+    crumbs={[{ name: "kitcheck.cc", href: "/" }, { name: "Kit guide", href: "/guide/" }, { name: page.label }]}
+  >
+    {page.table && <a href="#kit-table" class="btn-primary py-3! px-5! text-[14px]!">{page.table.heading}</a>}
+    <a href="/" class="btn-secondary-outline py-3! px-5! text-[14px]!">Check your ride</a>
+    <Fragment slot="aside">
+      <div class="bg-white rounded-2xl border border-border p-5 sm:p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_-12px_rgba(0,0,0,0.12)]">
+        <div class="flex items-center gap-3 mb-5">
+          <span class="flex items-center justify-center size-11 rounded-xl bg-coral/10 text-coral"><Icon size={22} /></span>
+          <p class="font-head text-[11px] font-semibold tracking-[0.08em] uppercase text-coral">{page.label} at a glance</p>
+        </div>
+        <dl class="divide-y divide-border">
+          {page.facts.map((f) => (
+            <div class="grid grid-cols-[110px_1fr] gap-4 py-3.5 first:pt-0 last:pb-0 items-baseline">
+              <dt class="font-head font-bold text-xl text-text tracking-tight">{f.value}</dt>
+              <dd class="text-sm text-text-mid leading-snug">{f.text}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </Fragment>
+  </PageHero>
+
+  {page.table && rows && (
+    <section class="bg-bg">
+      <div class="container py-16 md:py-20">
+        <SectionHead id="kit-table" eyebrow="Kit table" title={page.table.heading} lead={`${page.table.caption} Generated from the same logic as the calculator.`} />
+        <KitTable rows={rows} caption="Optional items in grey. Click a temperature for the full kit list." />
+      </div>
+    </section>
+  )}
+
+  <section class="bg-bg">
+    <div class="container py-16 md:py-20">
+      <SectionHead eyebrow="What to know" title={`${page.label}: the essentials`} />
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {page.sections.map((s, i) => (
+          <article class="bg-white rounded-2xl border border-border p-6 sm:p-7">
+            <span class="font-head text-[11px] font-bold tracking-[0.08em] text-coral">{String(i + 1).padStart(2, "0")}</span>
+            <h3 class="font-head font-bold text-lg text-text mt-2 mb-2">{s.heading}</h3>
+            {s.body.map((p) => <p class="text-[15px] text-text-mid leading-relaxed mt-2">{p}</p>)}
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <FaqList faq={page.faq} lead={`What riders ask about cycling in ${page.label.toLowerCase() === "winter" ? "winter" : `the ${page.label.toLowerCase()}`}.`} />
+
+  <section class="bg-bg border-t border-border">
+    <div class="container py-16 md:py-20">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        {related.length > 0 && (
+          <div>
+            <p class="font-head text-[11px] font-semibold tracking-[0.08em] uppercase text-coral mb-4">Kit for these conditions</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {related.map((p) => {
+                const Icon = CAT_ICONS[p!.zone];
+                return (
+                  <a href={`/guide/${p!.slug}/`} class="flex items-center gap-3 bg-white rounded-2xl border border-border p-4 hover:border-text-light transition-colors">
+                    <span class="flex items-center justify-center size-9 rounded-xl bg-coral/10 text-coral shrink-0"><Icon size={16} /></span>
+                    <span class="font-head font-bold text-[14px] text-text">{p!.label}</span>
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        )}
+        <div>
+          <p class="font-head text-[11px] font-semibold tracking-[0.08em] uppercase text-coral mb-4">Other conditions</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            {others.map((p) => {
+              const Icon = ICONS[p.icon];
+              return (
+                <a href={`/guide/${p.slug}/`} class="flex items-center gap-3 bg-white rounded-2xl border border-border p-4 hover:border-text-light transition-colors">
+                  <span class="flex items-center justify-center size-9 rounded-xl bg-coral/10 text-coral shrink-0"><Icon size={16} /></span>
+                  <span class="font-head font-bold text-[14px] text-text">{p.label}</span>
+                </a>
+              );
+            })}
+            <a href="/guide/cycling-temperature-chart/" class="flex items-center gap-3 bg-white rounded-2xl border border-border p-4 hover:border-text-light transition-colors">
+              <span class="flex items-center justify-center size-9 rounded-xl bg-coral/10 text-coral shrink-0 font-head font-bold text-sm">°</span>
+              <span class="font-head font-bold text-[14px] text-text">Temperature chart</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand />
+  <SiteFooter slot="footer" />
+</Base>

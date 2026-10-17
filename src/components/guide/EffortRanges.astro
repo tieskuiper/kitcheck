@@ -1,0 +1,55 @@
+---
+/**
+ * Range per effort level as bars on a temperature axis, server-rendered (no JS).
+ * Required = solid, optional = striped, same as the interactive chart.
+ */
+import { itemRangesByIntensity, rangePhrase, type TempRange } from "../../lib/kitRanges";
+import type { RiderInput } from "../../lib/kitLogic";
+import { INTENSITY_OPTIONS } from "../calculator/constants";
+
+interface Props { match: (name: string) => boolean; overrides?: Partial<RiderInput>; label: string }
+const { match, overrides, label } = Astro.props;
+
+const MIN = -10, MAX = 30;
+const pct = (c: number) => ((Math.min(MAX, Math.max(MIN, c)) - MIN) / (MAX - MIN)) * 100;
+const bar = (r: TempRange) => {
+  const from = pct(r.from ?? MIN), to = pct(r.to ?? MAX);
+  return `left:${from}%;width:${to - from}%`;
+};
+const rows = itemRangesByIntensity(match, overrides).map((r) => ({
+  ...r, option: INTENSITY_OPTIONS.find((o) => o.value === r.intensity)!,
+}));
+const ticks = [-10, 0, 10, 20, 30];
+---
+
+<div class="bg-white rounded-2xl border border-border p-5 sm:p-6">
+  <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+    <p class="font-head text-[11px] font-semibold tracking-[0.08em] uppercase text-coral">{label} by effort</p>
+    <div class="flex items-center gap-3 text-[11px] text-text-mid">
+      <span class="flex items-center gap-1.5"><span class="inline-block w-4 h-2 rounded-full bg-coral"></span>Wear</span>
+      <span class="flex items-center gap-1.5"><span class="inline-block w-4 h-2 rounded-full bar-optional"></span>Optional</span>
+    </div>
+  </div>
+  <div class="space-y-4">
+    {rows.map((r) => (
+      <div>
+        <div class="flex items-baseline justify-between gap-3 mb-1.5">
+          <span class="font-head text-[13px] font-bold text-text">{r.option.label} <span class="font-normal text-text-light">· {r.option.desc}</span></span>
+        </div>
+        <div class="relative h-3 rounded-full bg-bg-card">
+          {r.optional && <span class="absolute inset-y-0 rounded-full bar-optional" style={bar(r.optional)}></span>}
+          {r.required && <span class="absolute inset-y-0 rounded-full bg-coral" style={bar(r.required)}></span>}
+        </div>
+        <p class="text-xs text-text-mid mt-1.5">
+          {r.required ? rangePhrase(r.required) : "Not needed"}
+          {r.optional && <span class="text-text-light"> · optional {rangePhrase(r.optional)}</span>}
+        </p>
+      </div>
+    ))}
+  </div>
+  <div class="relative h-4 mt-3 border-t border-border pt-1">
+    {ticks.map((t) => (
+      <span class="absolute -translate-x-1/2 font-head text-[10px] font-semibold text-text-light top-1.5" style={`left:${pct(t)}%`}>{t}°C</span>
+    ))}
+  </div>
+</div>

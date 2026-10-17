@@ -1,7 +1,7 @@
 {
   "name": "kitcheck",
   "type": "module",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "packageManager": "pnpm@11.20.0",
   "engines": {
     "node": ">=22.12.0",
@@ -12,7 +12,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "astro": "astro"
+    "astro": "astro",
+    "docs:kit": "node --no-warnings --import ./scripts/ts-resolve.mjs scripts/kit-docs.mjs",
+    "docs:kit:check": "node --no-warnings --import ./scripts/ts-resolve.mjs scripts/kit-docs.mjs --check"
   },
   "dependencies": {
     "@astrojs/react": "^7.0.1",

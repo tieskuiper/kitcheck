@@ -1,0 +1,148 @@
+---
+import Base from "../../layouts/Base.astro";
+import SiteHeader from "../SiteHeader.astro";
+import SiteFooter from "../SiteFooter.astro";
+import PageHero from "../ui/PageHero.astro";
+import AnswerCard from "../ui/AnswerCard.astro";
+import SectionHead from "../ui/SectionHead.astro";
+import CtaBand from "../ui/CtaBand.astro";
+import { IconArrowRight } from "@central-icons-react/round-outlined-radius-3-stroke-2";
+import FaqList from "./FaqList.astro";
+import EffortRanges from "./EffortRanges.astro";
+import { KIT_ITEM_PAGES, type KitItemPage } from "../../lib/guideContent";
+import { itemRanges, itemSentence } from "../../lib/kitRanges";
+import { TEMP_PAGES, toF, pathFor, conditionsAt } from "../../lib/guideData";
+import { CAT_ICONS, CAT_LABELS, TIER_ACCENT } from "../calculator/constants";
+import { abs, articleNode, breadcrumbNode, faqNode } from "../../lib/site";
+
+interface Props { page: KitItemPage }
+const { page } = Astro.props;
+
+const canonical = abs(`/guide/${page.slug}/`);
+const moderate = itemRanges(page.match, { ...page.overrides, intensity: "moderate" });
+const extra = page.extra
+  ? { ...page.extra, sentence: itemSentence(page.extra, itemRanges(page.extra.match, { ...page.overrides, intensity: "moderate" })) }
+  : null;
+// One quotable answer: the main item, plus the second item on the page (without repeating the effort note)
+const answer = extra
+  ? `${itemSentence(page, moderate, false)} ${extra.sentence.replace(/^At a moderate pace, wear/, "Wear")}`
+  : itemSentence(page, moderate);
+
+// Temperature pages where the item is needed at a moderate pace
+const inRange = TEMP_PAGES.filter(({ tempC }) => {
+  const r = moderate.required ?? moderate.optional;
+  return r && (r.from === null || tempC >= r.from) && (r.to === null || tempC < r.to);
+});
+
+const faq = [
+  { q: `At what temperature should I wear ${page.name} cycling?`, a: extra ? itemSentence(page, moderate) : answer },
+  ...(extra ? [{ q: `At what temperature should I wear ${extra.name} cycling?`, a: extra.sentence }] : []),
+  ...page.faq,
+];
+const crumbs = [
+  { name: "kitcheck.cc", url: abs("/") },
+  { name: "Kit guide", url: abs("/guide/") },
+  { name: page.label, url: canonical },
+];
+const related = KIT_ITEM_PAGES.filter((p) => p.slug !== page.slug);
+---
+
+<Base
+  title={page.metaTitle}
+  description={page.description}
+  canonical={canonical}
+  article
+  schema={[
+    articleNode({ url: canonical, headline: page.title, description: page.description, lang: "en" }),
+    breadcrumbNode(crumbs),
+    faqNode(faq),
+  ]}
+>
+  <SiteHeader slot="header">
+    <a href="/" class="btn-primary max-sm:hidden">Use the calculator</a>
+  </SiteHeader>
+
+  <PageHero
+    byline
+    eyebrow={`Kit guide · ${CAT_LABELS[page.zone]}`}
+    title={page.title}
+    lead={page.intro[0]}
+    crumbs={[{ name: "kitcheck.cc", href: "/" }, { name: "Kit guide", href: "/guide/" }, { name: page.label }]}
+  >
+    <div class="w-full"><AnswerCard text={answer} /></div>
+    <Fragment slot="aside">
+      <div class="flex flex-col gap-3">
+        <EffortRanges match={page.match} overrides={page.overrides} label={extra ? page.name.charAt(0).toUpperCase() + page.name.slice(1) : page.label} />
+        {extra && <EffortRanges match={extra.match} overrides={page.overrides} label={extra.label} />}
+      </div>
+      <p class="text-xs text-text-light mt-3 px-1">
+        Feels-like temperature from the forecast, {page.condition ?? "light wind, no rain"}. Always cold or warm?
+        Set your warmth tendency in the <a href="/" class="text-coral hover:opacity-75">calculator</a>.
+      </p>
+    </Fragment>
+  </PageHero>
+
+  <!-- GOOD TO KNOW -->
+  <section class="bg-bg">
+    <div class="container py-16 md:py-20">
+      <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-8 lg:gap-14">
+        <div>
+          <p class="font-head text-[11px] font-semibold tracking-[0.08em] uppercase text-coral mb-3">Good to know</p>
+          <h2 class="font-head font-bold text-2xl md:text-[2rem] tracking-tight leading-tight text-text text-balance">Practical tips</h2>
+          {page.intro.slice(1).map((p) => <p class="text-text-mid leading-relaxed mt-4">{p}</p>)}
+        </div>
+        <ol class="grid grid-cols-1 sm:grid-cols-3 gap-3 self-start">
+          {page.tips.map((t, i) => (
+            <li class="bg-white rounded-2xl border border-border p-5">
+              <span class="flex items-center justify-center size-8 rounded-full bg-coral text-white font-head text-sm font-bold mb-4">{i + 1}</span>
+              <p class="text-sm text-text-mid leading-relaxed">{t}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <FaqList faq={faq} lead={`What riders ask about ${page.name}${page.extra ? ` and ${page.extra.name}` : ""}, answered with the same ranges as above.`} />
+
+  {inRange.length > 0 && (
+    <section class="bg-bg border-t border-border">
+      <div class="container py-16 md:py-20">
+        <SectionHead eyebrow="Full kit lists" title={`Temperatures where you'll want ${page.name}`} />
+        <div class="flex flex-wrap gap-2.5">
+          {inRange.map(({ tempC }) => {
+            const label = conditionsAt(tempC).label;
+            return (
+              <a href={pathFor(tempC)} class="flex items-center gap-3 bg-white rounded-xl border border-border pl-3 pr-4 py-2.5 hover:border-text-light transition-colors">
+                <span class="size-2.5 rounded-full" style={`background:${TIER_ACCENT[label]}`}></span>
+                <span class="font-head font-bold text-text">{tempC}°C</span>
+                <span class="text-sm text-text-light">{toF(tempC)}°F</span>
+              </a>
+            );
+          })}
+          <a href="/guide/cycling-temperature-chart/" class="flex items-center gap-1 font-head text-sm font-semibold text-coral px-3 hover:opacity-75">Temperature chart <IconArrowRight size={15} /></a>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="bg-bg border-t border-border">
+    <div class="container py-16 md:py-20">
+      <SectionHead eyebrow="More kit" title="When to wear the rest" />
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        {related.map((p) => {
+          const Icon = CAT_ICONS[p.zone];
+          return (
+            <a href={`/guide/${p.slug}/`} class="flex items-center gap-3 bg-white rounded-2xl border border-border p-4 hover:border-text-light transition-colors">
+              <span class="flex items-center justify-center size-9 rounded-xl bg-coral/10 text-coral shrink-0"><Icon size={16} /></span>
+              <span class="font-head font-bold text-[14px] text-text">{p.label}</span>
+            </a>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <CtaBand />
+  <SiteFooter slot="footer" />
+</Base>

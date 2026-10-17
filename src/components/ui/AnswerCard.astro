@@ -1,0 +1,10 @@
+---
+/** The quotable one-paragraph answer at the top of an article */
+interface Props { text: string; label?: string }
+const { text, label = "Short answer" } = Astro.props;
+---
+
+<div class="bg-white rounded-2xl border border-border p-5 sm:p-6">
+  <p class="font-head text-[11px] font-semibold tracking-[0.08em] uppercase text-coral mb-2">{label}</p>
+  <p class="text-[15px] text-text leading-relaxed">{text}</p>
+</div>

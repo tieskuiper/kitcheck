@@ -4,22 +4,25 @@
  * temperature, plus what changes with effort, wind, rain and warmth tendency.
  */
 import { getKitRecommendation, scoreLabel, type KitResult, type RiderInput, type ZoneItem } from './kitLogic'
+import { BASELINE, ZONES, type Zone } from './guideBase'
 
-export const ZONES = ['head', 'torso', 'hands', 'legs', 'feet'] as const
-export type Zone = typeof ZONES[number]
-
-/** Reference conditions for every guide page: moderate effort, light wind, dry, average rider */
-export const BASELINE: Omit<RiderInput, 'apparentTemp'> = {
-  windspeed: 10, precipProb: 0, warmthBias: 0, intensity: 'moderate',
-}
+export { BASELINE, ZONES, type Zone }
 
 export const toF = (c: number) => Math.round(c * 9 / 5 + 32)
-export const slugFor = (c: number) => `what-to-wear-cycling-${c}-degrees`
+export const fToC = (f: number) => (f - 32) * 5 / 9
+const signed = (n: number) => n < 0 ? `minus-${-n}` : `${n}`
+export const slugFor = (c: number) => `what-to-wear-cycling-${signed(c)}-degrees`
 export const pathFor = (c: number) => `/guide/${slugFor(c)}/`
+
+export type TempUnit = 'C' | 'F'
 
 // Intros are hand-written per temperature (unique content per page) but must stay in line
 // with what kitLogic recommends — re-read them when the thresholds change.
 export const TEMP_PAGES: { tempC: number; intro: string }[] = [
+  {
+    tempC: -5,
+    intro: "Minus five is full winter kit with nothing left out: thermal skull cap, a thermal base layer, winter jersey and an insulated jacket, the warmest thermal gloves and thermal overshoes. If it's wet as well, switch to waterproof gloves and overshoes. The bigger risk at this temperature isn't the cold but the road: black ice on shaded corners, bridges and wet patches. Ride a route you know, keep it shorter, and stay closer to home than you would in spring.",
+  },
   {
     tempC: 0,
     intro: "Zero degrees is proper winter riding. The cold itself is manageable; it's the wind you make by riding that bites, especially on your hands and feet. Layer up fully, accept feeling a bit cold for the first ten minutes, and keep the pace steady so you don't soak your base layer on the first climb.",
@@ -74,7 +77,7 @@ export interface Variation {
 const VARIATIONS: { key: string; title: string; detail: string; overrides: Partial<RiderInput> }[] = [
   { key: 'race', title: 'Riding hard or racing', detail: 'Race pace or a fast group ride', overrides: { intensity: 'race' } },
   { key: 'easy', title: 'Easy or recovery pace', detail: 'Coffee ride, recovery spin', overrides: { intensity: 'easy' } },
-  { key: 'wind', title: 'Strong wind', detail: '30 km/h (19 mph) or more', overrides: { windspeed: 30 } },
+  { key: 'wind', title: 'Strong wind', detail: '35 km/h, 22 mph', overrides: { windspeed: 35 } },
   { key: 'rain', title: 'Rain likely', detail: '60% chance or higher', overrides: { precipProb: 80 } },
   { key: 'cold', title: 'You always run cold', detail: 'Warmth tendency: always cold', overrides: { warmthBias: -2 } },
   { key: 'warm', title: 'You always run warm', detail: 'Warmth tendency: always warm', overrides: { warmthBias: 2 } },
@@ -82,19 +85,54 @@ const VARIATIONS: { key: string; title: string; detail: string; overrides: Parti
 
 const signature = (items: ZoneItem[]) => items.map(i => `${i.name}${i.optional ? '?' : ''}`).join('|')
 
+/** The zones where `kit` differs from `base`, with what `kit` wears there */
+export function kitChanges(base: KitResult, kit: KitResult): Variation['changes'] {
+  return ZONES
+    .filter(z => signature(kit[z].items) !== signature(base[z].items))
+    .map(z => {
+      const items = kit[z].items.filter(i => i.name !== 'Helmet')
+      return { zone: z, items: items.length ? items : [{ name: 'Helmet only' }] }
+    })
+}
+
 /** What to wear instead, per condition — zone by zone, only where it differs */
 export function variationsAt(tempC: number): Variation[] {
   const base = kitAt(tempC)
-  return VARIATIONS.map(v => {
-    const kit = kitAt(tempC, v.overrides)
-    return {
-      key: v.key, title: v.title, detail: v.detail,
-      changes: ZONES
-        .filter(z => signature(kit[z].items) !== signature(base[z].items))
-        .map(z => {
-          const items = kit[z].items.filter(i => i.name !== 'Helmet')
-          return { zone: z, items: items.length ? items : [{ name: 'Just your helmet' }] }
-        }),
-    }
-  })
+  return VARIATIONS.map(v => ({
+    key: v.key, title: v.title, detail: v.detail,
+    changes: kitChanges(base, kitAt(tempC, v.overrides)),
+  }))
+}
+
+const lowerFirst = (s: string) => s.charAt(0).toLowerCase() + s.slice(1)
+
+/** "a, b and c" */
+export function listJoin(parts: string[], and = 'and'): string {
+  if (parts.length <= 1) return parts.join('')
+  return `${parts.slice(0, -1).join(', ')} ${and} ${parts[parts.length - 1]}`
+}
+
+/** Required and optional items over all zones, without the helmet — for sentences and FAQ answers */
+export function kitSummary(kit: KitResult, zones: readonly Zone[] = ZONES) {
+  // "Fingerless gloves or no gloves" isn't something you have to wear: in sentences it's an optional pair
+  const noGloves = (name: string) => /no gloves/i.test(name)
+  const all = zones.flatMap(z => kit[z].items).filter(i => i.name !== 'Helmet')
+  return {
+    required: all.filter(i => !i.optional && !noGloves(i.name)).map((i, n) => n === 0 ? i.name : lowerFirst(i.name)),
+    optional: all.filter(i => i.optional || noGloves(i.name))
+      .map(i => noGloves(i.name) ? 'fingerless gloves' : lowerFirst(i.name)),
+  }
+}
+
+/** One sentence that answers "what do I wear at X" — quoted on pages, in FAQ data and llms.txt */
+export function kitSentence(kit: KitResult, zones: readonly Zone[] = ZONES): string {
+  const { required, optional } = kitSummary(kit, zones)
+  const req = required.length ? `${listJoin(required)}.` : 'No extra kit needed.'
+  return optional.length ? `${req} Optional: ${listJoin(optional)}.` : req
+}
+
+/** "10°C (50°F)" or "50°F (10°C)" */
+export function fmtTemp(c: number, lead: TempUnit = 'C'): string {
+  const rc = Math.round(c)
+  return lead === 'C' ? `${rc}°C (${toF(c)}°F)` : `${toF(c)}°F (${rc}°C)`
 }

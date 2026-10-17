@@ -1,0 +1,134 @@
+---
+import Base from "../../layouts/Base.astro";
+import SiteHeader from "../../components/SiteHeader.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+import PageHero from "../../components/ui/PageHero.astro";
+import CtaBand from "../../components/ui/CtaBand.astro";
+import SectionHead from "../../components/ui/SectionHead.astro";
+import KitTable from "../../components/guide/KitTable.astro";
+import FaqList from "../../components/guide/FaqList.astro";
+import ChartExplorer from "../../components/guide/ChartExplorer";
+import { kitAt, toF, fToC, pathFor, TEMP_PAGES } from "../../lib/guideData";
+import { getKitRecommendation } from "../../lib/kitLogic";
+import { INTENSITY_OPTIONS } from "../../components/calculator/constants";
+import { abs, articleNode, breadcrumbNode, faqNode } from "../../lib/site";
+
+const canonical = abs("/guide/cycling-temperature-chart/");
+const title = "Cycling clothing temperature chart";
+const description = "Interactive cycling clothing chart: what to wear at every temperature from -10°C to 35°C (14°F to 95°F), adjusted for effort, wind and rain. In °C and °F.";
+
+const C_ROWS = [-10, -5, -2, 0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 25, 30];
+const F_ROWS = [15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90];
+
+const cRows = C_ROWS.map((c) => ({
+  label: `${c}°C`, sublabel: `${toF(c)}°F`,
+  href: TEMP_PAGES.some((p) => p.tempC === c) ? pathFor(c) : undefined,
+  kit: kitAt(c),
+}));
+const fRows = F_ROWS.map((f) => ({
+  label: `${f}°F`, sublabel: `${Math.round(fToC(f))}°C`,
+  kit: kitAt(fToC(f)),
+}));
+
+const effortShift = INTENSITY_OPTIONS.map((o) => ({
+  ...o,
+  onBike: getKitRecommendation({ apparentTemp: 10, windspeed: 10, precipProb: 0, warmthBias: 0, intensity: o.value }).feelsLikeC,
+}));
+
+const faq = [
+  {
+    q: "What should I wear cycling at each temperature?",
+    a: "At a moderate pace in light wind: below about 0°C (32°F) full winter kit with an insulated jacket, thermal bib tights and thermal winter gloves and overshoes (waterproof when it's wet). Around 5°C (41°F) a thermal base layer, winter jersey and bib tights. Around 10°C (50°F) a long-sleeve jersey, bib shorts with leg warmers and light gloves. Around 15°C (59°F) a short-sleeve jersey with optional arm and knee warmers. From 20°C (68°F) summer jersey and bib shorts.",
+  },
+  {
+    q: "Should I use the actual temperature or the feels-like temperature?",
+    a: "The feels-like temperature from the forecast. It includes wind chill and humidity, and is closer to what you will feel on the bike. kitcheck.cc uses the feels-like temperature and then adjusts it for your effort, how warm you run and riding into the wind.",
+  },
+  {
+    q: "How does effort change what I should wear?",
+    a: `Riding hard makes it feel much warmer on the bike. With a forecast of 10°C (50°F), it feels like about ${effortShift.map((e) => `${e.onBike}°C at ${e.label.toLowerCase()} pace`).join(", ")}. Hands and feet benefit much less, so keep your gloves and overshoes even when you ride hard.`,
+  },
+];
+const crumbs = [
+  { name: "kitcheck.cc", url: abs("/") },
+  { name: "Kit guide", url: abs("/guide/") },
+  { name: "Temperature chart", url: canonical },
+];
+---
+
+<Base
+  title="Cycling Clothing Temperature Chart (°C and °F) | kitcheck.cc"
+  description={description}
+  canonical={canonical}
+  article
+  schema={[
+    articleNode({ url: canonical, headline: title, description, lang: "en" }),
+    breadcrumbNode(crumbs),
+    faqNode(faq),
+  ]}
+>
+  <SiteHeader slot="header">
+    <a href="/" class="btn-primary max-sm:hidden">Use the calculator</a>
+  </SiteHeader>
+
+  <PageHero
+    byline
+    eyebrow="Interactive chart"
+    title="Cycling clothing <span class='text-coral'>temperature chart</span>"
+    lead="Slide to any temperature and see what to wear, from deep winter to a hot summer day. Change the effort, add wind or rain, and watch the kit change."
+    crumbs={[{ name: "kitcheck.cc", href: "/" }, { name: "Kit guide", href: "/guide/" }, { name: "Temperature chart" }]}
+  />
+
+  <section class="bg-bg">
+    <div class="container py-12 md:py-16">
+      <ChartExplorer client:load />
+    </div>
+  </section>
+
+  <!-- Full table: also the version search engines and AI tools read -->
+  <section class="bg-bg border-t border-border">
+    <div class="container py-16 md:py-20">
+      <SectionHead
+        eyebrow="Reference"
+        title="The full chart as a table"
+        lead="Every temperature in one table, at a moderate pace, in light wind and without rain. Optional items in grey."
+      />
+      <details class="group">
+        <summary class="list-none [&::-webkit-details-marker]:hidden inline-flex items-center gap-2 font-head text-sm font-semibold text-coral cursor-pointer mb-5">
+          <span class="group-open:hidden">Show the table</span><span class="hidden group-open:inline">Hide the table</span>
+        </summary>
+        <div class="flex rounded-lg border border-border overflow-hidden font-head text-[13px] font-semibold leading-none w-fit mb-4" role="group" aria-label="Table unit">
+          <button type="button" data-chart-unit="C" aria-pressed="true" class="chart-unit px-3 py-[9px] cursor-pointer">°C</button>
+          <button type="button" data-chart-unit="F" aria-pressed="false" class="chart-unit px-3 py-[9px] cursor-pointer">°F</button>
+        </div>
+        <div data-chart="C"><KitTable rows={cRows} caption="Feels-like temperature, moderate pace, light wind, no rain." /></div>
+        <div data-chart="F" hidden><KitTable rows={fRows} caption="Feels-like temperature, moderate pace, light wind, no rain." /></div>
+      </details>
+    </div>
+  </section>
+
+  <FaqList faq={faq} lead="How to read the chart, and how effort and the feels-like temperature change it." />
+
+  <CtaBand
+    title="Your ride is never one temperature"
+    text="The calculator reads the hourly forecast for your location and ride window, and tells you what to wear for the whole ride."
+  />
+  <SiteFooter slot="footer" />
+
+  <style>
+    .chart-unit { background: transparent; color: var(--color-text-mid); transition: background 0.15s, color 0.15s; }
+    .chart-unit[aria-pressed="true"] { background: var(--color-coral); color: #fff; }
+  </style>
+
+  <script>
+    import { preferredUnit } from "../../lib/units";
+    // Both tables are in the HTML (for search engines); the toggle only shows one
+    const buttons = document.querySelectorAll<HTMLButtonElement>("[data-chart-unit]");
+    const show = (unit: string) => {
+      document.querySelectorAll<HTMLElement>("[data-chart]").forEach((el) => (el.hidden = el.dataset.chart !== unit));
+      buttons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.chartUnit === unit)));
+    };
+    buttons.forEach((b) => b.addEventListener("click", () => show(b.dataset.chartUnit!)));
+    show(preferredUnit());
+  </script>
+</Base>

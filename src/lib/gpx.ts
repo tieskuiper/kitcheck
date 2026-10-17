@@ -16,6 +16,8 @@ export interface GpxRoute {
   recordedMovingHours?: number
 }
 
+const finiteOrUndefined = (n: number) => Number.isFinite(n) ? n : undefined
+
 export function haversineKm(a: { lat: number; lon: number }, b: { lat: number; lon: number }): number {
   const R = 6371
   const dLat = ((b.lat - a.lat) * Math.PI) / 180
@@ -39,12 +41,12 @@ export function parseGpx(xml: string): GpxRoute {
   const points: GpxPoint[] = trkpts.map(pt => ({
     lat: parseFloat(pt.getAttribute('lat') || '0'),
     lon: parseFloat(pt.getAttribute('lon') || '0'),
-    ele: pt.querySelector('ele') ? parseFloat(pt.querySelector('ele')!.textContent || '0') : undefined,
+    ele: finiteOrUndefined(parseFloat(pt.querySelector('ele')?.textContent ?? '')),
     time: parseTime(pt.querySelector('time')?.textContent),
   }))
 
   for (const pt of points) {
-    if (Math.abs(pt.lat) > 90 || Math.abs(pt.lon) > 180) {
+    if (!Number.isFinite(pt.lat) || !Number.isFinite(pt.lon) || Math.abs(pt.lat) > 90 || Math.abs(pt.lon) > 180) {
       throw new Error('GPX contains invalid coordinates.')
     }
   }

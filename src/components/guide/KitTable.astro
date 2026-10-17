@@ -1,0 +1,50 @@
+---
+/**
+ * Kit per temperature as a real <table>: easy to scan for riders, and easy for search engines
+ * and AI tools to quote. Optional items are muted and marked.
+ */
+import type { KitResult } from "../../lib/kitLogic";
+import { ZONES, ZONE_LABELS, type Zone } from "../../lib/guideData";
+
+interface Row { label: string; sublabel?: string; href?: string; kit: KitResult }
+interface Props { rows: Row[]; caption: string; zones?: readonly Zone[]; firstColumn?: string }
+const { rows, caption, zones = ZONES, firstColumn = "Feels like" } = Astro.props;
+---
+
+<div class="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
+  <table class="w-full min-w-[640px] text-sm border-separate border-spacing-0 bg-white rounded-2xl border border-border overflow-hidden">
+    <caption class="caption-bottom text-left text-xs text-text-light pt-3">{caption}</caption>
+    <thead>
+      <tr class="text-left">
+        <th scope="col" class="font-head text-[10px] font-bold tracking-[0.07em] uppercase text-text-light px-4 py-3 border-b border-border">{firstColumn}</th>
+        {zones.map((z) => (
+          <th scope="col" class="font-head text-[10px] font-bold tracking-[0.07em] uppercase text-text-light px-4 py-3 border-b border-border">{ZONE_LABELS[z]}</th>
+        ))}
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map((r, ri) => (
+        <tr class="align-top">
+          <th scope="row" class={`text-left font-head font-semibold text-text px-4 py-3 whitespace-nowrap ${ri < rows.length - 1 ? "border-b border-border" : ""}`}>
+            {r.href ? <a href={r.href} aria-label={`What to wear cycling at ${r.label}`} class="hover:text-coral transition-colors">{r.label}</a> : r.label}
+            {r.sublabel && <span class="block text-xs font-normal text-text-light">{r.sublabel}</span>}
+          </th>
+          {zones.map((z) => {
+            const items = r.kit[z].items.filter((i) => i.name !== "Helmet");
+            return (
+              <td class={`px-4 py-3 text-text-mid leading-snug ${ri < rows.length - 1 ? "border-b border-border" : ""}`}>
+                {items.length ? items.map((i) => (
+                  <span class="block">
+                    {i.optional
+                      ? <span class="text-text-light">{i.name} <span class="text-[11px]">(optional)</span></span>
+                      : <span class="text-text">{i.name}</span>}
+                  </span>
+                )) : <span class="text-text-light">Helmet only</span>}
+              </td>
+            );
+          })}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

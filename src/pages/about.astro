@@ -1,0 +1,89 @@
+---
+import Base from "../layouts/Base.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import PageHero from "../components/ui/PageHero.astro";
+import CtaBand from "../components/ui/CtaBand.astro";
+import TeamBanner from "../components/TeamBanner.astro";
+import { abs, breadcrumbNode, AUTHOR } from "../lib/site";
+import { IconBike, IconShieldCheck, IconCloudySun } from "@central-icons-react/round-outlined-radius-3-stroke-2";
+
+const canonical = abs("/about/");
+const description = "kitcheck.cc is a free, brand-neutral cycling kit calculator, made by a road cyclist in the Netherlands and tested by Raas Racing Team.";
+
+const facts = [
+  { icon: IconBike, title: "Made by a road cyclist", text: `A free, personal project by ${AUTHOR.name} in the Netherlands. No shop or brand behind it, and no product placement in the advice.` },
+  { icon: IconCloudySun, title: "Real forecast data", text: "Hourly forecasts from Open-Meteo, place names from OpenStreetMap. No API keys, no accounts." },
+  { icon: IconShieldCheck, title: "Private by default", text: "No account, no newsletter, no ads. GPX files never leave your browser, and analytics only run if you accept them." },
+];
+---
+
+<Base
+  title="About kitcheck.cc | Free Cycling Kit Calculator"
+  description={description}
+  canonical={canonical}
+  schema={[
+    {
+      "@type": "AboutPage",
+      "@id": `${canonical}#page`,
+      url: canonical,
+      name: "About kitcheck.cc",
+      description,
+      about: { "@id": "https://kitcheck.cc/#organization" },
+    },
+    breadcrumbNode([{ name: "kitcheck.cc", url: abs("/") }, { name: "About", url: canonical }]),
+  ]}
+>
+  <SiteHeader slot="header">
+    <a href="/" class="btn-primary max-sm:hidden">Use the calculator</a>
+  </SiteHeader>
+
+  <PageHero
+    eyebrow="About"
+    title="About <span class='text-coral'>kitcheck.cc</span>"
+    lead="kitcheck.cc is a free cycling kit calculator by Ties Kuiper, a road cyclist in the Netherlands. It answers the question every rider asks before a ride: what do I wear today?"
+    crumbs={[{ name: "kitcheck.cc", href: "/" }, { name: "About" }]}
+  />
+
+  <section class="bg-bg">
+    <div class="container py-16 md:py-20">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        {facts.map((f) => (
+          <div class="bg-white rounded-2xl border border-border p-6">
+            <span class="flex items-center justify-center size-11 rounded-xl bg-coral/10 text-coral mb-5"><f.icon size={22} /></span>
+            <h2 class="font-head font-bold text-lg text-text mb-2">{f.title}</h2>
+            <p class="text-[15px] text-text-mid leading-relaxed">{f.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Team: same banner as the homepage -->
+  <TeamBanner />
+
+  <section class="bg-white border-y border-border">
+    <div class="container py-16 md:py-20">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14 max-w-5xl">
+        <div>
+          <h2 class="font-head font-bold text-2xl tracking-tight text-text mb-3">How it works</h2>
+          <p class="text-[15px] text-text-mid leading-relaxed">
+            The calculator combines the hourly forecast for your ride with your effort level and how warm you naturally
+            run. <a href="/how-it-works/" class="text-coral">How it works</a> explains every step, and the <a href="/guide/" class="text-coral">kit guide</a> and the <a href="/guide/cycling-temperature-chart/" class="text-coral">temperature chart</a> use exactly the same logic.
+          </p>
+        </div>
+        <div>
+          <h2 class="font-head font-bold text-2xl tracking-tight text-text mb-3">Data sources</h2>
+          <p class="text-[15px] text-text-mid leading-relaxed">
+            Forecasts and place search come from <a href="https://open-meteo.com" rel="noopener" class="text-coral">Open-Meteo</a>,
+            place names from <a href="https://nominatim.org" rel="noopener" class="text-coral">Nominatim</a> and maps from <a href="https://openfreemap.org" rel="noopener" class="text-coral">OpenFreeMap</a>.
+            Privacy details are in the <a href="/privacy/" class="text-coral">privacy policy</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand />
+  <SiteFooter slot="footer" />
+</Base>

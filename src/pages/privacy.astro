@@ -9,7 +9,7 @@ import SiteFooter from "../components/SiteFooter.astro";
   description="Privacy policy for kitcheck.cc. Learn what data we collect, why, and how it is used."
   canonical="https://kitcheck.cc/privacy/"
 >
-  <SiteHeader>
+  <SiteHeader slot="header">
     <a href="/" class="btn-primary">Use the calculator</a>
   </SiteHeader>
 
@@ -73,9 +73,11 @@ import SiteFooter from "../components/SiteFooter.astro";
           <li>
             How you use the calculator: how you chose a location (search, suggestion,
             auto-detect or GPX), the intensity, warmth, unit, day, start time and duration you
-            pick, and the conditions of the recommendation you get. We never send location
-            names, coordinates or route files.
+            pick, the average speed you set and the distance of an uploaded route, and the
+            conditions of the recommendation you get. We never send location names,
+            coordinates or route files.
           </li>
+          <li>Errors (for example a failed forecast or an unreadable GPX file) and clicks on the Raas Racing Team links</li>
         </ul>
         <p>
           Google Analytics recognises a returning browser with a cookie (see the <a href="/cookies/">cookie policy</a>). Google signals and all advertising features are
@@ -102,8 +104,8 @@ import SiteFooter from "../components/SiteFooter.astro";
 
         <h2>Maps and fonts</h2>
         <p>
-          Route maps load map images from <a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a>, or from <a href="https://www.openstreetmap.org" target="_blank" rel="noopener">OpenStreetMap</a>
-          as a fallback. These services receive your IP address when your browser requests the
+          Route maps load map images from <a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a>, or from <a href="https://www.openstreetmap.org" target="_blank" rel="noopener">OpenStreetMap</a> as a
+          fallback. These services receive your IP address when your browser requests the
           map, as with any website. Fonts are served from kitcheck.cc itself, not from Google.
         </p>
 
@@ -112,6 +114,7 @@ import SiteFooter from "../components/SiteFooter.astro";
           <li>Google Analytics: 2 months for individual event data, then deleted automatically; only aggregated reports are kept longer</li>
           <li>Your cookie choice: 12 months in your browser, after which we ask again</li>
           <li>Your average speed for GPX routes (if you set one): in your browser only, until you reset it</li>
+          <li>Your choice of °C or °F (if you switch): in your browser only</li>
           <li>Weather and place name lookups: not stored by us</li>
         </ul>
 
@@ -137,7 +140,7 @@ import SiteFooter from "../components/SiteFooter.astro";
     </div>
   </section>
 
-  <SiteFooter />
+  <SiteFooter slot="footer" />
 </Base>
 
 <style>

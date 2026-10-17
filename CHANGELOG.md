@@ -7,7 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-10-17
+
 ### Changed
+- Kit logic (owner decisions): near freezing (feels-like ≤ 2°C) a hard or race effort keeps the winter body kit, with a note on the kit card that you could go lighter but will feel cold; dry cold gets thermal instead of waterproof winter gloves and overshoes (waterproof only when rain is likely); for the whole ride a waterproof pair now outranks a thermal one of equal warmth, so a dry start that turns wet gets waterproof gloves and overshoes
+- docs/kit-logic.md updated: cold effort floor, glove/overshoe rules, decided quirks
+- Articles no longer carry a personal byline: only the "Updated" date shows, and kitcheck.cc (the organisation) is the author in structured data; the About page still says who makes the tool
+- Hero on every page except the homepage is a separate white band with a bottom border, left-aligned; the section below sits on the page background
+- Pre-launch review fixes: copy corrected where it contradicted the kit logic (gilet range, wind "one step warmer", winter layers and freezing kit, rain/leg thresholds, effort 4–8°C, overshoes and rain overshoes); FAQ answers on temperature pages are full sentences that name the temperature; "no gloves" no longer listed as required; unchanged variations collapsed into one line; ranges read "below 8°C" and "-2 to 5°C"
+- Route "rain likely" note now uses the same 60% threshold as the rain kit (was 50%); strong-wind variation uses 35 km/h like the wind table
+- Light grey text darkened to #72716D for WCAG AA contrast (was 2.6:1)
+- Header and footer moved out of `<main>`; icon-only search/clear buttons got accessible names
+- MapLibre stylesheet loads only when a map is shown (was in every homepage `<head>`); headline font preloaded; share image resized to 1200×630; 512px PNG logo for structured data and apple-touch-icon
+- Structured data: brand description and alternate names, logo as ImageObject, per-page publish dates; About H1 names the brand; consistent breadcrumb names
+- Security/privacy: HSTS includeSubDomains, CSP frame-ancestors/form-action/upgrade-insecure-requests, stricter Permissions-Policy, UTF-8 for llms files; GA cookies removed when consent expires; privacy policy lists all analytics events; GPX points with invalid numbers rejected
+- Fix: the 404 page had both an index and a noindex robots tag and a canonical pointing at the homepage
 - Kit card shows "Feels like X°C on the bike" instead of a 0–110 score; condition labels now use the same bands as the kit
 - Gloves and overshoes are chosen for the whole ride (nobody carries a second pair): the warmest pair needed, with a note if that's because of later cold or rain
 - Default GPX speeds raised to road-cycling values: easy 22, moderate 26, hard 30, race 35 km/h on the flat (was 18/23/28/33)
@@ -34,6 +48,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Privacy policy and cookie policy rewritten to match exactly what the site does
 
 ### Added
+- Summer page (`/guide/summer-cycling-clothing/`): kit from fresh mornings to 30°C, heat, drinking, sun and summer rain; linked from the guide, the footer and the temperature pages from 20°C (cold pages up to 5°C link the winter page)
+- `docs/kit-logic.md`: the whole kit algorithm written out, with tables generated from the engine (`pnpm docs:kit`, checked with `pnpm docs:kit:check`); `CLAUDE.md` with project rules for AI agents
+- `/sitemap/`: every page by section with a page count, linked from the footer
+- SEO/GEO pass: homepage title on "what to wear cycling today", "no app" positioning and a homepage FAQ; byline with updated date on articles; `og:type=article` with modified time; `max-snippet`/`max-image-preview` robots directives; sitemap `lastmod` (legal pages excluded); `/llms-full.txt`; guide `CollectionPage` structured data; richer `WebApplication` data; temperature pages compare with neighbouring temperatures, answer the °F question and link to the matching kit guides; sources on How it works; shorter titles and descriptions
+- SEO/GEO: interactive temperature chart page, a -5°C page, kit pages (arm & knee warmers, bib tights/leg warmers, base layer, overshoes, winter gloves) with ranges per effort level, and condition pages (rain, wind, winter)
+- "How it works" and "About" pages; generated `/llms.txt`
+- Generated "Short answer" and FAQs on every guide article; `Article`, `FAQPage`, `BreadcrumbList`, `WebSite`, `Organization` and `Person` structured data in one graph per page; hreflang support in the layout
+- Homepage quick reference: what to wear by temperature
+- Calculator and chart start in °F for visitors in a US timezone; a manual °C/°F choice is remembered (`kitcheck-unit`, listed in the cookie policy)
+- Interactive temperature chart: slider, effort, wind and rain toggles, and range bars per piece of kit
+- New page layout: hero, section headings, answer cards, CTA band, header navigation (with mobile menu) and a compact footer; guide hub, articles, how it works and about rebuilt on it. Homepage stays tool-first: calculator, team, quick reference
 - Chance of showers (40–59%): packable rain jacket and light rain overshoes as options, with a "chance of showers" note
 - Heat note from 27°C: extra bottle and sunscreen
 - Note when the rain stops during the ride: the rain jacket can go in your pocket
@@ -121,7 +146,8 @@ Initial public launch.
 - Responsive header buttons and calculator padding
 - Mobile layout improvements across calculator
 
-[Unreleased]: https://github.com/tieskuiper/kitcheck/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/tieskuiper/kitcheck/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/tieskuiper/kitcheck/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/tieskuiper/kitcheck/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/tieskuiper/kitcheck/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/tieskuiper/kitcheck/releases/tag/v1.0.0

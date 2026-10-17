@@ -2,369 +2,159 @@
 import Base from "../../layouts/Base.astro";
 import SiteHeader from "../../components/SiteHeader.astro";
 import SiteFooter from "../../components/SiteFooter.astro";
-import { TEMP_PAGES, kitAt, conditionsAt, keyItems, toF, pathFor } from "../../lib/guideData";
-import { TIER_ACCENT } from "../../components/calculator/constants";
+import PageHero from "../../components/ui/PageHero.astro";
+import SectionHead from "../../components/ui/SectionHead.astro";
+import CtaBand from "../../components/ui/CtaBand.astro";
+import FaqList from "../../components/guide/FaqList.astro";
+import { TEMP_PAGES, kitAt, conditionsAt, toF, pathFor } from "../../lib/guideData";
+import { KIT_ITEM_PAGES, CONDITION_PAGES } from "../../lib/guideContent";
+import { itemRanges, rangePhrase } from "../../lib/kitRanges";
+import { abs, breadcrumbNode, faqNode } from "../../lib/site";
+import { TIER_ACCENT, TIER_BG, CAT_ICONS } from "../../components/calculator/constants";
+import { IconRainy, IconWind, IconSnowFlakes, IconSun, IconArrowRight } from "@central-icons-react/round-outlined-radius-3-stroke-2";
 
+// One headline per temperature: the upper body and legs items say most
 const temps = TEMP_PAGES.map(({ tempC }) => {
   const kit = kitAt(tempC);
-  return { tempC, tempF: toF(tempC), label: conditionsAt(tempC).label, items: keyItems(kit) };
+  const pick = (z: "torso" | "legs") => kit[z].items.filter((i) => !i.optional).map((i) => i.name);
+  return { tempC, label: conditionsAt(tempC).label, headline: [...pick("torso").slice(0, 1), ...pick("legs")].join(" + ") };
 });
 
-const faqSchema = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "FAQPage",
-      mainEntity: [
-        {
-          "@type": "Question",
-          name: "When do I need a cycling gilet?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "A gilet is ideal between 10–16°C with wind, or on routes with long descents. It keeps your core warm without overheating on climbs, and packs into a jersey pocket easily. In rain, swap it for a waterproof jacket instead.",
-          },
-        },
-        {
-          "@type": "Question",
-          name: "What cycling kit do I need for riding in rain?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "It depends on the temperature. Below about 15°C you want a proper waterproof jacket, and below 10°C waterproof gloves and overshoes too, because cold and wet hands and feet go numb fast. In mild rain a packable jacket is enough, with thin rain overshoes if you want dry shoes. Above about 22°C many riders skip the jacket altogether. kitcheck.cc reads the rain chance from the forecast and scales the rain kit to the temperature.",
-          },
-        },
-        {
-          "@type": "Question",
-          name: "Does ride intensity affect what cycling kit I need?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "Yes — a hard effort can feel 5–8°C warmer than an easy ride, so you need fewer layers on your body. Your hands and feet don't warm up nearly as much, though: even when racing in the cold you still want proper gloves and overshoes. kitcheck.cc adjusts the body layers fully for your effort level and the gloves and overshoes only partly.",
-          },
-        },
-        {
-          "@type": "Question",
-          name: "Should I wear bib shorts or bib tights?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "Bib tights below about 8°C, then bib shorts with leg warmers from 8–11°C, and bib shorts with knee warmers for the 11–14°C range. Above 14°C bib shorts alone are usually fine, with knee warmers optional if it feels fresh. Wind and rain both push those thresholds up. kitcheck.cc picks the right option based on your actual conditions.",
-          },
-        },
-      ],
-    },
-    {
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        {
-          "@type": "ListItem",
-          position: 1,
-          name: "kitcheck.cc",
-          item: "https://kitcheck.cc",
-        },
-        {
-          "@type": "ListItem",
-          position: 2,
-          name: "Cycling Kit Guide",
-          item: "https://kitcheck.cc/guide/",
-        },
-      ],
-    },
-  ],
-};
+const items = KIT_ITEM_PAGES.map((p) => {
+  const r = itemRanges(p.match, { ...p.overrides, intensity: "moderate" });
+  return { ...p, range: r.required ?? r.optional, optionalOnly: !r.required };
+});
+
+const CONDITION_ICONS = { rain: IconRainy, wind: IconWind, snow: IconSnowFlakes, sun: IconSun };
+
+const faq = [
+  {
+    q: "When do I need a cycling gilet?",
+    a: "A gilet is worth it when the wind is strong (over about 25 km/h, 16 mph) and it is cool rather than cold, up to about 18°C (64°F), or on routes with long descents. It keeps your core warm without overheating on climbs, and packs into a jersey pocket easily. In rain, swap it for a waterproof jacket instead.",
+  },
+  {
+    q: "What cycling kit do I need for riding in rain?",
+    a: "It depends on the temperature. Below about 15°C you want a proper waterproof jacket, and below 10°C waterproof gloves and overshoes too, because cold and wet hands and feet go numb fast. In mild rain a packable jacket is enough, with thin rain overshoes if you want dry shoes. Above about 22°C many riders skip the jacket altogether. kitcheck.cc reads the rain chance from the forecast and scales the rain kit to the temperature.",
+  },
+  {
+    q: "Does ride intensity affect what cycling kit I need?",
+    a: "Yes — a hard effort can feel 4–8°C warmer than an easy ride, so you need fewer layers on your body, except near freezing, where kitcheck.cc keeps the winter layers and mentions the lighter option. Your hands and feet don't warm up nearly as much, though: even when racing in the cold you still want proper gloves and overshoes. kitcheck.cc adjusts the body layers fully for your effort level and the gloves and overshoes only partly.",
+  },
+  {
+    q: "Should I wear bib shorts or bib tights?",
+    a: "Bib tights below about 8°C, then bib shorts with leg warmers from 8–11°C, and bib shorts with knee warmers for the 11–14°C range. Above 14°C bib shorts alone are usually fine, with knee warmers optional if it feels fresh. Strong wind pushes those thresholds up. kitcheck.cc picks the right option based on your actual conditions.",
+  },
+];
 ---
 
 <Base
   title="What to Wear Cycling by Temperature (°C and °F) | kitcheck.cc"
-  description="What to wear cycling at every temperature, from 0°C (32°F) to 25°C (77°F). Kit lists per temperature, plus how effort, wind and rain change what you need."
+  description="What to wear cycling at every temperature, from -5°C (23°F) to 25°C (77°F). Kit lists per temperature, an interactive chart, and kit for rain, wind, winter and summer."
   canonical="https://kitcheck.cc/guide/"
+  schema={[
+    {
+      "@type": "CollectionPage",
+      "@id": `${abs("/guide/")}#page`,
+      url: abs("/guide/"),
+      name: "What to wear cycling at any temperature",
+      isPartOf: { "@id": `${abs("/")}#website` },
+      mainEntity: {
+        "@type": "ItemList",
+        itemListElement: [
+          { url: abs("/guide/cycling-temperature-chart/"), name: "Cycling clothing temperature chart" },
+          ...TEMP_PAGES.map((p) => ({ url: abs(pathFor(p.tempC)), name: `What to wear cycling at ${p.tempC}°C (${toF(p.tempC)}°F)` })),
+          ...KIT_ITEM_PAGES.map((p) => ({ url: abs(`/guide/${p.slug}/`), name: p.title })),
+          ...CONDITION_PAGES.map((p) => ({ url: abs(`/guide/${p.slug}/`), name: p.title })),
+        ].map((it, i) => ({ "@type": "ListItem", position: i + 1, ...it })),
+      },
+    },
+    faqNode(faq),
+    breadcrumbNode([
+      { name: "kitcheck.cc", url: abs("/") },
+      { name: "Kit guide", url: abs("/guide/") },
+    ]),
+  ]}
 >
-  <Fragment slot="head">
-    <script
-      is:inline
-      type="application/ld+json"
-      set:html={JSON.stringify(faqSchema)}
-    />
-  </Fragment>
-
-  <!-- HEADER -->
-  <SiteHeader>
-    <a href="/" class="btn-primary">
-      <svg
-        class="size-4 -mx-1 sm:hidden"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="none"
-      >
-        <path
-          d="M10 6L4 12L10 18"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"></path><path
-          d="M5 12H20"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"></path>
-      </svg>
-      <span class="max-sm:hidden">Use the calculator</span>
-    </a>
+  <SiteHeader slot="header">
+    <a href="/" class="btn-primary max-sm:hidden">Use the calculator</a>
   </SiteHeader>
 
-  <!-- PAGE INTRO -->
+  <PageHero
+    eyebrow="Kit guide"
+    title="What to wear cycling, <span class='text-coral'>at any temperature</span>"
+    lead="What to wear at each temperature, when each piece of kit comes in, and what changes with rain, wind, cold and heat."
+    crumbs={[{ name: "kitcheck.cc", href: "/" }, { name: "Kit guide" }]}
+  >
+    <a href="/guide/cycling-temperature-chart/" class="btn-primary py-3! px-5! text-[14px]!">Open the temperature chart</a>
+    <a href="/" class="btn-secondary-outline py-3! px-5! text-[14px]!">Use the calculator</a>
+  </PageHero>
+
+  <!-- BY TEMPERATURE: a scale from cold to hot -->
   <section class="bg-bg">
-    <div class="container">
-      <div class="max-w-2xl pt-16 md:pt-18 lg:pt-20 pb-12 md:pb-14">
-        <nav class="flex items-center gap-2 text-xs text-text-light mb-5">
-          <a href="/" class="hover:text-text-mid transition-colors"
-            >kitcheck.cc</a
-          >
-          <span>›</span>
-          <span class="text-text-mid">Kit guide</span>
-        </nav>
-        <h1
-          class="font-head text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1] text-text mb-4"
-        >
-          Cycling kit by temperature
-        </h1>
-        <p class="text-text-mid leading-relaxed max-w-xl">
-          Temperature matters most, but your effort level, the wind and whether
-          it's raining all make a real difference. Browse the guide below or use <a
-            href="/"
-            class="text-coral hover:opacity-75 transition-opacity"
-            >kitcheck.cc</a
-          > to get a recommendation based on the actual forecast.
-        </p>
+    <div class="container py-16 md:py-20">
+      <SectionHead eyebrow="By temperature" title="Pick your temperature" lead="Feels-like temperature, moderate pace, light wind and no rain." />
+      <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5">
+        {temps.map((t) => (
+          <a href={pathFor(t.tempC)} class="group relative flex flex-col bg-white rounded-2xl border border-border overflow-hidden hover:-translate-y-0.5 hover:shadow-[0_12px_28px_-12px_rgba(0,0,0,0.18)] transition-all">
+            <span class="flex flex-col flex-1 p-4">
+              <span class="font-head font-bold text-[1.75rem] tracking-tight text-text leading-none">{t.tempC}°C</span>
+              <span class="text-xs text-text-light mt-1">{toF(t.tempC)}°F</span>
+              <span class="inline-flex w-fit font-head text-[10px] font-bold tracking-[0.07em] uppercase rounded-full px-2 py-0.5 mt-3" style={`color:${TIER_ACCENT[t.label]};background:${TIER_BG[t.label]}`}>{t.label}</span>
+              <span class="text-[13px] text-text-mid leading-snug mt-3 flex-1">{t.headline}</span>
+              <span class="inline-flex items-center gap-1 font-head text-[12px] font-semibold text-coral mt-3 group-hover:translate-x-0.5 transition-transform">Full kit <IconArrowRight size={13} /></span>
+            </span>
+          </a>
+        ))}
       </div>
+
     </div>
   </section>
 
-  <!-- TEMPERATURE GUIDE -->
-  <section class="bg-bg border-t border-border">
-    <div class="container py-16 md:py-20">
-      <h2 class="font-head font-bold text-xl md:text-2xl text-text mb-2">
-        What to wear cycling at every temperature
-      </h2>
-      <p class="text-text-mid leading-relaxed mb-6 max-w-2xl">
-        The kit for each feels-like temperature at a moderate pace, light wind and no rain.
-        Open a temperature to see what changes with effort, wind, rain and how warm you run.
-      </p>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-14">
-        {
-          temps.map((t) => (
-            <a
-              href={pathFor(t.tempC)}
-              class="group bg-white rounded-2xl border border-border p-[22px] hover:border-text-light transition-colors"
-            >
-              <div class="flex items-center gap-2 mb-1">
-                <span class="inline-block w-2.5 h-2.5 rounded-full" style={`background:${TIER_ACCENT[t.label] ?? "#FF5130"}`} />
-                <h3 class="font-head font-bold text-base text-text">
-                  What to wear at {t.tempC}°C <span class="text-text-light font-semibold">({t.tempF}°F)</span>
-                </h3>
-              </div>
-              <p class="font-head text-[11px] font-semibold tracking-[0.08em] uppercase text-text-mid mb-3 ml-[18px]">
-                {t.label}
-              </p>
-              <ul class="space-y-1.5 text-sm text-text-mid mb-4">
-                {t.items.map((item) => <li>{item}</li>)}
-              </ul>
-              <span class="font-head text-[13px] font-semibold text-coral group-hover:opacity-75 transition-opacity">
-                Full kit + what changes →
+  <!-- KIT ITEMS -->
+  <section class="bg-white border-y border-border">
+    <div class="container py-16 md:py-24">
+      <SectionHead eyebrow="By piece of kit" title="When to wear what" lead="The temperature where each piece of kit comes in, at a moderate pace. Every page shows the range per effort level." />
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+        {items.map((p) => {
+          const Icon = CAT_ICONS[p.zone];
+          return (
+            <a href={`/guide/${p.slug}/`} class="group flex items-start gap-3.5 bg-bg rounded-2xl border border-border p-4 hover:border-text-light transition-colors">
+              <span class="flex items-center justify-center size-10 rounded-xl bg-white border border-border text-coral shrink-0"><Icon size={18} /></span>
+              <span class="min-w-0">
+                <span class="block font-head font-bold text-[15px] text-text">{p.label}</span>
+                <span class="block text-[13px] text-text-mid mt-0.5">
+                  {p.range ? <>{p.optionalOnly ? "Optional at " : ""}{rangePhrase(p.range)}</> : "Depends on conditions"}
+                  {p.condition && <span class="text-text-light"> {p.condition.replace(/ \(.*\)$/, "")}</span>}
+                </span>
               </span>
             </a>
-          ))
-        }
-      </div>
-
-      <!-- Other factors -->
-      <h2 class="font-head font-bold text-xl text-text mb-5">
-        Other factors that shift the recommendation
-      </h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <div class="bg-white rounded-2xl border border-border p-[22px]">
-          <h3 class="font-head text-[14px] font-bold text-text mb-3">
-            Ride intensity
-          </h3>
-          <p class="text-sm text-text-mid leading-relaxed">
-            The harder you ride, the warmer your body gets. A race-pace effort can
-            easily mean one or two fewer layers than on a steady endurance spin,
-            but hands and feet barely benefit, so keep the gloves and overshoes.
-          </p>
-        </div>
-
-        <div class="bg-white rounded-2xl border border-border p-[22px]">
-          <h3 class="font-head text-[14px] font-bold text-text mb-3">Wind</h3>
-          <p class="text-sm text-text-mid leading-relaxed">
-            Wind makes a big difference. 15°C with a headwind can feel a lot
-            more like 8°C when you're moving. If it's breezy, add a gilet or
-            wind jacket, especially on exposed sections and descents.
-          </p>
-        </div>
-
-        <div class="bg-white rounded-2xl border border-border p-[22px]">
-          <h3 class="font-head text-[14px] font-bold text-text mb-3">Rain</h3>
-          <p class="text-sm text-text-mid leading-relaxed">
-            How much rain kit you need depends on the temperature. Cold rain
-            calls for a waterproof jacket, gloves and overshoes; in mild rain a
-            packable jacket and thin rain covers for your shoes are enough.
-          </p>
-        </div>
+          );
+        })}
       </div>
     </div>
   </section>
 
-  <!-- FAQ -->
-  <section id="faq" class="bg-bg border-t border-border">
-    <div class="container py-16 md:py-20">
-      <div class="max-w-2xl mx-auto text-center mb-10">
-        <h2
-          class="font-head font-bold text-2xl md:text-3xl tracking-tight text-text mb-3"
-        >
-          Frequently asked questions
-        </h2>
-        <p class="text-text-mid leading-relaxed">
-          Questions we get asked a lot about cycling kit.
-        </p>
-      </div>
-
-      <div class="max-w-3xl mx-auto divide-y divide-border">
-        <details class="group py-5">
-          <summary
-            class="faq-summary flex items-center justify-between gap-4 cursor-pointer font-head font-semibold text-text"
-          >
-            When do I need a cycling gilet?
-            <svg
-              class="size-4 text-text-light shrink-0 transition-transform duration-200 group-open:rotate-180"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2"
-              ><path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M19 9l-7 7-7-7"></path></svg
-            >
-          </summary>
-          <p class="mt-3 text-sm text-text-mid leading-relaxed pr-8">
-            Roughly between 10 and 16°C, especially if it's windy. A gilet keeps
-            your chest warm on descents without making you overheat on climbs,
-            and it folds small enough to stuff in a jersey pocket. If rain is in
-            the forecast, go with a waterproof jacket instead.
-          </p>
-        </details>
-
-        <details class="group py-5">
-          <summary
-            class="faq-summary flex items-center justify-between gap-4 cursor-pointer font-head font-semibold text-text"
-          >
-            What cycling kit do I need for riding in rain?
-            <svg
-              class="size-4 text-text-light shrink-0 transition-transform duration-200 group-open:rotate-180"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2"
-              ><path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M19 9l-7 7-7-7"></path></svg
-            >
-          </summary>
-          <p class="mt-3 text-sm text-text-mid leading-relaxed pr-8">
-            It depends on how cold it is. Below about 15°C, a proper waterproof
-            jacket; below 10°C, waterproof gloves and overshoes as well, because
-            cold, wet hands and feet go numb fast. In mild rain a packable jacket
-            is enough, with thin rain overshoes if you want dry shoes. Above about
-            22°C many riders skip the jacket. kitcheck.cc scales the rain kit to
-            the temperature for you.
-          </p>
-        </details>
-
-        <details class="group py-5">
-          <summary
-            class="faq-summary flex items-center justify-between gap-4 cursor-pointer font-head font-semibold text-text"
-          >
-            Does ride intensity affect what cycling kit I need?
-            <svg
-              class="size-4 text-text-light shrink-0 transition-transform duration-200 group-open:rotate-180"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2"
-              ><path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M19 9l-7 7-7-7"></path></svg
-            >
-          </summary>
-          <p class="mt-3 text-sm text-text-mid leading-relaxed pr-8">
-            Yes, a lot. Going hard warms your body up fast and you'll quickly
-            overheat in kit that felt fine at the start. Your hands and feet
-            don't warm up the same way, though, so the calculator lightens the
-            body layers for a hard effort but keeps the gloves and overshoes.
-          </p>
-        </details>
-
-        <details class="group py-5">
-          <summary
-            class="faq-summary flex items-center justify-between gap-4 cursor-pointer font-head font-semibold text-text"
-          >
-            Should I wear bib shorts or bib tights?
-            <svg
-              class="size-4 text-text-light shrink-0 transition-transform duration-200 group-open:rotate-180"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2"
-              ><path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M19 9l-7 7-7-7"></path></svg
-            >
-          </summary>
-          <p class="mt-3 text-sm text-text-mid leading-relaxed pr-8">
-            Bib tights below about 8°C, then bib shorts with leg warmers from
-            8–11°C, and bib shorts with knee warmers for the 11–14°C range.
-            Above 14°C bib shorts alone are usually fine — knee warmers still
-            help on cold starts or long descents. Wind and rain push those
-            thresholds up. kitcheck.cc picks the right option based on your
-            conditions.
-          </p>
-        </details>
+  <!-- CONDITIONS -->
+  <section class="bg-bg">
+    <div class="container py-16 md:py-24">
+      <SectionHead eyebrow="By weather" title="Rain, wind, winter and summer" lead="What changes when the weather does." />
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        {CONDITION_PAGES.map((p) => {
+          const Icon = CONDITION_ICONS[p.icon];
+          return (
+            <a href={`/guide/${p.slug}/`} class="group flex flex-col bg-white rounded-2xl border border-border p-5 hover:-translate-y-0.5 hover:shadow-[0_12px_28px_-12px_rgba(0,0,0,0.18)] transition-all">
+              <span class="flex items-center justify-center size-11 rounded-xl bg-coral/10 text-coral mb-5"><Icon size={22} /></span>
+              <span class="font-head font-bold text-lg text-text">{p.label}</span>
+              <span class="text-sm text-text-mid leading-relaxed mt-1.5 flex-1">{p.teaser}</span>
+              <span class="inline-flex items-center gap-1 font-head text-[13px] font-semibold text-coral mt-4">Read the guide <IconArrowRight size={14} /></span>
+            </a>
+          );
+        })}
       </div>
     </div>
   </section>
 
-  <!-- CTA -->
-  <section class="bg-bg-dark">
-    <div class="container py-12 md:py-14">
-      <div
-        class="flex flex-col sm:flex-row sm:items-center justify-between gap-6"
-      >
-        <div>
-          <p class="font-head font-bold text-xl text-white mb-1">
-            Try the calculator
-          </p>
-          <p class="text-sm text-white/60">
-            Search your location and get a full kit recommendation in seconds.
-          </p>
-        </div>
-        <a href="/" class="btn-primary">Use the calculator</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <SiteFooter />
-
-  <style>
-    .faq-summary {
-      list-style: none;
-    }
-    .faq-summary::-webkit-details-marker {
-      display: none;
-    }
-  </style>
+  <FaqList faq={faq} />
+  <CtaBand />
+  <SiteFooter slot="footer" />
 </Base>
