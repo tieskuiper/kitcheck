@@ -5,10 +5,12 @@ import type { RouteHighlights } from '../../lib/routeForecast'
 import { formatNote, fmtTime, fmtWind, toF, type Unit } from './format'
 
 // ── Kit output card ───────────────────────────────────────────────────────────
-export default function KitCard({ kitResult, score, unit, highlights, startHour }: {
+export default function KitCard({ kitResult, score, unit, highlights, startHour, routeFallback }: {
   kitResult: KitResult; score: ReturnType<typeof scoreLabel>; unit: Unit
   /** GPX only: what stands out along the route */
   highlights?: RouteHighlights | null; startHour?: number
+  /** GPX only: weather along the route couldn't be loaded, advice uses the start point */
+  routeFallback?: boolean
 }) {
   const accent = TIER_ACCENT[score.label] || '#FF5130'
   const bg = TIER_BG[score.label] || '#FFF3ED'
@@ -96,6 +98,15 @@ export default function KitCard({ kitResult, score, unit, highlights, startHour 
       {/* ── Along the route (GPX) ── */}
       {highlights && Object.keys(highlights).length > 0 && startHour !== undefined && (
         <RouteNotes highlights={highlights} startHour={startHour} unit={unit} />
+      )}
+
+      {routeFallback && (
+        <div className="mt-2 bg-white rounded-xl py-[11px] px-[14px] border border-black/[6%] flex gap-2 items-center">
+          <IconMap size={16} className="text-text-mid shrink-0" />
+          <span className="text-[12px] text-text-mid leading-[1.5]">
+            <strong className="text-text">Weather along your route couldn't be loaded.</strong> This advice uses the forecast at the start; try again later for the full route.
+          </span>
+        </div>
       )}
 
       {/* ── Rain / heat alerts ── */}

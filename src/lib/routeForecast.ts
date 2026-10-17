@@ -46,13 +46,15 @@ export interface RouteModel {
 // About one point every 15–20 minutes of riding; capped to keep the request small
 const STEP_KM = 6
 const MAX_POINTS = 24
+// Fallback when the full route request is too slow: start, finish, highest point and a few between
+const FALLBACK_POINTS = 5
 const HEADWIND_KMH = 12        // from here a headwind is worth mentioning
 const DESCENT_MIN_DROP_M = 150
 const DESCENT_MIN_KM = 2
 const DESCENT_COOL_BELOW = 20  // feels-like °C below which a descent gets a note
 
 /** For docs/kit-logic.md */
-export const ROUTE_CONSTANTS = { STEP_KM, MAX_POINTS, HEADWIND_KMH, DESCENT_MIN_DROP_M, DESCENT_MIN_KM, DESCENT_COOL_BELOW } as const
+export const ROUTE_CONSTANTS = { STEP_KM, MAX_POINTS, FALLBACK_POINTS, HEADWIND_KMH, DESCENT_MIN_DROP_M, DESCENT_MIN_KM, DESCENT_COOL_BELOW } as const
 
 /** Cumulative distance (km) at every GPX point, scaled to the route's reported distance */
 export function cumulativeKm(route: GpxRoute): number[] {
@@ -87,6 +89,27 @@ export function sampleRoute(route: GpxRoute): RoutePoint[] {
     km: cum[i], lat: pts[i].lat, lon: pts[i].lon, ele: pts[i].ele,
     bearing: bearingAt(route, cum, i),
   }))
+}
+
+/**
+ * A few decisive points out of the sampled ones: start, finish, the highest point, then each
+ * time the point furthest from those already picked, until there are `FALLBACK_POINTS`
+ */
+export function keyPoints(points: RoutePoint[]): RoutePoint[] {
+  if (points.length <= FALLBACK_POINTS) return points
+  const picked = new Set([0, points.length - 1])
+  let top = -1
+  points.forEach((p, i) => { if (p.ele !== undefined && (top < 0 || p.ele > points[top].ele!)) top = i })
+  if (top >= 0) picked.add(top)
+  while (picked.size < FALLBACK_POINTS) {
+    let best = 0, bestGap = -1
+    for (let i = 0; i < points.length; i++) {
+      const gap = Math.min(...[...picked].map(j => Math.abs(i - j)))
+      if (gap > bestGap) { best = i; bestGap = gap }
+    }
+    picked.add(best)
+  }
+  return [...picked].sort((a, b) => a - b).map(i => points[i])
 }
 
 /** Riding direction around point i: towards a point ~400 m further (or from one before, at the end) */

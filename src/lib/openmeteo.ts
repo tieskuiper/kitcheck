@@ -36,12 +36,16 @@ const HOURLY_FIELDS = [
   'relativehumidity_2m',
 ].join(',')
 
+// Without a timeout a slow API leaves the calculator spinning forever
+const FORECAST_TIMEOUT_MS = 15_000
+const GEOCODE_TIMEOUT_MS = 5_000
+
 /**
  * Forecasts for several points in one request (used along a GPX route).
  * Passing the route's own elevation matters: with rounded coordinates the terrain model
  * can be hundreds of metres off in hilly areas, which is several degrees.
  */
-export async function fetchForecasts(points: { lat: number; lon: number; ele?: number }[]) {
+export async function fetchForecasts(points: { lat: number; lon: number; ele?: number }[], timeoutMs = FORECAST_TIMEOUT_MS) {
   const withEle = points.every(p => p.ele !== undefined)
   const params = new URLSearchParams({
     latitude:        points.map(p => coarse(p.lat)).join(','),
@@ -52,14 +56,14 @@ export async function fetchForecasts(points: { lat: number; lon: number; ele?: n
     timezone:        'auto',
   })
   if (withEle) params.set('elevation', points.map(p => Math.round(p.ele!)).join(','))
-  const res = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`)
+  const res = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`, { signal: AbortSignal.timeout(timeoutMs) })
   if (!res.ok) throw new Error('Weather data unavailable')
   const data = await res.json()
   // One point → a single object, several → an array
   return Array.isArray(data) ? data : [data]
 }
 
-export async function fetchForecast(lat: number, lon: number) {
+export async function fetchForecast(lat: number, lon: number, ele?: number, timeoutMs = FORECAST_TIMEOUT_MS) {
   const params = new URLSearchParams({
     latitude:      String(coarse(lat)),
     longitude:     String(coarse(lon)),
@@ -68,16 +72,35 @@ export async function fetchForecast(lat: number, lon: number) {
     wind_speed_unit: 'kmh',
     timezone:        'auto',
   })
-  const res = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`)
+  if (ele !== undefined) params.set('elevation', String(Math.round(ele)))
+  const res = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`, { signal: AbortSignal.timeout(timeoutMs) })
   if (!res.ok) throw new Error('Weather data unavailable')
   return res.json()
+}
+
+/**
+ * One single-point request per point, in parallel: single points answer much faster than a
+ * multi-point request. Keep the list short so it doesn't hit the rate limit.
+ * Returns the points that got a forecast, with their forecasts (same order); throws if the
+ * first point (the start) failed.
+ */
+export async function fetchForecastsEach<P extends { lat: number; lon: number; ele?: number }>(points: P[], timeoutMs = FORECAST_TIMEOUT_MS) {
+  const withEle = points.every(p => p.ele !== undefined)
+  const results = await Promise.allSettled(points.map(p => fetchForecast(p.lat, p.lon, withEle ? p.ele : undefined, timeoutMs)))
+  if (results[0]?.status !== 'fulfilled') throw new Error('Weather data unavailable')
+  const ok = results.flatMap((r, i) => r.status === 'fulfilled' ? [i] : [])
+  return {
+    points: ok.map(i => points[i]),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    forecasts: ok.map(i => (results[i] as PromiseFulfilledResult<any>).value),
+  }
 }
 
 export async function reverseGeocode(lat: number, lon: number): Promise<string> {
   try {
     const res = await fetch(
       `https://nominatim.openstreetmap.org/reverse?lat=${coarse(lat)}&lon=${coarse(lon)}&zoom=10&format=json`,
-      { headers: { 'Accept-Language': 'en' } }
+      { headers: { 'Accept-Language': 'en' }, signal: AbortSignal.timeout(GEOCODE_TIMEOUT_MS) }
     )
     const data = await res.json()
     return data.address?.city || data.address?.town || data.address?.village || 'Your location'

@@ -331,13 +331,18 @@ With a GPX file the forecast follows the route instead of the start point:
 5. **Along your route** notes: coldest point (when 2°C+ colder than the start), where rain
    becomes likely (≥ `RAIN_LIKELY`), the longest headwind stretch (headwind ≥ `HEADWIND_KMH`)
    and the biggest descent (when its feels-like is below `DESCENT_COOL_BELOW`).
-6. **Duration:** the recorded moving time if the GPX has one, else the rider's saved speed,
+6. **Slow API:** if the full route request takes longer than 10 s, the forecast is fetched
+   again for `FALLBACK_POINTS` key points only (start, finish, highest point, evenly spaced
+   between), one parallel request each; points that fail are left out. If the start point
+   fails too, the advice uses the start point's forecast and the kit card says so.
+7. **Duration:** the recorded moving time if the GPX has one, else the rider's saved speed,
    else an estimate: flat speed for the intensity, minus 5 minutes per 100 m of climbing.
 
 <!-- gen:route -->
 | Constant | Value | Meaning |
 | --- | --- | --- |
 | `STEP_KM` / `MAX_POINTS` | 6 km / 24 | forecast point every ~6 km, at most 24 points (+ start, finish, highest point) |
+| `FALLBACK_POINTS` | 5 | when the full route request times out: start, finish, highest point and evenly spaced points up to this many, fetched one by one |
 | `HEADWIND_KMH` | 12 km/h | headwind component from which a stretch counts as "headwind" |
 | `DESCENT_MIN_DROP_M` / `DESCENT_MIN_KM` | 150 m / 2 km | minimum size of a "long descent" |
 | `DESCENT_COOL_BELOW` | 20°C | only descents colder than this feels-like get a note |

@@ -87,6 +87,7 @@ const sections = {
 
   route: () => table(['Constant', 'Value', 'Meaning'], [
     ['`STEP_KM` / `MAX_POINTS`', `${ROUTE_CONSTANTS.STEP_KM} km / ${ROUTE_CONSTANTS.MAX_POINTS}`, 'forecast point every ~6 km, at most 24 points (+ start, finish, highest point)'],
+    ['`FALLBACK_POINTS`', `${ROUTE_CONSTANTS.FALLBACK_POINTS}`, 'when the full route request times out: start, finish, highest point and evenly spaced points up to this many, fetched one by one'],
     ['`HEADWIND_KMH`', `${ROUTE_CONSTANTS.HEADWIND_KMH} km/h`, 'headwind component from which a stretch counts as "headwind"'],
     ['`DESCENT_MIN_DROP_M` / `DESCENT_MIN_KM`', `${ROUTE_CONSTANTS.DESCENT_MIN_DROP_M} m / ${ROUTE_CONSTANTS.DESCENT_MIN_KM} km`, 'minimum size of a "long descent"'],
     ['`DESCENT_COOL_BELOW`', `${ROUTE_CONSTANTS.DESCENT_COOL_BELOW}°C`, 'only descents colder than this feels-like get a note'],
