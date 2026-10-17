@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { IconRainy, IconWind } from '@central-icons-react/round-outlined-radius-3-stroke-2'
 import { getKitRecommendation, scoreLabel, type Intensity, type KitResult, type RiderInput } from '../../lib/kitLogic'
-import { BASELINE, ZONES, type Zone } from '../../lib/guideBase'
+import { BASELINE, ZONES } from '../../lib/guideBase'
+import { KIT_ROWS as ROWS, type KitRow as Row } from '../../lib/kitRows'
 import { preferredUnit, saveUnit, type Unit } from '../../lib/units'
 import KitCard from '../calculator/KitCard'
 import { INTENSITY_OPTIONS, CAT_LABELS, CAT_ICONS } from '../calculator/constants'
@@ -15,30 +16,6 @@ const MAX_C = 35
 const STEP = 0.5
 const WINDY_KMH = 35
 const RAIN_PCT = 80
-
-interface Row { label: string; zone: Zone; match: (name: string) => boolean; href?: string }
-
-const ROWS: Row[] = [
-  { label: 'Cap under helmet', zone: 'head', match: n => /cap$/i.test(n) },
-  { label: 'Insulated jacket', zone: 'torso', match: n => n === 'Insulated jacket' },
-  { label: 'Winter jersey', zone: 'torso', match: n => /winter jersey/i.test(n) },
-  { label: 'Base layer', zone: 'torso', match: n => /base layer/i.test(n), href: '/guide/when-to-wear-a-base-layer-cycling/' },
-  { label: 'Long-sleeve jersey', zone: 'torso', match: n => n === 'Long-sleeve jersey' },
-  { label: 'Short-sleeve jersey', zone: 'torso', match: n => /^(jersey|summer jersey|lightweight summer jersey)$/i.test(n) },
-  { label: 'Arm warmers', zone: 'torso', match: n => n === 'Arm warmers', href: '/guide/when-to-wear-arm-and-knee-warmers/' },
-  { label: 'Gilet', zone: 'torso', match: n => /gilet/i.test(n), href: '/guide/what-to-wear-cycling-in-wind/' },
-  { label: 'Rain jacket', zone: 'torso', match: n => /rain jacket/i.test(n), href: '/guide/what-to-wear-cycling-in-the-rain/' },
-  { label: 'Winter gloves', zone: 'hands', match: n => /winter gloves/i.test(n), href: '/guide/when-to-wear-winter-cycling-gloves/' },
-  { label: 'Light full-finger gloves', zone: 'hands', match: n => /light cycling gloves|full-finger/i.test(n) },
-  { label: 'Fingerless or none', zone: 'hands', match: n => /fingerless/i.test(n) },
-  { label: 'Thermal bib tights', zone: 'legs', match: n => n === 'Thermal bib tights', href: '/guide/bib-tights-or-bib-shorts/' },
-  { label: 'Bib tights', zone: 'legs', match: n => n === 'Bib tights', href: '/guide/bib-tights-or-bib-shorts/' },
-  { label: 'Leg warmers', zone: 'legs', match: n => n === 'Leg warmers', href: '/guide/bib-tights-or-bib-shorts/' },
-  { label: 'Knee warmers', zone: 'legs', match: n => n === 'Knee warmers', href: '/guide/when-to-wear-arm-and-knee-warmers/' },
-  { label: 'Bib shorts', zone: 'legs', match: n => n === 'Bib shorts' },
-  { label: 'Winter overshoes', zone: 'feet', match: n => /(thermal|waterproof)( winter)? overshoes/i.test(n), href: '/guide/when-to-wear-overshoes-cycling/' },
-  { label: 'Light overshoes / toe covers', zone: 'feet', match: n => /light( rain)? overshoes|toe covers/i.test(n), href: '/guide/when-to-wear-overshoes-cycling/' },
-]
 
 type Status = 'required' | 'optional' | null
 interface Segment { from: number; to: number; status: Exclude<Status, null> }

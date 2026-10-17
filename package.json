@@ -12,7 +12,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "astro": "astro"
+    "astro": "astro",
+    "docs:kit": "node --no-warnings --import ./scripts/ts-resolve.mjs scripts/kit-docs.mjs",
+    "docs:kit:check": "node --no-warnings --import ./scripts/ts-resolve.mjs scripts/kit-docs.mjs --check"
   },
   "dependencies": {
     "@astrojs/react": "^7.0.1",

@@ -64,6 +64,8 @@ export interface HourWeather {
 export const RAIN_LIKELY = 60   // % — full rain kit (scaled to temperature)
 const RAIN_SHOWERS = 40   // % — packable jacket as an option
 const HEAT_FROM_C  = 27   // forecast feels-like °C
+const WINDY_KMH    = 25   // above this: windproof note and an optional wind gilet
+const WARMTH_STEP  = 7.5  // score points per step of warmth tendency (-2 … +2)
 
 // Effort and warmth tendency reach the hands, feet and head only partly
 const EXTREMITY_EFFORT = 0.35
@@ -92,11 +94,14 @@ const INTENSITY_BONUS: Record<Intensity, number> = { easy: -5, moderate: 0, hard
 
 // The forecast feels-like already includes wind chill; this only adds the extra airflow
 // of riding into it, so it's deliberately small
+const WIND_PENALTY: { overKmh: number; points: number }[] = [
+  { overKmh: 30, points: 6 },
+  { overKmh: 20, points: 4 },
+  { overKmh: 12, points: 2 },
+]
+
 function windPenalty(kmh: number): number {
-  if (kmh > 30) return 6
-  if (kmh > 20) return 4
-  if (kmh > 12) return 2
-  return 0
+  return WIND_PENALTY.find(w => kmh > w.overKmh)?.points ?? 0
 }
 
 const clampScore = (s: number) => Math.round(Math.max(0, Math.min(110, s)))
@@ -104,22 +109,28 @@ const clampScore = (s: number) => Math.round(Math.max(0, Math.min(110, s)))
 export function calcComfortScore(input: RiderInput): number {
   return clampScore(
     tempToScore(input.apparentTemp) + INTENSITY_BONUS[input.intensity]
-    + input.warmthBias * 7.5 - windPenalty(input.windspeed),
+    + input.warmthBias * WARMTH_STEP - windPenalty(input.windspeed),
   )
 }
 
 function calcExtremityScore(input: RiderInput): number {
   return clampScore(
     tempToScore(input.apparentTemp) + INTENSITY_BONUS[input.intensity] * EXTREMITY_EFFORT
-    + input.warmthBias * 7.5 * EXTREMITY_WARMTH - windPenalty(input.windspeed),
+    + input.warmthBias * WARMTH_STEP * EXTREMITY_WARMTH - windPenalty(input.windspeed),
   )
 }
+
+/** The tuning numbers in one place: docs/kit-logic.md reads these, so the doc can't drift */
+export const KIT_CONSTANTS = {
+  RAIN_LIKELY, RAIN_SHOWERS, HEAT_FROM_C, WINDY_KMH, WARMTH_STEP,
+  EXTREMITY_EFFORT, EXTREMITY_WARMTH, INTENSITY_BONUS, WIND_PENALTY,
+} as const
 
 export function getKitRecommendation(input: RiderInput): KitResult {
   const score  = calcComfortScore(input)
   const ext    = calcExtremityScore(input)
   const rain: RainLevel = input.precipProb >= RAIN_LIKELY ? 'likely' : input.precipProb >= RAIN_SHOWERS ? 'showers' : null
-  const isWindy = input.windspeed > 25
+  const isWindy = input.windspeed > WINDY_KMH
   return {
     score,
     feelsLikeC: Math.round(scoreToTemp(score)),

@@ -14,6 +14,10 @@ KitCheck is a free cycling kit calculator. Riders enter a location (or upload a 
 - **Guide** — `/guide/` is the hub, with a page per temperature (-5 to 25°C, °F shown alongside), an interactive temperature chart, kit pages (arm & knee warmers, bib tights/leg warmers, base layer, overshoes, gloves) and condition pages (rain, wind, winter). Kit lists, ranges and quick answers are generated from `kitLogic.ts`, so the guide always matches the calculator
 - **Units** — °C by default; °F when the device's timezone is in the US, or when the visitor picked °F before (`lib/units.ts`, stored as `kitcheck-unit`). Browser language is ignored: many Europeans browse in en-US
 
+## How the kit advice is calculated
+
+The full algorithm (comfort score, thresholds per body zone, rain, wind, heat, multi-hour and GPX rules) is written out in **[docs/kit-logic.md](docs/kit-logic.md)**, with tables generated from the engine itself. Start there before changing `src/lib/kitLogic.ts`. AI agents get their project rules from [CLAUDE.md](CLAUDE.md).
+
 ## Tech stack
 
 | Layer | Choice |
@@ -47,6 +51,8 @@ pnpm dev                        # http://localhost:4321
 | `pnpm build` | Build the production site to `./dist/` |
 | `pnpm preview` | Serve the build locally |
 | `pnpm check` | Type-check `.astro` and `.ts(x)` files |
+| `pnpm docs:kit` | Regenerate the tables in `docs/kit-logic.md` from the engine |
+| `pnpm docs:kit:check` | Fail if `docs/kit-logic.md` is out of date with the engine |
 
 ### pnpm settings (`pnpm-workspace.yaml`)
 
