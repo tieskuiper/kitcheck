@@ -4,8 +4,9 @@ import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import PageHero from "../components/ui/PageHero.astro";
 import CtaBand from "../components/ui/CtaBand.astro";
+import TeamBanner from "../components/TeamBanner.astro";
 import { abs, breadcrumbNode, AUTHOR } from "../lib/site";
-import { IconBike, IconShieldCheck, IconCloudySun, IconArrowRight } from "@central-icons-react/round-outlined-radius-3-stroke-2";
+import { IconBike, IconShieldCheck, IconCloudySun } from "@central-icons-react/round-outlined-radius-3-stroke-2";
 
 const canonical = abs("/about/");
 const description = "kitcheck.cc is a free, brand-neutral cycling kit calculator, made by a road cyclist in the Netherlands and tested by Raas Racing Team.";
@@ -60,23 +61,8 @@ const facts = [
     </div>
   </section>
 
-  <!-- Team -->
-  <section class="bg-bg">
-    <div class="container pb-16 md:pb-20">
-      <div class="relative overflow-hidden rounded-3xl bg-team-night text-white px-6 py-10 sm:px-10 md:px-14 md:py-14">
-        <div aria-hidden="true" class="pointer-events-none absolute -right-20 -bottom-24 size-[420px] rounded-full bg-team-teal/50 blur-3xl"></div>
-        <div class="relative max-w-2xl">
-          <p class="font-head text-[11px] font-semibold tracking-[0.08em] uppercase text-team-mint mb-3">Rider-tested</p>
-          <h2 class="font-head font-bold text-2xl md:text-3xl tracking-tight mb-3">Raas Racing Team checks it before every ride</h2>
-          <p class="text-white/70 leading-relaxed">
-            An amateur road team that races for fun. The logic is shaped by real rides, like the rule that gloves and
-            overshoes are chosen for the whole ride, because nobody carries a second pair.
-          </p>
-          <a href="https://www.instagram.com/raasracingteam/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 mt-6 font-head text-sm font-semibold text-team-mint hover:opacity-80">Follow @raasracingteam <IconArrowRight size={15} /></a>
-        </div>
-      </div>
-    </div>
-  </section>
+  <!-- Team: same banner as the homepage -->
+  <TeamBanner />
 
   <section class="bg-white border-y border-border">
     <div class="container py-16 md:py-20">
@@ -85,19 +71,15 @@ const facts = [
           <h2 class="font-head font-bold text-2xl tracking-tight text-text mb-3">How it works</h2>
           <p class="text-[15px] text-text-mid leading-relaxed">
             The calculator combines the hourly forecast for your ride with your effort level and how warm you naturally
-            run. <a href="/how-it-works/" class="text-coral">How it works</a> explains every step, and the
-            <a href="/guide/" class="text-coral">kit guide</a> and <a href="/guide/cycling-temperature-chart/" class="text-coral">temperature chart</a>
-            use exactly the same logic.
+            run. <a href="/how-it-works/" class="text-coral">How it works</a> explains every step, and the <a href="/guide/" class="text-coral">kit guide</a> and the <a href="/guide/cycling-temperature-chart/" class="text-coral">temperature chart</a> use exactly the same logic.
           </p>
         </div>
         <div>
           <h2 class="font-head font-bold text-2xl tracking-tight text-text mb-3">Data sources</h2>
           <p class="text-[15px] text-text-mid leading-relaxed">
-            Forecasts and place search come from
-            <a href="https://open-meteo.com" rel="noopener" class="text-coral">Open-Meteo</a>, place names from
-            <a href="https://nominatim.org" rel="noopener" class="text-coral">Nominatim</a> and maps from
-            <a href="https://openfreemap.org" rel="noopener" class="text-coral">OpenFreeMap</a>. Privacy details are in the
-            <a href="/privacy/" class="text-coral">privacy policy</a>.
+            Forecasts and place search come from <a href="https://open-meteo.com" rel="noopener" class="text-coral">Open-Meteo</a>,
+            place names from <a href="https://nominatim.org" rel="noopener" class="text-coral">Nominatim</a> and maps from <a href="https://openfreemap.org" rel="noopener" class="text-coral">OpenFreeMap</a>.
+            Privacy details are in the <a href="/privacy/" class="text-coral">privacy policy</a>.
           </p>
         </div>
       </div>
