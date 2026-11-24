@@ -11,7 +11,7 @@ export const AUTHOR = {
 }
 
 /** Bump when guide content changes: dateModified, the byline, sitemap lastmod; also the publish date of new pages */
-export const CONTENT_UPDATED = '2026-10-17'
+export const CONTENT_UPDATED = '2026-11-24'
 /** When the first guide pages (0–25°C) went live; pages added later use CONTENT_UPDATED */
 export const CONTENT_PUBLISHED = '2026-10-12'
 

@@ -11,7 +11,7 @@ import { KIT_ITEM_PAGES, CONDITION_PAGES } from "../../lib/guideContent";
 import { itemRanges, rangePhrase } from "../../lib/kitRanges";
 import { abs, breadcrumbNode, faqNode } from "../../lib/site";
 import { TIER_ACCENT, TIER_BG, CAT_ICONS } from "../../components/calculator/constants";
-import { IconRainy, IconWind, IconSnowFlakes, IconSun, IconArrowRight } from "@central-icons-react/round-outlined-radius-3-stroke-2";
+import { IconRainy, IconWind, IconSnowFlakes, IconSun, IconClock, IconArrowRight } from "@central-icons-react/round-outlined-radius-3-stroke-2";
 
 // One headline per temperature: the upper body and legs items say most
 const temps = TEMP_PAGES.map(({ tempC }) => {
@@ -25,7 +25,7 @@ const items = KIT_ITEM_PAGES.map((p) => {
   return { ...p, range: r.required ?? r.optional, optionalOnly: !r.required };
 });
 
-const CONDITION_ICONS = { rain: IconRainy, wind: IconWind, snow: IconSnowFlakes, sun: IconSun };
+const CONDITION_ICONS = { rain: IconRainy, wind: IconWind, snow: IconSnowFlakes, sun: IconSun, clock: IconClock };
 
 const faq = [
   {
@@ -49,7 +49,7 @@ const faq = [
 
 <Base
   title="What to Wear Cycling by Temperature (°C and °F) | kitcheck.cc"
-  description="What to wear cycling at every temperature, from -5°C (23°F) to 25°C (77°F). Kit lists per temperature, an interactive chart, and kit for rain, wind, winter and summer."
+  description="What to wear cycling at every temperature, from -5°C (23°F) to 25°C (77°F). Kit lists per temperature, an interactive chart, and kit for rain, wind, winter, summer and when to set off."
   canonical="https://kitcheck.cc/guide/"
   schema={[
     {
@@ -137,8 +137,8 @@ const faq = [
   <!-- CONDITIONS -->
   <section class="bg-bg">
     <div class="container py-16 md:py-24">
-      <SectionHead eyebrow="By weather" title="Rain, wind, winter and summer" lead="What changes when the weather does." />
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <SectionHead eyebrow="By weather" title="Rain, wind, seasons and timing" lead="What changes when the weather does, and when to set off." />
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
         {CONDITION_PAGES.map((p) => {
           const Icon = CONDITION_ICONS[p.icon];
           return (
