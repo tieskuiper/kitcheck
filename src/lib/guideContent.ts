@@ -160,7 +160,7 @@ export const KIT_ITEM_PAGES: KitItemPage[] = [
 export interface ConditionPage {
   slug: string
   label: string
-  icon: 'rain' | 'wind' | 'snow' | 'sun'
+  icon: 'rain' | 'wind' | 'snow' | 'sun' | 'clock'
   /** One line for cards */
   teaser: string
   /** Three key numbers for the hero — they mirror constants in kitLogic, update them together */
@@ -170,6 +170,8 @@ export interface ConditionPage {
   description: string
   intro: string
   sections: { heading: string; body: string[] }[]
+  /** FAQ lead line; defaults to "What riders ask about cycling in the <label>." */
+  faqLead?: string
   /** Generated kit table: one row per temperature, with these conditions */
   table?: { heading: string; caption: string; temps: number[]; overrides: Partial<RiderInput> }
   faq: Faq[]
@@ -182,40 +184,69 @@ export const CONDITION_PAGES: ConditionPage[] = [
     slug: 'what-to-wear-cycling-in-the-rain',
     label: 'Rain',
     icon: 'rain',
-    teaser: 'Rain kit scaled to the temperature: when you need waterproofs and when a packable jacket will do.',
+    teaser: 'Rain clothing scaled to the temperature: when you need waterproofs, and when a packable jacket will do.',
     facts: [
-      { value: '40%', text: 'chance of rain: a packable rain jacket as an option' },
-      { value: '60%', text: 'rain likely: full rain kit, scaled to the temperature' },
+      { value: '60%', text: 'chance of rain: rain is likely, full rain kit scaled to the temperature' },
+      { value: '40%', text: 'chance of showers: a packable rain jacket as an option' },
       { value: '15°C', text: '59°F: below this at a moderate pace, a proper waterproof jacket' },
     ],
-    title: 'What to wear cycling in the rain',
-    metaTitle: 'What to Wear Cycling in the Rain | kitcheck.cc',
-    description: 'Rain kit for road cycling, scaled to the temperature: when you need a waterproof jacket, gloves and overshoes, and when a packable jacket is enough.',
-    intro: "How much rain kit you need depends mostly on the temperature. Cold rain is the most dangerous weather for a road cyclist: wet hands and feet go numb fast, and a soaked jersey keeps cooling you down. Warm rain is mostly a nuisance. So the question isn't just \"will it rain?\" but \"how cold will it be when I'm wet?\"",
+    title: 'What to wear cycling in the rain: kit by temperature',
+    metaTitle: 'What to Wear Cycling in the Rain: Kit by Temperature | kitcheck.cc',
+    description: 'Rain clothing for road cycling, scaled to the temperature: waterproof jacket or packable, gloves, overshoes, legs, head and eyes, plus bike prep and riding in the wet.',
+    intro: "What to wear cycling in the rain depends mostly on how cold it is. In cold rain you want a proper waterproof jacket, waterproof gloves and waterproof overshoes; in mild rain a packable rain jacket and light rain overshoes are enough; in warm rain the jacket is optional. Your legs follow the temperature, not the rain. Cold rain is the most dangerous weather for a road cyclist, because wet hands and feet go numb fast, so the real question is: how cold will it be when I'm wet?",
     sections: [
       {
         heading: 'Cold rain: waterproof everything',
         body: [
-          'When it is cold and rain is likely, you want a proper waterproof jacket, waterproof winter gloves and waterproof overshoes. Keeping your hands and feet dry matters most: once they are wet and cold, they stay that way for the rest of the ride.',
-          'Mudguards (fenders) do as much for your comfort as any piece of clothing: they keep the spray off your back and feet, and your riding partners will thank you.',
+          'When it is cold and rain is likely, wear a waterproof jacket over your normal cold-weather layers, waterproof winter gloves and waterproof overshoes. In real cold, add thermal socks under the overshoes. Keeping your hands and feet dry matters most: once they are wet and cold, they stay that way for the rest of the ride.',
+          'Keep a base layer under the jacket. Even a breathable waterproof traps some sweat, and a base layer moves it away from your skin so you do not get cold when you slow down.',
         ],
       },
       {
         heading: 'Mild rain: a packable jacket',
         body: [
-          'In the mild range, a packable rain jacket is enough. It is lighter and breathes better than a winter rain jacket, and fits in a jersey pocket when the rain stops. Thin rain overshoes keep your shoes and socks dry.',
+          'In the mild range, a packable rain jacket is enough. It is lighter and breathes better than a winter rain jacket, and fits in a jersey pocket when the rain stops. Light rain overshoes keep your shoes and socks dry for longer, and thin full-finger gloves help your grip on wet bar tape.',
         ],
       },
       {
         heading: 'Warm rain: optional',
         body: [
-          'When it is warm, many riders skip the jacket entirely and accept getting wet: you warm up quickly and a wet summer jersey dries fast. Take a packable jacket in your pocket anyway for descents or if the temperature drops.',
+          'When it is warm, many riders skip the jacket and accept getting wet: you warm up quickly and a wet summer jersey dries fast. Take a packable jacket in your pocket anyway for descents, a long stop or a drop in temperature.',
         ],
       },
       {
-        heading: 'Chance of showers',
+        heading: 'Your legs in the rain',
         body: [
-          "When the forecast gives a moderate chance of rain (40–59%), kitcheck.cc lists a packable rain jacket as optional. From a 60% chance, it treats rain as likely and adds the full rain kit for the temperature. With a GPX route, the calculator also tells you if the rain arrives or stops during your ride.",
+          'kitcheck.cc does not change your leg kit for rain: bib shorts, warmers or bib tights follow the temperature, exactly as on a dry day. Your legs keep moving and stay warm even when wet.',
+          'On long, cold, wet rides, water-repellent bib tights or leg warmers keep the spray off for longer. Full waterproof trousers are rarely worth it on a road bike: they flap, rub and make you sweat.',
+        ],
+      },
+      {
+        heading: 'Head and eyes',
+        body: [
+          'A cycling cap with a peak under your helmet keeps rain out of your eyes; pick a synthetic one, because cotton soaks up water and goes cold. In cold rain, a thermal cap also covers your ears.',
+          'Glasses with clear or light lenses keep spray and grit out of your eyes. Dark lenses make a grey, wet day even darker.',
+        ],
+      },
+      {
+        heading: 'Showers or rain likely?',
+        body: [
+          'When the forecast gives a moderate chance of rain, kitcheck.cc lists a packable rain jacket as optional. Once rain is likely, it adds the full rain kit for the temperature, as in the table on this page.',
+          'Rain often starts or stops during a ride. The calculator checks every hour of your ride and tells you when rain is expected or when it turns dry. With a GPX route, it also shows where along the route rain becomes likely. Gloves and overshoes are chosen for the whole ride, so a dry start that turns wet gets waterproof ones from the start.',
+        ],
+      },
+      {
+        heading: 'Get the bike ready',
+        body: [
+          'Mudguards (fenders) do as much for your comfort as any piece of clothing: they keep spray off your back and feet, and off the rider behind you. Run your tyres a little softer than usual for more grip, and use lights front and rear, even in daylight.',
+          'After the ride, rinse the grit off and dry and lube the chain. Stuff wet shoes with newspaper, and wash your rain jacket now and then with a cleaner made for waterproofs, so the water keeps beading off.',
+        ],
+      },
+      {
+        heading: 'Riding in the wet',
+        body: [
+          'Brakes need longer to bite in the wet, especially rim brakes, so brake earlier and more gently. Corner more upright and a bit slower, and keep your speed in check on descents.',
+          'Painted lines, metal covers, wet leaves and the first rain after a dry spell are the slippery bits. Ride around puddles when you can: they hide potholes.',
         ],
       },
     ],
@@ -226,11 +257,14 @@ export const CONDITION_PAGES: ConditionPage[] = [
       overrides: { precipProb: 80 },
     },
     faq: [
-      { q: 'Do I need a waterproof jacket or is a packable one enough?', a: 'A waterproof jacket when it is cold, a packable rain jacket when it is mild, and optional when it is warm. The table on this page shows the switch points for a moderate pace.' },
-      { q: 'How do I keep my feet dry cycling in the rain?', a: 'Waterproof overshoes over your shoes, and mudguards on the bike. In mild rain, thin rain overshoes are enough; in warm rain most riders accept wet feet. Nothing keeps feet dry for hours in heavy rain, so in the cold add thermal socks: warm and wet is better than cold and wet.' },
+      { q: 'What should I wear cycling in the rain?', a: 'It depends on the temperature. In cold rain: a waterproof jacket over your warm layers, waterproof winter gloves and waterproof overshoes. In mild rain: a packable rain jacket and light rain overshoes. In warm rain the jacket is optional. Your legs follow the temperature, as on a dry day. The table on this page shows the full kit per temperature.' },
+      { q: 'Do I need a waterproof jacket or is a packable one enough?', a: 'A waterproof jacket when it is cold, a packable rain jacket when it is mild, and optional when it is warm. At a moderate pace the switch to a proper waterproof jacket is around 15°C (59°F).' },
+      { q: 'What should I wear cycling in light rain or drizzle?', a: 'A packable rain jacket you can take off when it stops, plus light rain overshoes if it is cool. Drizzle soaks you slowly, so on a long ride it counts as rain. If it is warm, a jersey is fine and you will dry quickly.' },
+      { q: 'How do I keep my feet dry cycling in the rain?', a: 'Waterproof overshoes over your shoes, and mudguards on the bike. In mild rain, light rain overshoes are enough; in warm rain most riders accept wet feet. Nothing keeps feet dry for hours in heavy rain, so in the cold add thermal socks: warm and wet is better than cold and wet.' },
+      { q: 'Do I need waterproof gloves for cycling in the rain?', a: 'When it is cold, yes: wet hands lose heat fast and get numb, which also makes braking harder. In mild rain, thin full-finger gloves are enough for grip, and in warm rain you can ride without.' },
       { q: 'Should I ride in the rain at all?', a: 'In warm rain, there is little reason not to. In cold rain, keep the ride shorter and closer to home, and be careful on painted lines, metal covers and the first wet minutes after a dry spell, when roads are slippery.' },
     ],
-    related: ['when-to-wear-overshoes-cycling', 'when-to-wear-winter-cycling-gloves'],
+    related: ['when-to-wear-overshoes-cycling', 'when-to-wear-winter-cycling-gloves', 'bib-tights-or-bib-shorts', 'when-to-wear-a-base-layer-cycling'],
   },
   {
     slug: 'what-to-wear-cycling-in-wind',
@@ -383,5 +417,93 @@ export const CONDITION_PAGES: ConditionPage[] = [
       { q: 'Should I wear a base layer in hot weather?', a: 'Some riders like a thin mesh base layer in the heat because it moves sweat away from the skin. It is a personal choice; kitcheck.cc does not list one when it is warm.' },
     ],
     related: ['when-to-wear-arm-and-knee-warmers'],
+  },
+  {
+    slug: 'best-time-to-start-a-bike-ride',
+    label: 'Timing',
+    icon: 'clock',
+    teaser: 'When to set off: how wind, temperature and rain change over the day, and what that does to your kit.',
+    facts: [
+      { value: 'Hourly', text: 'forecast for every hour you ride: notes when warmers can come off or rain arrives' },
+      { value: '1 pair', text: 'gloves and overshoes chosen for the coldest or wettest hour of the ride' },
+      { value: '12 km/h', text: '7 mph: with a GPX route, from here a stretch shows up as headwind' },
+    ],
+    title: 'Best time to start a bike ride: wind, temperature and rain',
+    metaTitle: 'Best Time to Start a Bike Ride: Wind and Weather | kitcheck.cc',
+    description: 'How to pick your departure time on a road bike: how wind, temperature and rain change over the day, which way to ride into the wind, and how the start time changes your kit.',
+    intro: "The best time to start a ride is when the hours you are actually on the bike line up with the weather: lighter wind, no rain front, and a temperature you can dress for. On most days the wind is lightest early and late, it is coldest around sunrise and warmest in the afternoon, and summer showers build later in the day. Moving your start by an hour or two can mean a dry ride instead of a wet one, or one layer less to carry.",
+    sections: [
+      {
+        heading: 'Temperature over the day',
+        body: [
+          'It is coldest around sunrise and warmest in the middle of the afternoon. On a clear spring or autumn day the difference can easily be ten degrees, which is the gap between winter gloves and none.',
+          'An early start means dressing for the cold start and carrying warmers once it warms up. kitcheck.cc sets your body kit for the start hour and tells you when arm or leg warmers can come off. Gloves and overshoes are chosen for the coldest hour, because you keep one pair for the whole ride.',
+        ],
+      },
+      {
+        heading: 'Wind over the day',
+        body: [
+          'On fair-weather days over land, wind is usually lightest around dawn and in the evening and strongest in the afternoon, when the sun heats the ground and mixes faster air down to road level. Near the coast, a sea breeze often picks up in the afternoon in summer.',
+          'A passing front or storm ignores that pattern, so check the hourly wind in the forecast, not just the daily figure. If the wind is forecast to drop later, a later start can be the easier ride.',
+        ],
+      },
+      {
+        heading: 'Into the wind first',
+        body: [
+          'The classic rule: ride out into the wind and home with it behind you. You do the hard part while you are fresh, and you do not get cold on the way back when you are tired and slower.',
+          'The exception is a wind that is forecast to drop or turn. Then starting with a tailwind and coming home once it has eased can work, but you are relying on the forecast being right.',
+        ],
+      },
+      {
+        heading: 'Rain over the day',
+        body: [
+          'Rain from a weather front arrives at a fairly predictable time: look at the hourly rain chance and ride before it, or after it has passed. Summer showers and thunderstorms work differently: they build in the warm afternoon, so a morning ride is the safer bet.',
+          'kitcheck.cc checks every hour of your ride and tells you when rain is expected or when it turns dry, so you can see whether an earlier or later start avoids it.',
+        ],
+      },
+      {
+        heading: 'Temperature during the ride',
+        body: [
+          'On a longer ride the temperature changes for three reasons: the time of day, the altitude and where you are. It gets colder as you climb, roughly 0.6°C (1°F) per 100 m on average, and a long descent adds a lot of wind chill on top.',
+          "With a GPX route, kitcheck.cc doesn't guess: it takes the forecast for points along the route, at the time you are expected to pass each one, for that point's own height. It then dresses you for the coldest, windiest and wettest moment of each ride hour, and notes the coldest point and the biggest descent.",
+        ],
+      },
+      {
+        heading: 'Compare start times in the calculator',
+        body: [
+          'kitcheck.cc does not pick a departure time for you, but comparing a few takes seconds: move the start time and watch the kit card and the forecast for your ride window change.',
+          'With a GPX route, each start time also shows the longest headwind stretch, judged against your riding direction, and where along the route rain becomes likely. If the headwind stretch sits at the end of the ride, try the loop the other way round or a different start time.',
+        ],
+      },
+      {
+        heading: 'Winter: start later',
+        body: [
+          'In winter, the early morning is the worst time to ride: the coldest air, frost and black ice on shaded corners and bridges, which can last until late morning. A late-morning start gives you the warmest, safest part of the day.',
+          'Days are short, so plan to be home before dark, and use lights front and rear anyway.',
+        ],
+      },
+      {
+        heading: 'Summer: start early',
+        body: [
+          'In summer, the heat and the afternoon showers both argue for an early start. You get the coolest hours, often the lightest wind, and you are home before the hottest part of the day. A late-evening ride works too, once the heat has eased.',
+        ],
+      },
+    ],
+    table: {
+      heading: 'How kit changes as the day warms up',
+      caption: 'An example spring day, from about 2°C (36°F) at dawn to 18°C (64°F) in the afternoon. Moderate pace, light wind, no rain.',
+      temps: [2, 6, 10, 14, 18],
+      overrides: {},
+    },
+    faq: [
+      { q: 'What is the best time of day to ride a bike?', a: 'It depends on the season and the forecast. In summer, early morning: cooler, often less wind, and before afternoon showers. In winter, late morning to early afternoon: the warmest part of the day, after frost and ice have gone. In between, look at the hourly wind and rain and pick the window with the least of both.' },
+      { q: 'Is the wind lighter in the morning?', a: 'Often, yes. On fair-weather days over land, wind is usually lightest around dawn and in the evening and picks up in the afternoon. A weather front or storm overrides this, so check the hourly forecast for your ride.' },
+      { q: 'Should I ride into the wind first or last?', a: 'First, if you can: ride out into the wind and come home with it behind you, when you are tired. Only start with a tailwind when the wind is forecast to drop or turn before you head home.' },
+      { q: 'How much colder is it at the top of a climb?', a: 'On average about 0.6°C (1°F) per 100 m of climbing, so a 1,000 m climb can be 6°C (11°F) colder at the top, before the wind chill of the descent. With a GPX route, kitcheck.cc uses the forecast for each point at its own height.' },
+      { q: 'How does kitcheck.cc work out the temperature during my ride?', a: 'Without a route, it uses the hourly forecast at your start location for every hour you ride. With a GPX route, it takes the forecast for points along the route at the time you are expected to pass each one, works out the headwind against your riding direction, and dresses you for the coldest, windiest and wettest moment of each hour.' },
+      { q: 'Can kitcheck.cc find the best departure time for me?', a: 'Not automatically. Move the start time in the calculator and compare: the kit card, the rain and wind notes and, with a GPX route, the longest headwind stretch all update straight away.' },
+    ],
+    faqLead: 'What riders ask about timing a ride around the weather.',
+    related: ['when-to-wear-arm-and-knee-warmers', 'when-to-wear-winter-cycling-gloves'],
   },
 ]

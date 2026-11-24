@@ -11,13 +11,13 @@ import { CONDITION_PAGES, KIT_ITEM_PAGES, type ConditionPage } from "../../lib/g
 import { kitAt, toF, pathFor, TEMP_PAGES } from "../../lib/guideData";
 import { CAT_ICONS } from "../calculator/constants";
 import { abs, articleNode, breadcrumbNode, faqNode } from "../../lib/site";
-import { IconRainy, IconWind, IconSnowFlakes, IconSun } from "@central-icons-react/round-outlined-radius-3-stroke-2";
+import { IconRainy, IconWind, IconSnowFlakes, IconSun, IconClock } from "@central-icons-react/round-outlined-radius-3-stroke-2";
 
 interface Props { page: ConditionPage }
 const { page } = Astro.props;
 const canonical = abs(`/guide/${page.slug}/`);
 
-const ICONS = { rain: IconRainy, wind: IconWind, snow: IconSnowFlakes, sun: IconSun };
+const ICONS = { rain: IconRainy, wind: IconWind, snow: IconSnowFlakes, sun: IconSun, clock: IconClock };
 const Icon = ICONS[page.icon];
 
 const rows = page.table?.temps.map((c) => ({
@@ -105,7 +105,7 @@ const others = CONDITION_PAGES.filter((p) => p.slug !== page.slug);
     </div>
   </section>
 
-  <FaqList faq={page.faq} lead={`What riders ask about cycling in ${page.label.toLowerCase() === "winter" ? "winter" : `the ${page.label.toLowerCase()}`}.`} />
+  <FaqList faq={page.faq} lead={page.faqLead ?? `What riders ask about cycling in ${page.label.toLowerCase() === "winter" ? "winter" : `the ${page.label.toLowerCase()}`}.`} />
 
   <section class="bg-bg border-t border-border">
     <div class="container py-16 md:py-20">
