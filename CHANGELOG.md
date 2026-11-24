@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-11-24
+
 ### Added
 - Guide: "Best time to start a bike ride" (/guide/best-time-to-start-a-bike-ride/): how wind, temperature and rain change over the day, into-the-wind-first, temperature during the ride (altitude, GPX) and how to compare start times in the calculator
 
